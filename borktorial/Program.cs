@@ -1,4 +1,5 @@
 ﻿using AdventureEngine;
+using aperture;
 using borktorial.adventures;
 using NAudio.Wave;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ using System.Security.Cryptography;
 
 namespace borktorial
 {
-	internal class Program
+	public static class Program
 	{
 		static string cat = """
 			 |\\_,-~/
@@ -35,14 +36,20 @@ namespace borktorial
 		static bool mToggle = false;
 		static bool virused = false;
 		static bool gordonSummoned = File.Exists("GORDON");
-		static Random rand = new Random();
-		static Thread drdhtsr;
+		public static Random rand = new Random();
+        static Thread drdhtsr;
 		static int jebcounter = 0;
 		static int munCycle = 0;
 		static int tick = 0;
-		static int[] cfg = [5, 100000, 0];
+		static int[] cfg = [5, 100000, 15];
+		static float wSeed = noiser.generate(
+			(float)rand.Next(0, 6), 
+			(float)rand.Next(0, 4), 
+			rand, 
+			(float)rand.Next(0, 10));
 		static Dictionary<string, object> bktCfg;
-		static string[] lines = [
+        public static Random wrand = new Random((int)wSeed * 1000);
+        static string[] lines = [
 			"Gordon doesn't need to hear this, he's a highly trained professional!",
 			"Good morning and welcome to the Black Mesa Transit System.",
 			"Wisely done, Mr. Freeman",
@@ -121,6 +128,7 @@ namespace borktorial
 		static string username = "";
 		static string password = "";
 		static int balance_ire = 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256;
+		static bool root = false;
 		static void Main(string[] args)
 		{
 			try
@@ -141,8 +149,8 @@ namespace borktorial
 				}
 				else
 				{
-					File.AppendAllText("config.ssc", "5;100000;0");
-					cfg = [5, 100000, 0];
+					File.AppendAllText("config.ssc", "5;100000;15");
+					cfg = [5, 100000, 15];
 				}
 				if (File.Exists("sc.bkt")) {
 
@@ -196,7 +204,37 @@ namespace borktorial
 				Console.WriteLine("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); 
 				Thread.Sleep(5000); 
 			}
-			Console.WriteLine(IREGRETEXISTING);
+            // Verification (and me just testing the lib)
+            int[] avServer = aperture.bktLV.dallf();
+            int[] avClient = new int[8];
+            int[] avCv1 = { 255, 127, 63, 31, 15, 7, 3, 1 };
+            int[] avCv2 = { 1, 3, 7, 15, 31, 63, 127, 255 };
+            for (int i = 0; i < avClient.Length; i++)
+            {
+                avClient[i] = avCv1[i] + avCv2[i];
+            }
+            if (!avClient.SequenceEqual(avServer))
+            {
+				Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+				Console.Clear();
+                Console.WriteLine("FAULT: The APERTURE system library is corrupted.");
+				Console.WriteLine("Error code: 492. The INTA verification failed.");
+				Console.WriteLine("This incident will be logged\r\n");
+				Console.WriteLine("Potential reasons why you saw this error:");
+				Console.WriteLine("  * You modified APERTURE.DLL in such a way that the verification failed");
+                Console.WriteLine("  * The DLL is corrupted");
+                Console.WriteLine("  * Your copy was tampered with somehow");
+                Console.WriteLine("  * The program just hates you in particular\r\n");
+				File.AppendAllText($"{errgen.sf15(16, 4)}", $"[{System.DateTime.Now.ToLongDateString} " +
+					$"{System.DateTime.Now.ToLongTimeString}]" +
+					$"A critical system library was corrupted");
+				while (true)
+				{
+					Thread.Sleep(int.MaxValue);
+				}
+            }
+            Console.WriteLine(IREGRETEXISTING);
 			Console.Clear();
 			Console.WriteLine("GLaBIOS 3.14 Revision C");
 			Console.WriteLine();
@@ -289,7 +327,6 @@ namespace borktorial
 				Thread.Sleep(rand.Next(500, 801));
 			}
 			Console.Clear();
-			bool root = false;
 			while (string.IsNullOrWhiteSpace(username))
 			{
 				Console.Write("Username: ");
@@ -311,6 +348,11 @@ namespace borktorial
 				timeLoop(cfg[0], cfg[1]);
 			});
 			timeThread.Start();
+			Thread asThrd = new Thread(() =>
+			{
+				autosaver(cfg[2]);
+			});
+			asThrd.Start();
 			Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
 			while (true)
 			{
@@ -522,9 +564,59 @@ namespace borktorial
 							} while (userNums == actual);
 							Console.WriteLine($"Actual numbers were {actual}");
 							break;
+						case "lmod":
+							bktLV.mod();
+							break;
+						case "shutdown":
+                            msgPacket sdPacket = new msgPacket(["aa", "00"],
+								permLevel.Root,
+								bktPkt.idGen()
+								);
+                            bktPkt.handlePkt(sdPacket);
+                            break;
 						case "test-dbg::toggle_virused":
 							virused = !virused;
 							break;
+						case "dbg::cfg":
+							Console.WriteLine($"[cfgl] {cfg.Length}");
+                            foreach (var item in cfg)
+							{
+								Console.WriteLine($"[cfg] {item}");
+							}
+							break;
+						case "timetest":
+							Console.WriteLine("Computational Overhead-o-Meter(TM)\r\n");
+							Console.WriteLine("5000ms begin");
+							var sw = new Stopwatch();
+							sw.Start();
+							Thread.Sleep(5000);
+							sw.Stop();
+							Console.WriteLine($"{sw.ElapsedMilliseconds}ms (expected: 5000ms)\r\n");
+                            Console.WriteLine("1000ms begin");
+							sw.Reset();
+                            sw.Start();
+                            Thread.Sleep(1000);
+                            sw.Stop();
+                            Console.WriteLine($"{sw.ElapsedMilliseconds}ms (expected: 1000ms)\r\n");
+                            Console.WriteLine("500ms begin");
+                            sw.Reset();
+                            sw.Start();
+                            Thread.Sleep(500);
+                            sw.Stop();
+                            Console.WriteLine($"{sw.ElapsedMilliseconds}ms (expected: 500ms)\r\n");
+                            Console.WriteLine("100ms begin");
+                            sw.Reset();
+                            sw.Start();
+                            Thread.Sleep(100);
+                            sw.Stop();
+                            Console.WriteLine($"{sw.ElapsedMilliseconds}ms (expected: 100ms)\r\n");
+							Console.WriteLine("10ms begin");
+							sw.Reset();
+                            sw.Start();
+                            Thread.Sleep(10);
+                            sw.Stop();
+                            Console.WriteLine($"{sw.ElapsedMilliseconds}ms (expected: 10ms)\r\n");
+                            break;
 						case "color":
 							if (commin.Length == 3)
 							{
@@ -682,7 +774,8 @@ namespace borktorial
 							Console.WriteLine("  drdhtsr                   - Start the Dr. Dickhead TSR (background virus monitor).");
 							Console.WriteLine("  kill <process>            - Terminate a process (try 'p32krnl', 'cmdshell', or 'drdhtsr').");
 							Console.WriteLine("  reboot                    - Reboot the system.");
-							Console.WriteLine("  color <fg> <bg>           - Set text and background color (0-9, A-F).");
+                            Console.WriteLine("  shutdown                  - Shutdown the system.");
+                            Console.WriteLine("  color <fg> <bg>           - Set text and background color (0-9, A-F).");
 							Console.WriteLine("  cls                       - Clear the screen.");
 							Console.WriteLine("  hl3                       - Confirm Half-Life 3.");
 							Console.WriteLine("  specs                     - Show system hardware");
@@ -711,6 +804,17 @@ namespace borktorial
 							else {
 								Console.WriteLine("You're not in sudoers. This incident will be reported to the FBI");
 							}
+							break;
+						case "compoundo":
+							double cx = 100;
+							for (int i = 0; i < 500; i++)
+							{
+								cx = cx + cx / 100 + (double)(wrand.Next(1000, 10000)/1000);
+							}
+							Console.WriteLine(cx);
+							break;
+						case "seed":
+							Console.WriteLine($"{wSeed.ToString()} -- {(int)(wSeed*1000)}");
 							break;
 						case "specs":
 							Console.WriteLine(sysspecs);
@@ -777,6 +881,7 @@ namespace borktorial
 								$"{jebcounter}," +
 								$"{munCycle}," +
 								$"{tick}," +
+								$"{wSeed}," +
 								$"{root};");
 							break;
 						case "load":
@@ -817,7 +922,8 @@ namespace borktorial
 								jebcounter = int.Parse(saveParts[12]);
 								munCycle = int.Parse(saveParts[13]);
 								tick = int.Parse(saveParts[14]);
-								root = bool.Parse(saveParts[15]);
+								wSeed = float.Parse(saveParts[15]);
+								root = bool.Parse(saveParts[16].Trim(';'));
 
 								Console.WriteLine("Save loaded successfully!");
 							break;
@@ -1060,6 +1166,13 @@ namespace borktorial
 						case "n1":
 							Console.WriteLine("Did you mean: kaboom");
 							break;
+						case "dbg::noise":
+                            for (int i = 0; i < 10; i++)
+                            {
+                                float result = noiser.generate(10f, 2f, rand, 1f);
+                                Console.WriteLine(result);
+                            }
+                            break;
 						case "kaboom":
 							Console.WriteLine("Did you mean: n1");
 							break;
@@ -1369,6 +1482,34 @@ namespace borktorial
 
 				crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor));
 			}
+		}
+		static void autosaver(int d)
+		{
+			while (true)
+			{
+				Thread.Sleep(d*1000);
+                if (File.Exists("save.bin"))
+                {
+                    File.Delete("save.bin");
+                }
+                File.AppendAllText("save.bin", $"bkt_{progversion}," +
+                    $"{ntdosversion}," +
+                    $"{twversion}," +
+                    $"{revision}," +
+                    $"{jebconnect}," +
+                    $"{mConnected}," +
+                    $"{mSpeed}," +
+                    $"{crshChance}," +
+                    $"{mToggle}," +
+                    $"{virused}," +
+                    $"{username}," +
+                    $"{password}," +
+                    $"{jebcounter}," +
+                    $"{munCycle}," +
+                    $"{tick}," +
+					$"{wSeed}," +
+                    $"{root};");
+            }
 		}
 	}
 }

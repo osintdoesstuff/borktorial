@@ -42,4 +42,7 @@
     <PackageReference Include="System.Windows.Extensions" Version="10.0.0-rc.2.25502.107" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\aperture\aperture.csproj" />
+  </ItemGroup>
 </Project>
