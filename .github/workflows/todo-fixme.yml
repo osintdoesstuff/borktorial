@@ -1,0 +1,22 @@
+name: Auto TODO/FIXME Issue Creator
+
+on:
+  schedule:
+    - cron: '*/20 * * * *' # every day at 3am UTC
+  workflow_dispatch:
+
+jobs:
+  todo-fixme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install requests
+        run: pip install requests
+      - name: Run TODO/FIXME scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python .github/scripts/todo_finder.py

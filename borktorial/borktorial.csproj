@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <PublishAot>true</PublishAot>
+	  <PublishTrimmed>true</PublishTrimmed>
+	  <!-- Optional, trims unused code -->
+	  <InvariantGlobalization>true</InvariantGlobalization>
+	  <!-- Optional, smaller binary -->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="modem.mp3" />
+    <None Remove="SECRETS\eula.txt" />
+    <None Remove="SECRETS\modem.wav" />
+    <None Remove="SECRETS\screenshot16.png" />
+    <None Remove="SECRETS\thisisabucket.7z" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SECRETS\eula.txt" />
+    <EmbeddedResource Include="SECRETS\modem.wav" />
+    <EmbeddedResource Include="SECRETS\screenshot16.png" />
+    <EmbeddedResource Include="SECRETS\thisisabucket.7z" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.7" />
+    <PackageReference Include="System.Windows.Extensions" Version="10.0.0-rc.2.25502.107" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\aperture\aperture.csproj" />
+  </ItemGroup>
+</Project>
