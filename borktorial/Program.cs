@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using Spectre.Console;
+using Microsoft.VisualBasic.Devices;
 
 namespace borktorial
 {
@@ -24,6 +25,8 @@ namespace borktorial
         static UInt16 ntdosversion = 0x4000;
         static UInt16 twversion = 0x1400;
         static UInt16 revision = 0x0000;
+        static (int maj, int min, int pch, char rv) bktver = (0, 5, 3, 'g');
+        static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
         static bool jebconnect = false;
         static bool mConnected = false;
         static bool forceNoBoot = false;
@@ -41,9 +44,10 @@ namespace borktorial
         static int jebcounter = 0;
         static int munCycle = 0;
         static int tick = 0;
-        static int ninovium = 1; // Start (me up)ing value
-        static int schonite = 1;
+        static double ninovium = 1;
+        static double schonite = 1;
         static double sysstab = 1;
+        static ComputerInfo compi = new ComputerInfo();
         static RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
         static int[] cfg = [5, 100000, 15];
         static float wSeed = (
@@ -261,7 +265,12 @@ namespace borktorial
             if (!forceNoBoot)
             {
                 if (!ballmerMode) Console.Clear();
-                Console.WriteLine("GLaBIOS 3.14 Revision C");
+                Console.Title = $"borktorial: {splashPick()}";
+                if(rand.Next(0, 69) == 0) // 1 in 69
+                {
+                    Console.Title = $"broktorial: {splashPick()}";
+                }
+                Console.WriteLine($"GLaBIOS 3.14 Revision C (build {getBuildNum()})");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
@@ -315,6 +324,14 @@ namespace borktorial
                 Console.WriteLine("\r\nStarting NT-DOS...\r\n");
                 Thread.Sleep(4500);
                 Console.WriteLine("NTXMEM is checking extended memory...\r\n");
+                if (compi.AvailablePhysicalMemory < 16777216 || !OperatingSystem.IsWindows())
+                {
+                    Console.WriteLine("NT-DOS requires at least 16MB of extended memory.");
+                    while (true)
+                    {
+                        Thread.Sleep(int.MaxValue);
+                    }
+                }
                 Thread.Sleep(1250);
                 if (gordonSummoned || (!__5a85 && rand.Next(1, 5) == 0))
                 {
@@ -402,6 +419,7 @@ namespace borktorial
                 asThrd.Start();
                 Thread msVarier = new Thread(interspeed);
                 msVarier.Start();
+                Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
             }
             // initialize news feed
@@ -411,7 +429,7 @@ namespace borktorial
             }
             while (true)
             {
-                Console.Write("A:\\TW8000\\>");
+                Console.Write("C:\\TW8000\\>");
                 string rawCommin = Console.ReadLine();
                 string[] commin = rawCommin.ToLower().Split(' ');
                 try
@@ -672,43 +690,6 @@ namespace borktorial
                                                 task1.Increment(rand.Next(3, 5));
                                             }
                                         });
-                                        break;
-                                }
-                            }
-                            break;
-                        case "schon":
-                            Console.WriteLine("Schonite is a revolutionary material discovered at Bell Labs which allows the following enhancements:\r\n" +
-                                "* Minor performance gains\r\n" +
-                                "* Enhanced modem speed (as researched by Dr. Dumbfuck)\r\n" +
-                                "* Minor stability enhancements");
-                            Console.WriteLine("Commands:\r\n" +
-                                "fab: Fabricate schonite\r\n" +
-                                "rmve: Remove all schonite\r\n");
-                            if(commin.Length >= 2)
-                            {
-                                switch (commin[1])
-                                {
-                                    case "fab":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            var task1 = ctx.AddTask("[green]Fabricating...[/]");
-                                            var task2 = ctx.AddTask("[green]Inserting...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(15, 50));
-                                                task1.Increment(rand.Next(1, 3));
-                                                Thread.Sleep(rand.Next(15, 30));
-                                                task2.Increment(rand.Next(1, 3));
-                                            }
-                                        });
-                                        schonite += 1;
-                                        sysstab += Math.Log10(Math.Tau * schonite);
-                                        break;
-                                    case "rmve":
-                                        schonite = 0;
                                         break;
                                 }
                             }
@@ -1259,13 +1240,6 @@ namespace borktorial
                         case "lplay_dbg":
                             mp3PlayLoop(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3");
                             break;
-                        case "liveclock":
-                            while (true)
-                            {
-                                Thread.Sleep(5);
-                                Console.Clear();
-                                Console.Write(tick);
-                            }
                         case "dbg::exhndlr":
                             for (int i = 10 - 1; i >= 0; i--)
                             {
@@ -1299,10 +1273,6 @@ namespace borktorial
                             break;
                         case "n1":
                             Console.WriteLine("Did you mean: kaboom");
-                            break;
-                        case "dbg::spkorolevcorp_agjsifjiwojfiojiofjitjgiojsiojfioj4838":
-                            Thread __eriofjj = new Thread(__49291);
-                            __eriofjj.Start();
                             break;
                         case "aperture":
                             Console.WriteLine("REMEMBER! If a future you tries to warn you about this test, DON'T LISTEN!");
@@ -1594,6 +1564,20 @@ namespace borktorial
                    rand.Next(0, 5) == 0)
                 {
                     AddNews(newsGen.Generate());
+                    if (rand.Next(0, 98) == 0) // 1 in 99
+                    {
+                        // Schonite dust collector
+                        schonite += rand.NextSingle();
+                        schonite -= rand.NextSingle();
+                    }
+                    if (rand.Next(0, 99) == 0)
+                    {
+                        Console.Title = $"borktorial: {splashPick()}";
+                        if (rand.Next(0, 69) == 0) // 1 in 69
+                        {
+                            Console.Title = $"broktorial: {splashPick()}";
+                        }
+                    }
                     lastNewsSecond = DateTime.UtcNow.Second;
                 }
                 int baseValue = 5000;      // Starting risk
@@ -1681,6 +1665,56 @@ namespace borktorial
             using var stream = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream("borktorial.SECRETS.modem.wav");
             new System.Media.SoundPlayer(stream).PlaySync();
+        }
+        public static string splashPick()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
+
+            if (stream is null)
+                return "missingno";
+
+            using var reader = new StreamReader(stream);
+            var lines = reader.ReadToEnd()
+                .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            // Parse lines with rarity weights
+            var splashes = lines
+                .Select(line => line switch
+                {
+                    _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 10),
+                    _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 5),
+                    _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
+                    _ => (Text: line, Weight: 1) // fallback for untagged lines
+                })
+                .ToList();
+
+            if (splashes.Count == 0)
+                return "Beta than ever!";
+
+            // Weighted random selection
+            int totalWeight = splashes.Sum(s => s.Weight);
+            int roll = rand.Next(totalWeight);
+
+            int cumulative = 0;
+            foreach (var splash in splashes)
+            {
+                cumulative += splash.Weight;
+                if (roll < cumulative)
+                    return splash.Text;
+            }
+
+            return splashes[^1].Text;
+        }
+        public static int getBuildNum()
+        {
+            float accu = 0;
+            accu += (bktver.maj + pubver.maj) * 8;
+            accu += (bktver.min + pubver.min) * 4;
+            accu += (bktver.pch + pubver.pch) * 2;
+            accu += (bktver.rv + pubver.rv);
+            accu /= 4;
+            return (int)accu;
         }
     }
 }

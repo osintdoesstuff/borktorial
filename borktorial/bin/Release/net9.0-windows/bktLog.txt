@@ -201,3 +201,22 @@ Actual value was -86000. -    at System.ArgumentOutOfRangeException.ThrowLess[T]
 01/02/2026 23:08:36 info: [cmdhndlr]: User entered command: echo
 01/02/2026 23:25:56 info: [cmdhndlr]: User entered command: dbg::perftest::errgen::sf15
 01/02/2026 23:26:20 info: [cmdhndlr]: User entered command: dbg::perftest::errgen_sf15
+01/03/2026 01:11:55 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:08 info: [cmdhndlr]: User entered command: satconnect
+01/03/2026 01:12:10 err: [[NEWS]]: Collection was modified; enumeration operation may not execute.    at System.Collections.Generic.List`1.Enumerator.MoveNext()
+   at borktorial.Program.Main(String[] args)
+01/03/2026 01:12:10 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:13 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:14 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:21 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:31 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:37 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:12:38 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:13:37 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:13:39 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:14:23 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:14:26 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:15:00 info: [cmdhndlr]: User entered command: news
+01/03/2026 01:15:03 info: [cmdhndlr]: User entered command: news
+01/05/2026 11:40:32 info: [cmdhndlr]: User entered command: dir
+01/05/2026 11:40:32 info: [cmdhndlr]: User entered command: motd
