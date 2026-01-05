@@ -1545,7 +1545,11 @@ namespace borktorial
                 {
                     munCycle++;
                 }
-                if (tick % 10000 == 0)
+                if (tick % 10000 == 0 && !specialDays.bktDay)
+                {
+                    entropyAcc++;
+                }
+                if (tick % 25000 == 0 && specialDays.bktDay)
                 {
                     entropyAcc++;
                 }
