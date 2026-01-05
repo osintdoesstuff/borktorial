@@ -25,7 +25,7 @@ namespace borktorial
         static UInt16 ntdosversion = 0x4000;
         static UInt16 twversion = 0x1400;
         static UInt16 revision = 0x0000;
-        static (int maj, int min, int pch, char rv) bktver = (0, 5, 3, 'g');
+        static (int maj, int min, int pch, char rv) bktver = (0, 5, 4, 'a');
         static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
         static bool jebconnect = false;
         static bool mConnected = false;
@@ -122,6 +122,10 @@ namespace borktorial
         static bool root = false;
         static void Main(string[] args)
         {
+            if (args.Length >= 2 && args[0] == "bktint:delayStart")
+            {
+                Thread.Sleep(int.Parse(args[1]));
+            }
             if (!__5a85)
             {
                 rand = new Random(0x4E54);
@@ -411,7 +415,7 @@ namespace borktorial
                 {
                     autosaver(cfg[2]);
                 });
-                if (!__5a85)
+                if (!__5a85 || specialDays.aprilfool)
                 {
                     Thread __58858g = new Thread(__49291);
                     __58858g.Start();
@@ -421,6 +425,10 @@ namespace borktorial
                 msVarier.Start();
                 Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
+                if (specialDays.bktDay)
+                {
+                    Console.Write(" Happy Borktorial Day!\r\n");
+                }
             }
             // initialize news feed
             for (int i = 0; i < 15; i++)
@@ -459,7 +467,7 @@ namespace borktorial
                             break;
                         case "dir":
                             Console.WriteLine("Volume Serial Number is 4655-434B");
-                            Console.WriteLine("Directory listing of A:");
+                            Console.WriteLine("Directory listing of C:");
                             for (int i = 0; i < rand.Next(4, 21); i++)
                             {
                                 Console.WriteLine($"    {generateFile()} - {rand.Next(512, 65536)}");
@@ -930,7 +938,7 @@ namespace borktorial
                                             Console.Write("Done\r\n");
                                             Thread.Sleep(rand.Next(15, 50));
                                         }
-                                        Console.WriteLine("Format successful. Returning to (GLa)DOS");
+                                        Console.WriteLine("Format successful. Returning to DOS");
                                         break;
                                     case "b:":
                                         Console.WriteLine("Insert diskette into drive B: to format");
@@ -947,7 +955,7 @@ namespace borktorial
                                             Console.Write("Done\r\n");
                                             Thread.Sleep(rand.Next(15, 50));
                                         }
-                                        Console.WriteLine("Format successful. Returning to (GLa)DOS");
+                                        Console.WriteLine("Format successful. Returning to DOS");
                                         break;
                                     case "c:":
                                         Console.WriteLine("WARNING! All data on non-removable disk C: will be erased!");
@@ -959,7 +967,7 @@ namespace borktorial
                                                 Console.WriteLine();
                                                 for (int i = 0; i < 1228800; i++)
                                                 {
-                                                    Console.Write($"Sector {i.ToString("D4")}/1228800...");
+                                                    Console.Write($"Sector {i.ToString("D7")}/1228800...");
                                                     Thread.Sleep(rand.Next(10, 50));
                                                     Console.Write("Done\r\n");
                                                     Thread.Sleep(rand.Next(5, 15));
@@ -1108,16 +1116,9 @@ namespace borktorial
                             {
                                 switch (commin[1])
                                 {
-                                    case "1-800-aperture":
-                                        Console.WriteLine("Dialing...");
-                                        Thread.Sleep(38400);
-                                        Console.WriteLine("Connected!");
-                                        Console.WriteLine("Bro why the fuck are you dialing me when you have a fucking GLaDOS link peripheral." +
-                                            "Is that you Wheatley? --GLaDOS");
-                                        break;
                                     case "65536.65536.301.201":
                                         Console.WriteLine("Dialing...");
-                                        PlayModemSound();  // <<--- *zzzzzBEEP-screeeeeech*
+                                        PlayModemSound();
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
@@ -1323,9 +1324,6 @@ namespace borktorial
                                 });
                             }
                             break;
-                        case "dbg::fuckinghell":
-                            Console.WriteLine(aperture.bktStf.pNrH("Yomomma. Inc announced a <nr0-255>kg increase in k<nr0-69> coefficient", rand));
-                            break;
                         default:
                             if (ballmerMode)
                             {
@@ -1454,7 +1452,7 @@ namespace borktorial
             Console.WriteLine("Technical-er details:\r\n");
             for (int i = 0; i < 8; i++)
             {
-                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608)}:DATA={rand.Next(0, 255)}");
+                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608):D8}:DATA={rand.Next(0, 255):D8}");
             }
             if (rand.Next(0, 1000000) == 420)
             {
@@ -1567,8 +1565,8 @@ namespace borktorial
                     if (rand.Next(0, 98) == 0) // 1 in 99
                     {
                         // Schonite dust collector
-                        schonite += rand.NextSingle();
-                        schonite -= rand.NextSingle();
+                        schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
+                        schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
                     }
                     if (rand.Next(0, 99) == 0)
                     {
@@ -1668,6 +1666,18 @@ namespace borktorial
         }
         public static string splashPick()
         {
+            if (specialDays.crimbus) 
+            {
+                return "Merry xmas";
+            }
+            if (specialDays.spooky)
+            {
+                return "Ooooo";
+            }
+            if (specialDays.aprilfool)
+            {
+                return "Your car is on fire.";
+            }
             var assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
 
@@ -1714,7 +1724,21 @@ namespace borktorial
             accu += (bktver.pch + pubver.pch) * 2;
             accu += (bktver.rv + pubver.rv);
             accu /= 4;
+            if (specialDays.seecretFriday)
+            {
+                accu += 1;
+            }
             return (int)accu;
         }
+    }
+    public static class specialDays
+    {
+        public static bool aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
+        public static bool crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
+        public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
+        public static bool seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
+        public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
+            DateTime.UtcNow.Day == 27 &&
+            DateTime.UtcNow.Month == 9;
     }
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wx/uQ18wnaQ=",
+  "dgSpecHash": "6tq0jUKTTOo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\osint2\\source\\repos\\borktorial\\aperture\\aperture.csproj",
+  "projectFilePath": "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.11\\microsoft.net.illink.tasks.9.0.11.nupkg.sha512"
   ],

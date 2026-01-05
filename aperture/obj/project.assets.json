@@ -75,11 +75,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\osint2\\source\\repos\\borktorial\\aperture\\aperture.csproj",
+      "projectUniqueName": "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj",
       "projectName": "aperture",
-      "projectPath": "C:\\Users\\osint2\\source\\repos\\borktorial\\aperture\\aperture.csproj",
+      "projectPath": "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj",
       "packagesPath": "C:\\Users\\osint2\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\osint2\\source\\repos\\borktorial\\aperture\\obj\\",
+      "outputPath": "C:\\Users\\osint2\\bktDevGit2\\aperture\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

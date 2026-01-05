@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "W6erZI/W9XU=",
+  "dgSpecHash": "GToYDtoTb5I=",
   "success": true,
-  "projectFilePath": "C:\\Users\\osint2\\source\\repos\\borktorial\\borktorial\\borktorial.csproj",
+  "projectFilePath": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.11\\microsoft.dotnet.ilcompiler.9.0.11.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.11\\microsoft.net.illink.tasks.9.0.11.nupkg.sha512",
