@@ -25,7 +25,7 @@ namespace borktorial
         static UInt16 ntdosversion = 0x4000;
         static UInt16 twversion = 0x1400;
         static UInt16 revision = 0x0000;
-        static (int maj, int min, int pch, char rv) bktver = (0, 5, 4, 'a');
+        static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'a');
         static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
         static bool jebconnect = false;
         static bool mConnected = false;
@@ -122,6 +122,7 @@ namespace borktorial
         static bool root = false;
         static void Main(string[] args)
         {
+            resetState();
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
             {
                 Thread.Sleep(int.Parse(args[1]));
@@ -411,16 +412,11 @@ namespace borktorial
                     timeLoop(cfg[0], cfg[1]);
                 });
                 timeThread.Start();
-                Thread asThrd = new Thread(() =>
-                {
-                    autosaver(cfg[2]);
-                });
                 if (!__5a85 || specialDays.aprilfool)
                 {
                     Thread __58858g = new Thread(__49291);
                     __58858g.Start();
                 }
-                asThrd.Start();
                 Thread msVarier = new Thread(interspeed);
                 msVarier.Start();
                 Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
@@ -898,8 +894,6 @@ namespace borktorial
                             Console.WriteLine("  drinkfood                 - The command line version of psychadelics");
                             Console.WriteLine("  dohashidoshai             - Print THE CODE");
                             Console.WriteLine("  satconnect                - Connect to satellite internet");
-                            Console.WriteLine("  save                      - Save state");
-                            Console.WriteLine("  load                      - Load state");
                             Console.WriteLine("  format                    - Format drive");
                             Console.WriteLine();
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
@@ -1031,72 +1025,6 @@ namespace borktorial
                         case "check_unknown_ints":
                             Console.WriteLine("[INT 5Fh] Link to Kerbal Space Center success!");
                             jebconnect = true;
-                            break;
-                        case "save":
-                            if (File.Exists("save.bin"))
-                            {
-                                File.Delete("save.bin");
-                            }
-                            File.AppendAllText("save.bin", $"bkt_{progversion}," +
-                                $"{ntdosversion}," +
-                                $"{twversion}," +
-                                $"{revision}," +
-                                $"{jebconnect}," +
-                                $"{mConnected}," +
-                                $"{mSpeed}," +
-                                $"{crshChance}," +
-                                $"{mToggle}," +
-                                $"{virused}," +
-                                $"{username}," +
-                                $"{password}," +
-                                $"{jebcounter}," +
-                                $"{munCycle}," +
-                                $"{tick}," +
-                                $"{wSeed}," +
-                                $"{root};");
-                            break;
-                        case "load":
-                            if (!File.Exists("save.bin"))
-                            {
-                                Console.WriteLine("No save file found.");
-                                break;
-                            }
-                            string raw = File.ReadAllText("save.bin");
-                            if (string.IsNullOrWhiteSpace(raw))
-                            {
-                                Console.WriteLine("Save file is empty or corrupted.");
-                                break;
-                            }
-
-                            string[] saveParts = raw.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-                            if (saveParts.Length < 15)
-                            {
-                                Console.WriteLine("Save file appears incomplete or corrupted.");
-                                break;
-                            }
-
-                            // Skip version portion (starts with bkt_####)
-                            if (!saveParts[0].StartsWith("bkt_"))
-                            {
-                                Console.WriteLine("Unknown save format.");
-                                break;
-                            }
-                            jebconnect = bool.Parse(saveParts[4]);
-                            mConnected = bool.Parse(saveParts[5]);
-                            mSpeed = int.Parse(saveParts[6]);
-                            crshChance = int.Parse(saveParts[7]);
-                            mToggle = bool.Parse(saveParts[8]);
-                            virused = bool.Parse(saveParts[9]);
-                            username = saveParts[10];
-                            password = saveParts[11];
-                            jebcounter = int.Parse(saveParts[12]);
-                            munCycle = int.Parse(saveParts[13]);
-                            tick = int.Parse(saveParts[14]);
-                            wSeed = float.Parse(saveParts[15]);
-                            root = bool.Parse(saveParts[16].Trim(';'));
-
-                            Console.WriteLine("Save loaded successfully!");
                             break;
                         case "jebmail":
                             Console.WriteLine("Jebmail e-mail client connecting...");
@@ -1589,34 +1517,6 @@ namespace borktorial
                 crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor))*(int)Math.Ceiling(sysstab);
             }
         }
-        static void autosaver(int d)
-        {
-            while (true)
-            {
-                Thread.Sleep(d * 1000);
-                if (File.Exists("save.bin"))
-                {
-                    File.Delete("save.bin");
-                }
-                File.AppendAllText("save.bin", $"bkt_{progversion}," +
-                    $"{ntdosversion}," +
-                    $"{twversion}," +
-                    $"{revision}," +
-                    $"{jebconnect}," +
-                    $"{mConnected}," +
-                    $"{mSpeed}," +
-                    $"{crshChance}," +
-                    $"{mToggle}," +
-                    $"{virused}," +
-                    $"{username}," +
-                    $"{password}," +
-                    $"{jebcounter}," +
-                    $"{munCycle}," +
-                    $"{tick}," +
-                    $"{wSeed}," +
-                    $"{root};");
-            }
-        }
         static void interspeed()
         {
             while (true)
@@ -1733,6 +1633,34 @@ namespace borktorial
                 accu += 1;
             }
             return (int)accu;
+        }
+        /// <summary>
+        /// Reset the state.
+        /// </summary>
+        static void resetState()
+        {
+            jebconnect = false;
+            mConnected = false;
+            forceNoBoot = false;
+            failIntaAlways = false;
+            mSpeed = 1800;
+            crshChance = 10000;
+            currNews.Clear();
+            mToggle = false;
+            virused = false;
+            ballmerMode = false;
+            gordonSummoned = File.Exists("GORDON"); // re-check
+            jebcounter = 0;
+            munCycle = 0;
+            tick = 0;
+            ninovium = 1;
+            schonite = 1;
+            sysstab = 1;
+            username = "";
+            password = "";
+            root = false;
+            jmtrigger = false;
+            wrand = new Random((int)wSeed * 1000);
         }
     }
     public static class specialDays
