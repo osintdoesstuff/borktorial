@@ -1,9 +1,9 @@
-﻿namespace borktorial
+﻿namespace aperture
 {
     /// <summary>
     /// Shitlog: A shitty log
     /// </summary>
-    internal class shitLog
+    public static class shitLog
     {
         public static void createEntry(string proc, string descr, logType lt)
         {

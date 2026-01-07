@@ -1,4 +1,6 @@
-﻿namespace borktorial
+﻿using aperture;
+
+namespace borktorial
 {
     internal class newsGen
     {
@@ -215,7 +217,7 @@
             }
 
             // Process number ranges
-            gNe = aperture.bktStf.pNrH(gNe, rand);
+            gNe = bktStf.pNrH(gNe, rand);
 
             return gNe;
         }

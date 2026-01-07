@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using aperture;
 
 namespace borktorial
 {
@@ -347,7 +348,7 @@ namespace borktorial
             gErrI = gErrI.Replace("<reg386>", rand.Next(0, int.MaxValue).ToString());
             gErrI = gErrI.Replace("<register>", registers[rand.Next(registers.Length)]);
             gErrI = gErrI.Replace("<verb>", verbs[rand.Next(verbs.Length)]);
-            gErrI = aperture.bktStf.pNrH(gErrI, rand);
+            gErrI = bktStf.pNrH(gErrI, rand);
             return [gErrI, processName];
         }
         /// <summary>

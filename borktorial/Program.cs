@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
+using aperture;
 
 namespace borktorial
 {
@@ -21,7 +22,7 @@ namespace borktorial
 			  || |-_\__   /
 			 ((_/`(____,-'
 			""";
-        static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'a');
+        static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'd');
         static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
         static bool jebconnect = false;
         static bool mConnected = false;
@@ -30,7 +31,6 @@ namespace borktorial
         static int mSpeed = 1800;
         static int crshChance = 10000;
         static List<string> currNews = new List<string>(5);
-        static bool mToggle = false;
         static bool virused = false;
         static bool ballmerMode = false;
         static bool __5a85 = OperatingSystem.IsWindows();
@@ -230,7 +230,7 @@ namespace borktorial
                 Thread.Sleep(5000);
             }
             // Verification (and me just testing the lib)
-            int[] avServer = aperture.bktLV.dallf();
+            int[] avServer = bktLV.dallf();
             int[] avClient = new int[8];
             int[] avCv1 = { 255, 127, 63, 31, 15, 7, 3, 2 };
             int[] avCv2 = { 1, 3, 7, 15, 31, 63, 127, 254 };
@@ -255,9 +255,7 @@ namespace borktorial
                 Console.WriteLine("  * The DLL is corrupted");
                 Console.WriteLine("  * Your copy was tampered with somehow");
                 Console.WriteLine("  * The program just hates you in particular\r\n");
-                File.AppendAllText($"{errGen.sf15(16, 4)}", $"[{System.DateTime.Now.ToLongDateString} " +
-                    $"{System.DateTime.Now.ToLongTimeString}]" +
-                    $"A critical system library was corrupted");
+                shitLog.createEntry("INTA", "The INTA verification failed.", logType.Err);
                 while (true)
                 {
                     Thread.Sleep(int.MaxValue);
@@ -1639,7 +1637,6 @@ namespace borktorial
             mSpeed = 1800;
             crshChance = 10000;
             currNews.Clear();
-            mToggle = false;
             virused = false;
             ballmerMode = false;
             gordonSummoned = File.Exists("GORDON"); // re-check
