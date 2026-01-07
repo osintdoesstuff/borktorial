@@ -1,7 +1,7 @@
 (c) Beta than Ever!
 (c) We have Liftoff!
 (c) 18-second prograde burn
-(c) Send all complaints to /Devices/Null!
+(c) Send all complaints to \Devices\Null!
 (c) Missingno!
 (c) IntelliSense!
 (u) NTISBTR.

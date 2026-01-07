@@ -38,7 +38,7 @@ obj\Release\net9.0-windows\win-x64\borktorial.dll
 -r:C:\Users\osint2\.nuget\packages\naudio.winmm\2.2.1\lib\netstandard2.0\NAudio.WinMM.dll
 -r:C:\Users\osint2\.nuget\packages\spectre.console\0.54.1-alpha.0.7\lib\net9.0\Spectre.Console.dll
 -r:C:\Users\osint2\.nuget\packages\system.windows.extensions\10.0.0-rc.2.25502.107\runtimes\win\lib\net9.0\System.Windows.Extensions.dll
--r:C:\Users\osint2\source\repos\borktorial\aperture\bin\Release\net9.0-windows\aperture.dll
+-r:C:\Users\osint2\bktDevGit2\aperture\bin\Release\net9.0-windows\aperture.dll
 -r:C:\Users\osint2\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.11\sdk\System.Private.CoreLib.dll
 -r:C:\Users\osint2\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.11\sdk\System.Private.DisabledReflection.dll
 -r:C:\Users\osint2\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.11\sdk\System.Private.Reflection.Execution.dll
