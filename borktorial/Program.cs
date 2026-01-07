@@ -21,10 +21,6 @@ namespace borktorial
 			  || |-_\__   /
 			 ((_/`(____,-'
 			""";
-        static UInt16 progversion = 0x1040;
-        static UInt16 ntdosversion = 0x4000;
-        static UInt16 twversion = 0x1400;
-        static UInt16 revision = 0x0000;
         static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'a');
         static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
         static bool jebconnect = false;
@@ -1103,9 +1099,6 @@ namespace borktorial
                                     ftlCrash((uint)rand.Next(), "BORK", "TESTY", true);
                                     break;
                             }
-                            break;
-                        case "version":
-                            Console.WriteLine($"{progversion}--{ntdosversion}--{twversion}--{revision}");
                             break;
                         case "time":
                             string[] ampams = ["AM", "PM"];
