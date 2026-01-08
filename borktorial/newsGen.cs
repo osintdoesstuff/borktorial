@@ -4,8 +4,8 @@ namespace borktorial
 {
     internal class newsGen
     {
-        static Random rand = new Random();
-        static string[] templates = [
+        static readonly Random rand = new();
+        static readonly string[] templates = [
             "<company> announced <product> today, expected to ship Q<nr1-4> <nr1995-1999>.",
             "<company> stock fell <nr5-40>% following <scandal>.",
             "<product> version <nr1-9>.<nr0-99> released with <feature> support.",
@@ -33,7 +33,7 @@ namespace borktorial
             "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor."
                 ];
 
-        static string[] companies = [
+        static readonly string[] companies = [
             "3DFX",
             "Creative Labs",
             "Microsoft",
@@ -53,7 +53,7 @@ namespace borktorial
             "Netscape"
                 ];
 
-        static string[] products = [
+        static readonly string[] products = [
             "Voodoo 3",
             "SoundBlaster AWE64",
             "Windows 98",
@@ -70,7 +70,7 @@ namespace borktorial
             "RedHat Linux 6.0"
                 ];
 
-        static string[] competitors = [
+        static readonly string[] competitors = [
             "S3",
             "Cyrix",
             "VIA",
@@ -79,7 +79,7 @@ namespace borktorial
             "Number Nine"
                 ];
 
-        static string[] competitor_products = [
+        static readonly string[] competitor_products = [
             "Savage 4",
             "Rage 128",
             "TNT",
@@ -88,7 +88,7 @@ namespace borktorial
             "K6-2"
                 ];
 
-        static string[] persons = [
+        static readonly string[] persons = [
             "John Carmack",
             "Bill Gates",
             "Steve Jobs",
@@ -99,7 +99,7 @@ namespace borktorial
             "Brian Hook"
                 ];
 
-        static string[] scandals = [
+        static readonly string[] scandals = [
             "driver stability issues",
             "Y2K compliance failures",
             "monopoly allegations",
@@ -108,7 +108,7 @@ namespace borktorial
             "patent infringement claims"
                 ];
 
-        static string[] problems = [
+        static readonly string[] problems = [
             "IRQ conflicts",
             "driver crashes",
             "overheating under load",
@@ -117,7 +117,7 @@ namespace borktorial
             "blue screens on NT 4.0"
                 ];
 
-        static string[] features = [
+        static readonly string[] features = [
             "hardware T&L",
             "32-bit color",
             "AGP 4X",
@@ -129,7 +129,7 @@ namespace borktorial
             "USB"
                 ];
 
-        static string[] technologies = [
+        static readonly string[] technologies = [
             "AGP",
             "USB",
             "FireWire",
@@ -138,7 +138,7 @@ namespace borktorial
             "UDMA/66"
                 ];
 
-        static string[] tech = [
+        static readonly string[] tech = [
             "PCI",
             "ISA",
             "EDO RAM",
@@ -146,7 +146,7 @@ namespace borktorial
             "IDE"
                 ];
 
-        static string[] events = [
+        static readonly string[] events = [
             "COMDEX",
             "E3",
             "CES",
@@ -154,7 +154,7 @@ namespace borktorial
             "LinuxWorld"
                 ];
 
-        static string[] industries = [
+        static readonly string[] industries = [
             "gaming",
             "3D graphics",
             "professional workstations",
@@ -162,7 +162,7 @@ namespace borktorial
             "multimedia"
                 ];
 
-        static string[] months = [
+        static readonly string[] months = [
             "January",
             "February",
             "March",
@@ -177,7 +177,7 @@ namespace borktorial
             "December"
                 ];
 
-        static string[] bbsnames = [
+        static readonly string[] bbsnames = [
             "Silicon Dreams",
             "Digital Dungeon",
             "The Neon Nights",

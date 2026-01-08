@@ -6,8 +6,8 @@
 
     public static class bktLV
     {
-        public static int[] puC { get; } = { 255, 127, 63, 31, 15, 7, 3, 2 };
-        public static int[] puD { get; } = { 1, 3, 7, 15, 31, 63, 127, 254 };
+        public static int[] puC { get; } = [255, 127, 63, 31, 15, 7, 3, 2];
+        public static int[] puD { get; } = [1, 3, 7, 15, 31, 63, 127, 254];
         public static int[] dallf() {
 
             int[] puE = new int[8];
@@ -25,10 +25,8 @@
             nrs = nrs.Replace(">", "");
             nrs = nrs.Replace("<", "");
             string[] nrA = nrs.Split("-");
-            int i0 = 0;
-            int i1 = 0;
-            i0 = int.Parse(nrA[0]);
-            i1 = int.Parse(nrA[1]);
+            int i0 = int.Parse(nrA[0]);
+            int i1 = int.Parse(nrA[1]);
             return [i0, i1];
         }
         public static string pNrH(string input, Random rand)

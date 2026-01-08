@@ -11,7 +11,7 @@ namespace borktorial
 {
     public static class Program
     {
-        static string cat = """
+        static readonly string cat = """
 			 |\\_,-~/
 			 / _  _ |    ,--.
 			(  @  @ )   / ,-'
@@ -30,12 +30,12 @@ namespace borktorial
         static bool failIntaAlways = false;
         static int mSpeed = 1800;
         static int crshChance = 10000;
-        static List<string> currNews = new List<string>(5);
+        static readonly List<string> currNews = new(5);
         static bool virused = false;
         static bool ballmerMode = false;
-        static bool __5a85 = OperatingSystem.IsWindows();
+        static readonly bool __5a85 = OperatingSystem.IsWindows();
         static bool gordonSummoned = File.Exists("GORDON");
-        public static Random rand = new Random();
+        public static Random rand = new();
         static Thread drdhtsr;
         static int jebcounter = 0;
         static int munCycle = 0;
@@ -43,17 +43,17 @@ namespace borktorial
         static double ninovium = 1;
         static double schonite = 1;
         static double sysstab = 1;
-        static ComputerInfo compi = new ComputerInfo();
-        static RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
+        static readonly ComputerInfo compi = new();
+        static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
         static int[] cfg = [5, 100000, 15];
-        static float wSeed = (
+        static readonly float wSeed = (
             (float)rand.Next(0, 6) +
             (float)rand.Next(0, 4) +
             (float)rand.Next(0, 10) +
             0 +
             0)/5;
-        public static Random wrand = new Random((int)wSeed * 1000);
-        static string[] lines = [
+        public static Random wrand = new((int)wSeed * 1000);
+        static readonly string[] lines = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
             "Wisely done, Mr. Freeman",
@@ -69,7 +69,7 @@ namespace borktorial
             "Science isn't about WHY. It's about WHY NOT. Why is so much of our science dangerous? Why not marry safe science if you love it so much. In fact, why not invent a special safety door that won't hit you on the butt on the way out, because you are fired.",
             "Dr. Freeman to Anomalous Materials test laboratory immediately."
             ];
-        static string[] linesAttr = [
+        static readonly string[] linesAttr = [
             "-Cave Johnson",
             "-G-man",
             "-Dr. Breen",
@@ -79,7 +79,7 @@ namespace borktorial
             "-Aristotle",
             "-Sun Tzu"
             ];
-        static string[] linesBooks = [
+        static readonly string[] linesBooks = [
             "How to fire test subjects",
             "How to ruin a science lab",
             "How to blame Black Mesa for issues you've had",
@@ -92,7 +92,7 @@ namespace borktorial
             "On the Art of Blowing Shit Up",
             "How to blame Aperture Science for issues you've had"
             ];
-        static String JEBMSG = """
+        static readonly String JEBMSG = """
 			Jebediah Kerman did not die
 			He survived the Shitfuck 15 mission.
 			Press K to celebrate.
@@ -102,7 +102,7 @@ namespace borktorial
 			Also, i like bacon-flavored Shapez. Maybe you could use that for a command?
 			""";
         static bool jmtrigger = false;
-        static string sysspecs = """
+        static readonly string sysspecs = """
 			CPU: Intel 486DX C-Step@50MHz
 			RAM: 640KB conventional, 384KB shadow, 15360KB extended
 			Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
@@ -193,9 +193,9 @@ namespace borktorial
                 }
                 if (args.Length >= 2 && string.Join(' ', args).Contains("HALTANDCATCHFIRE"))
                 {
-                    Exception inException1 = new Exception("A");
-                    Exception inException2 = new Exception("B", inException1);
-                    Exception inException3 = new Exception("C", inException2);
+                    Exception inException1 = new("A");
+                    Exception inException2 = new("B", inException1);
+                    Exception inException3 = new("C", inException2);
                     throw new Exception("D", inException3);
                 }
             }
@@ -232,8 +232,8 @@ namespace borktorial
             // Verification (and me just testing the lib)
             int[] avServer = bktLV.dallf();
             int[] avClient = new int[8];
-            int[] avCv1 = { 255, 127, 63, 31, 15, 7, 3, 2 };
-            int[] avCv2 = { 1, 3, 7, 15, 31, 63, 127, 254 };
+            int[] avCv1 = [255, 127, 63, 31, 15, 7, 3, 2];
+            int[] avCv2 = [1, 3, 7, 15, 31, 63, 127, 254];
             if (failIntaAlways)
             {
                 avCv1[0] = int.MaxValue;
@@ -401,17 +401,17 @@ namespace borktorial
                 {
                     root = true;
                 }
-                Thread timeThread = new Thread(() =>
+                Thread timeThread = new(() =>
                 {
                     timeLoop(cfg[0], cfg[1]);
                 });
                 timeThread.Start();
                 if (!__5a85 || specialDays.aprilfool)
                 {
-                    Thread __58858g = new Thread(__49291);
+                    Thread __58858g = new(__49291);
                     __58858g.Start();
                 }
-                Thread msVarier = new Thread(interspeed);
+                Thread msVarier = new(interspeed);
                 msVarier.Start();
                 Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
@@ -429,6 +429,11 @@ namespace borktorial
             {
                 Console.Write("C:\\TW8000\\>");
                 string rawCommin = Console.ReadLine();
+                if(rawCommin == null)
+                {
+                    // null guard
+                    rawCommin = "";
+                }
                 string[] commin = rawCommin.ToLower().Split(' ');
                 try
                 {
@@ -603,7 +608,7 @@ namespace borktorial
                                 });
                             break;
                         case "dbg::perftest::errgen_sf15":
-                            Stopwatch sow = new Stopwatch();
+                            Stopwatch sow = new();
                             sow.Start();
                             for (int i = 0; i < 1024; i++)
                             {
@@ -708,6 +713,10 @@ namespace borktorial
                         case "lotto":
                             Console.Write("Enter lotto numbers: ");
                             string userNums = Console.ReadLine().Replace("-", "").ToUpper();
+                            if(userNums == null)
+                            {
+                                userNums = "";
+                            }
                             string actual;
                             do
                             {
@@ -724,7 +733,7 @@ namespace borktorial
                         case "color":
                             if (commin.Length == 3)
                             {
-                                Dictionary<string, int> colors = new Dictionary<string, int>()
+                                Dictionary<string, int> colors = new()
                                 {
                                     {"0", 0},
                                     {"1", 1},
@@ -1117,7 +1126,7 @@ namespace borktorial
                                 Console.TreatControlCAsInput = true;
                                 if (Console.Title.Length < 32)
                                 {
-                                    Console.Title = Console.Title + (char)rand.Next(32, 256);
+                                    Console.Title += (char)rand.Next(32, 256);
                                 }
                                 if (rand.Next(0, 65536) == 0)
                                 {
@@ -1125,7 +1134,7 @@ namespace borktorial
                                 }
                             }
                         case "logtesto":
-                            Exception iex = new Exception("DOHASHIDOSHAI");
+                            Exception iex = new("DOHASHIDOSHAI");
                             throw new Exception("BORKYBORK", iex);
                         case "lambda":
                             DateTime rightFuckingNow = DateTime.Now;
@@ -1206,7 +1215,7 @@ namespace borktorial
                                 int newsSizeSum = 1;
                                 foreach (var item in currNews)
                                 {
-                                    newsSizeSum = newsSizeSum + item.Length;
+                                    newsSizeSum += item.Length;
                                 }
                                 Console.WriteLine("Fetching news...");
                                 if (!mConnected)
@@ -1229,7 +1238,7 @@ namespace borktorial
                                 break;
                             }
                         case "the_most_useless_command_ever":
-                            using (WebClient client = new WebClient())
+                            using (WebClient client = new())
                             {
                                 // i just host win95 RTM on floppy on my github pages, let's hope it doesn't instantly crash
                                 string win95Link = "https://osintdoesstuff.github.io/webodingus/win95.7z";
@@ -1262,6 +1271,12 @@ namespace borktorial
                     shitLog.createEntry("cmdhndlr", $"User entered command: {commin[0]}", logType.Info);
                 }
                 // MInor SPecialized EXception service
+                catch (NullReferenceException)
+                {
+                    Console.WriteLine("[Mispex] Null reference exception. Perhaps invalid input?");
+                    shitLog.createEntry("Mispex", $"Null ref exception", logType.Warn);
+                    continue; // It'll be all FIIINE i'm sure of it
+                }
                 catch (DivideByZeroException)
                 {
                     Console.WriteLine("[Mispex] Divide By Zero intercepted! X to throw.");
@@ -1302,7 +1317,7 @@ namespace borktorial
         }
         static string generateFile()
         {
-            string[] filenames = {
+            string[] filenames = [
                 "AUTOEXEC", "CONFIG", "COMMAND", "BOOTLOG", "SYSTEM", "HIMEM", "MSCDEX", "SMARTDRV",
                 "GORDON", "FREEMAN", "CROWBAR", "LAMBDA", "COMBINE", "CITADEL", "VORTIG", "HEADCRAB",
                 "KERBAL", "JOOL", "KERBIN", "MINOS", "DUNA", "EVE", "MOHO", "EELOO",
@@ -1319,8 +1334,8 @@ namespace borktorial
                 "LOWER", "CASE", "SPLIT", "ARRAY", "STRING", "PROPER", "EFFORT", "COST",
                 "BENEFIT", "JANK", "WORKS", "FINE", "MASTER", "PIECE", "SHORTCT", "PERFECT",
                 "ENOUGH", "THINK", "HANDLE", "ALTERN", "LIBERAT", "SATISF", "POINT", "ACKNOWLE"
-            };
-            string[] extensions = {
+            ];
+            string[] extensions = [
                 "exe", "dll", "sys", "ini", "cfg", "log", "tmp", "bak", "old", "new", "com", "bat", "cmd", "txt", "dat",
                 "cpp", "hpp", "js", "py", "cs", "vb", "php", "sql", "xml", "htm", "css", "jar", "war", "zip", "rar",
                 "jpg", "png", "gif", "bmp", "ico", "svg", "tga", "psd", "raw", "dds", "pcx", "tif", "webp", "jfif", "exr",
@@ -1333,7 +1348,7 @@ namespace borktorial
                 "btn", "red", "grn", "blu", "cyn", "mag", "yel", "blk", "wht", "tel", "w95", "dre", "unv", "exp", "ter",
                 "ech", "con", "dbg", "pat", "qck", "drt", "lgc", "isu", "low", "cas", "spl", "arr", "str", "prp", "eff",
                 "cos", "ben", "jnk", "wrk", "fin", "mas", "pce", "sho", "per", "ack", "lib", "sat", "poi"
-            };
+            ];
             string fn = filenames[rand.Next(0, (filenames.Length - 1))];
             string ext = extensions[rand.Next(0, (extensions.Length - 1))];
             string fullFn = $"{fn}.{ext}";
@@ -1474,7 +1489,11 @@ namespace borktorial
                 }
                 if (entropyAcc % 10 == 0 && rand.Next(0, 10) == 0)
                 {
-                    entropyAcc = entropyAcc - rand.Next(0, 10);
+                    entropyAcc -= rand.Next(0, 10);
+                }
+                if (tick % (tl*60000) == 0)
+                {
+                    specialDays.update();
                 }
                 if (tick == int.MaxValue - 1)
                 {
@@ -1514,8 +1533,8 @@ namespace borktorial
             {
                 if (mConnected == true)
                 {
-                    mSpeed = mSpeed + rand.Next(-((int)mSpeed/4), ((int)mSpeed/4));
-                    mSpeed = mSpeed - rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                    mSpeed += rand.Next(-((int)mSpeed/4), ((int)mSpeed/4));
+                    mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
                     Thread.Sleep(rand.Next(650, 6000));
                     if(mSpeed <= 0)
                     {
@@ -1662,5 +1681,15 @@ namespace borktorial
         public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
             DateTime.UtcNow.Day == 27 &&
             DateTime.UtcNow.Month == 9;
+        public static void update()
+        {
+            aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
+            crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
+            spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
+            seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
+            bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
+                DateTime.UtcNow.Day == 27 &&
+                DateTime.UtcNow.Month == 9;
+        }
     }
 }

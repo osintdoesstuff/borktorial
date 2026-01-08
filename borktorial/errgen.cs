@@ -5,8 +5,8 @@ namespace borktorial
 {
     internal class errGen
     {
-        static Random rand = new Random();
-        static string[] templates = [
+        static readonly Random rand = new();
+        static readonly string[] templates = [
             "<animal>_BROKE_CONTAINMENT<notem>",
             "CRITICAL_PROCESS_FAILED<notem>",
             "SCP-<scpnum>_BROKE_CONTAINMENT<notem>",
@@ -35,7 +35,7 @@ namespace borktorial
             "<object>_<verb>_<subject><notem>",
             "<object>_<verb>_<object><notem>"
             ];
-        static string[] subjects =
+        static readonly string[] subjects =
         [
             "GLaDOS",
             "JEBEDIAH_KERMAN",
@@ -72,7 +72,7 @@ namespace borktorial
             "COFFEE_MAKER",
             "INTERNET_ARCHIVIST"
         ];
-        static string[] objects =
+        static readonly string[] objects =
         [
             "MEMORY_BANK",
             "GRAVITY_CORE",
@@ -110,7 +110,7 @@ namespace borktorial
             "SHRIMP_POOL",
             "CAPYBARA_DEN"
         ];
-        static string[] kerbals = [
+        static readonly string[] kerbals = [
             "JEBEDIAH",
             "BILL",
             "BOB",
@@ -131,7 +131,7 @@ namespace borktorial
             "KIRRIM",
             "KURT"
             ];
-        static string[] verbs = [
+        static readonly string[] verbs = [
             "ATE",
             "ENDED",
             "CREATED",
@@ -155,7 +155,7 @@ namespace borktorial
             "REANIMATED",
             "UNINSTALLED"
             ];
-        static string[] animals = [
+        static readonly string[] animals = [
             "TIGER",
             "DOLPHIN",
             "CAPYBARA",
@@ -187,7 +187,7 @@ namespace borktorial
             "OTTER",
             "MEGALODON"
             ];
-        static string[] processNames = [
+        static readonly string[] processNames = [
             "NTOSKRNL",
             "SVCHOST",
             "CMDSHELL",
@@ -286,7 +286,7 @@ namespace borktorial
             "NTVDM",
             "HL3"
             ];
-        static string[] notem = [
+        static readonly string[] notem = [
             // filler to make it more unlikely
             "",
             "",
@@ -317,12 +317,12 @@ namespace borktorial
             "_IRQT", // IRQ triggered error
             "_XSW" // External software caused error
             ];
-        static char[] letters = "QWERTYUIOPASDFGHJKLZXCVBNM".ToCharArray();
-        static char[] lowletters = "qwertyuiopasdfghjklzxcvbnm".ToCharArray();
-        static string[] registers = ["EAX", "EBX", "ECX", "EDX", "ESP", "SS", "ES", "DS", "CS"];
-        static char[] nibbles = "1234567890".ToCharArray();
-        static char[] hexLetters = "ABCDEF".ToCharArray();
-        static char[] hexDigits = "1234567890ABCDEF".ToCharArray();
+        static readonly char[] letters = "QWERTYUIOPASDFGHJKLZXCVBNM".ToCharArray();
+        static readonly char[] lowletters = "qwertyuiopasdfghjklzxcvbnm".ToCharArray();
+        static readonly string[] registers = ["EAX", "EBX", "ECX", "EDX", "ESP", "SS", "ES", "DS", "CS"];
+        static readonly char[] nibbles = "1234567890".ToCharArray();
+        static readonly char[] hexLetters = "ABCDEF".ToCharArray();
+        static readonly char[] hexDigits = "1234567890ABCDEF".ToCharArray();
         // we codenamed this one the Aperture Science Templated System Potential Failure Detection and Generation System(TM)
         public static string[] Generate()
         {
