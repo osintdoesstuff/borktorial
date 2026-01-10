@@ -9,20 +9,23 @@
 	  <PublishTrimmed>true</PublishTrimmed>
 	  <!-- Optional, trims unused code -->
 	  <InvariantGlobalization>true</InvariantGlobalization>
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <!-- Optional, smaller binary -->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>True</Optimize>
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="modem.mp3" />
+    <None Remove="rsrc\rd_canyon.wav" />
     <None Remove="rsrc\splashes.txt" />
     <None Remove="SECRETS\eula.txt" />
     <None Remove="SECRETS\modem.wav" />
@@ -31,9 +34,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="rsrc\rd_canyon.wav" />
     <EmbeddedResource Include="rsrc\splashes.txt" />
     <EmbeddedResource Include="SECRETS\eula.txt" />
-    <EmbeddedResource Include="SECRETS\modem.wav" />
+    <EmbeddedResource Include="rsrc\modem.wav" />
     <EmbeddedResource Include="SECRETS\screenshot16.png" />
     <EmbeddedResource Include="SECRETS\thisisabucket.7z" />
   </ItemGroup>

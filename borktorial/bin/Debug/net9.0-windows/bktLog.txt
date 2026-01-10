@@ -164,3 +164,8 @@
 11/25/2025 18:51:58 info: [cmdhndlr]: User entered command: 
 11/25/2025 18:51:58 info: [cmdhndlr]: User entered command: 
 11/25/2025 18:52:00 info: [cmdhndlr]: User entered command: eat
+01/10/2026 13:54:11 warn: [Mispex]: Null ref exception.    at borktorial.Program.sf59(String code)
+   at borktorial.Program.Main(String[] args)
+01/10/2026 13:56:19 warn: [Mispex]: Null ref exception.    at borktorial.Program.sf59(String code) in C:\Users\osint2\bktDevGit2\borktorial\Program.cs:line 1438
+   at borktorial.Program.Main(String[] args) in C:\Users\osint2\bktDevGit2\borktorial\Program.cs:line 1232
+01/10/2026 13:56:27 info: [cmdhndlr]: User entered command: ffkkf

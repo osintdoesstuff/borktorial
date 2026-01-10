@@ -6,6 +6,7 @@ using System.Reflection;
 using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
+using System.Media;
 
 namespace borktorial
 {
@@ -43,6 +44,7 @@ namespace borktorial
         static double ninovium = 1;
         static double schonite = 1;
         static double sysstab = 1;
+        static bool radioStopped = true;
         static readonly ComputerInfo compi = new();
         static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
         static int[] cfg = [5, 100000, 15];
@@ -92,7 +94,7 @@ namespace borktorial
             "On the Art of Blowing Shit Up",
             "How to blame Aperture Science for issues you've had"
             ];
-        static readonly String JEBMSG = """
+        static readonly string JEBMSG = """
 			Jebediah Kerman did not die
 			He survived the Shitfuck 15 mission.
 			Press K to celebrate.
@@ -1096,17 +1098,6 @@ namespace borktorial
                             break;
                         case "":
                             break;
-                        case "debug_crash":
-                            switch (commin[1])
-                            {
-                                case "true":
-                                    ftlCrash((uint)rand.Next(), "UNKNOWN_ERROR", "ERRHNDLR.SYS", false);
-                                    break;
-                                case "false":
-                                    ftlCrash((uint)rand.Next(), "BORK", "TESTY", true);
-                                    break;
-                            }
-                            break;
                         case "time":
                             string[] ampams = ["AM", "PM"];
                             string ampam = ampams[rand.Next(0, 2)];
@@ -1237,6 +1228,15 @@ namespace borktorial
                                 shitLog.createEntry("[NEWS]", $"{ex.Message} {ex.StackTrace}", logType.Err);
                                 break;
                             }
+                        case "radio":
+                            sf59("msc_canyon");
+                            Thread rLoop = new(() =>
+                            {
+                                radioLoop("rd0.wav");
+                            });
+                            rLoop.Start();
+                            radioStopped = !radioStopped;
+                            break;
                         case "the_most_useless_command_ever":
                             using (WebClient client = new())
                             {
@@ -1271,16 +1271,16 @@ namespace borktorial
                     shitLog.createEntry("cmdhndlr", $"User entered command: {commin[0]}", logType.Info);
                 }
                 // MInor SPecialized EXception service
-                catch (NullReferenceException)
+                catch (NullReferenceException ex)
                 {
                     Console.WriteLine("[Mispex] Null reference exception. Perhaps invalid input?");
-                    shitLog.createEntry("Mispex", $"Null ref exception", logType.Warn);
+                    shitLog.createEntry("Mispex", $"Null ref exception. {ex.StackTrace}", logType.Warn);
                     continue; // It'll be all FIIINE i'm sure of it
                 }
-                catch (DivideByZeroException)
+                catch (DivideByZeroException ex)
                 {
                     Console.WriteLine("[Mispex] Divide By Zero intercepted! X to throw.");
-                    shitLog.createEntry("Mispex", $"Division by zero!", logType.Err);
+                    shitLog.createEntry("Mispex", $"Division by zero! {ex.StackTrace}", logType.Err);
                     ConsoleKey dbzEKy = Console.ReadKey(true).Key;
                     switch (dbzEKy)
                     {
@@ -1291,7 +1291,7 @@ namespace borktorial
                 // General hndlr
                 catch (Exception ex)
                 {
-                    shitLog.createEntry("EXCPTHN", $"[{System.DateTime.Now}] {ex.Message} - {ex.StackTrace}\r\n", logType.Err);
+                    shitLog.createEntry("EXCPTHN", $"ERROR: {ex.Message} - {ex.StackTrace}\r\n", logType.Err);
                     Console.WriteLine("A fatal error has occurred and NT-DOS cannot continue");
                     Console.WriteLine("This error has been logged\r\n");
                     Console.WriteLine(ex);
@@ -1426,7 +1426,8 @@ namespace borktorial
                 ["waluigi"] = ("borktorial.SECRETS.screenshot16.png", "the mun awaits.png"),
                 ["igiulaw"] = ("borktorial.SECRETS.eula.txt", "eula.txt"),
                 ["luigi"] = ("borktorial.SECRETS.thisisabucket.7z",
-                             "THIS ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z")
+                             "THIS ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
+                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
             };
 
             if (!secrets.TryGetValue(code, out var secret))
@@ -1437,12 +1438,14 @@ namespace borktorial
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             File.WriteAllBytes(secret.filename, ms.ToArray());
+            if (!code.StartsWith("msc_"))
+            {
+                File.SetCreationTime(secret.filename, DateTime.UnixEpoch);
+                File.SetLastWriteTime(secret.filename, DateTime.UnixEpoch);
+                File.SetLastAccessTime(secret.filename, DateTime.UnixEpoch);
 
-            File.SetCreationTime(secret.filename, DateTime.UnixEpoch);
-            File.SetLastWriteTime(secret.filename, DateTime.UnixEpoch);
-            File.SetLastAccessTime(secret.filename, DateTime.UnixEpoch);
-
-            Environment.Exit(69); // nice
+                Environment.Exit(69); // nice
+            }
         }
         static void mp3PlayLoop(string path)
         {
@@ -1458,6 +1461,14 @@ namespace borktorial
                         Thread.Sleep(100);
                     }
                 }
+            }
+        }
+        static void radioLoop(string fn)
+        {
+            SoundPlayer radio1 = new SoundPlayer(fn);
+            while (!radioStopped)
+            {
+                radio1.PlaySync();
             }
         }
         static void timeLoop(int tl, int mcl)
@@ -1575,7 +1586,7 @@ namespace borktorial
         public static void PlayModemSound()
         {
             using var stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("borktorial.SECRETS.modem.wav");
+                .GetManifestResourceStream("borktorial.rsrc.modem.wav");
             new System.Media.SoundPlayer(stream).PlaySync();
         }
         public static string splashPick()
