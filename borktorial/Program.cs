@@ -12,7 +12,7 @@ namespace borktorial
 {
     public static class Program
     {
-        static readonly string cat = """
+        public static readonly string cat = """
 			 |\\_,-~/
 			 / _  _ |    ,--.
 			(  @  @ )   / ,-'
@@ -23,39 +23,39 @@ namespace borktorial
 			  || |-_\__   /
 			 ((_/`(____,-'
 			""";
-        static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'd');
-        static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
-        static bool jebconnect = false;
-        static bool mConnected = false;
-        static bool forceNoBoot = false;
-        static bool failIntaAlways = false;
-        static int mSpeed = 1800;
-        static int crshChance = 10000;
-        static readonly List<string> currNews = new(5);
-        static bool virused = false;
-        static bool ballmerMode = false;
-        static readonly bool __5a85 = OperatingSystem.IsWindows();
-        static bool gordonSummoned = File.Exists("GORDON");
+        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'd');
+        public static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
+        public static bool jebconnect = false;
+        public static bool mConnected = false;
+        public static bool forceNoBoot = false;
+        public static bool failIntaAlways = false;
+        public static int mSpeed = 1800;
+        public static int crshChance = 10000;
+        public static readonly List<string> currNews = new(5);
+        public static bool virused = false;
+        public static bool ballmerMode = false;
+        public static readonly bool __5a85 = OperatingSystem.IsWindows();
+        public static bool gordonSummoned = File.Exists("GORDON");
         public static Random rand = new();
-        static Thread drdhtsr;
-        static int jebcounter = 0;
-        static int munCycle = 0;
-        static int tick = 0;
-        static double ninovium = 1;
-        static double schonite = 1;
-        static double sysstab = 1;
-        static bool radioStopped = true;
-        static readonly ComputerInfo compi = new();
-        static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
-        static int[] cfg = [5, 100000, 15];
-        static readonly float wSeed = (
+        public static Thread drdhtsr;
+        public static int jebcounter = 0;
+        public static int munCycle = 0;
+        public static int tick = 0;
+        public static double ninovium = 1;
+        public static double schonite = 1;
+        public static double sysstab = 1;
+        public static bool radioStopped = true;
+        public static readonly ComputerInfo compi = new();
+        public static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
+        public static int[] cfg = [5, 100000, 15];
+        public static readonly float wSeed = (
             (float)rand.Next(0, 6) +
             (float)rand.Next(0, 4) +
             (float)rand.Next(0, 10) +
             0 +
             0)/5;
         public static Random wrand = new((int)wSeed * 1000);
-        static readonly string[] lines = [
+        public static readonly string[] lines = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
             "Wisely done, Mr. Freeman",
@@ -71,7 +71,7 @@ namespace borktorial
             "Science isn't about WHY. It's about WHY NOT. Why is so much of our science dangerous? Why not marry safe science if you love it so much. In fact, why not invent a special safety door that won't hit you on the butt on the way out, because you are fired.",
             "Dr. Freeman to Anomalous Materials test laboratory immediately."
             ];
-        static readonly string[] linesAttr = [
+        public static readonly string[] linesAttr = [
             "-Cave Johnson",
             "-G-man",
             "-Dr. Breen",
@@ -81,7 +81,7 @@ namespace borktorial
             "-Aristotle",
             "-Sun Tzu"
             ];
-        static readonly string[] linesBooks = [
+        public static readonly string[] linesBooks = [
             "How to fire test subjects",
             "How to ruin a science lab",
             "How to blame Black Mesa for issues you've had",
@@ -94,7 +94,7 @@ namespace borktorial
             "On the Art of Blowing Shit Up",
             "How to blame Aperture Science for issues you've had"
             ];
-        static readonly string JEBMSG = """
+        public static readonly string JEBMSG = """
 			Jebediah Kerman did not die
 			He survived the Shitfuck 15 mission.
 			Press K to celebrate.
@@ -103,8 +103,8 @@ namespace borktorial
 
 			Also, i like bacon-flavored Shapez. Maybe you could use that for a command?
 			""";
-        static bool jmtrigger = false;
-        static readonly string sysspecs = """
+        public static bool jmtrigger = false;
+        public static readonly string sysspecs = """
 			CPU: Intel 486DX C-Step@50MHz
 			RAM: 640KB conventional, 384KB shadow, 15360KB extended
 			Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
@@ -115,9 +115,9 @@ namespace borktorial
 			Network: Connected
 			Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
 			""";
-        static string username = "";
-        static string password = "";
-        static bool root = false;
+        public static string username = "";
+        public static string password = "";
+        public static bool root = false;
         public static void publicMain(string[] mArgs)
         {
             Main(mArgs);
