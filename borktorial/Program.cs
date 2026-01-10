@@ -118,6 +118,10 @@ namespace borktorial
         static string username = "";
         static string password = "";
         static bool root = false;
+        public static void publicMain(string[] mArgs)
+        {
+            Main(mArgs);
+        }
         static void Main(string[] args)
         {
             resetState();
@@ -257,11 +261,10 @@ namespace borktorial
                 Console.WriteLine("  * The DLL is corrupted");
                 Console.WriteLine("  * Your copy was tampered with somehow");
                 Console.WriteLine("  * The program just hates you in particular\r\n");
+                Console.WriteLine("Retry in 10 seconds.");
                 shitLog.createEntry("INTA", "The INTA verification failed.", logType.Err);
-                while (true)
-                {
-                    Thread.Sleep(int.MaxValue);
-                }
+                Thread.Sleep(10000);
+                publicMain([]);
             }
             if (!forceNoBoot)
             {
@@ -539,7 +542,7 @@ namespace borktorial
                         case "reboot":
                             if (virused == false)
                             {
-                                Main(["vs", "49"]);
+                                publicMain(["vs", "49"]);
                             }
                             if (virused == true)
                             {
@@ -973,7 +976,7 @@ namespace borktorial
                                                     if (i > 485824)
                                                     {
                                                         File.AppendAllText($"temp_fcBA39-FA31.bin", errGen.sf15(8192, 0));
-                                                        Main(["BABOON", "LAGOON"]);
+                                                        publicMain(["BABOON", "LAGOON"]);
                                                     }
                                                 }
                                                 break;
@@ -1404,7 +1407,7 @@ namespace borktorial
                 // Russian Rolutte. With a if-else statement
                 if (rcvrable2 == 0)
                 {
-                    Main(["vs", "49"]);
+                    publicMain(["vs", "49"]);
                 }
                 else
                 {
@@ -1617,8 +1620,8 @@ namespace borktorial
             var splashes = lines
                 .Select(line => line switch
                 {
-                    _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 10),
-                    _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 5),
+                    _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 4),
+                    _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 2),
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
                     _ => (Text: line, Weight: 1) // fallback for untagged lines
                 })

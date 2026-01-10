@@ -254,3 +254,5 @@ Actual value was -86000. -    at System.ArgumentOutOfRangeException.ThrowLess[T]
 01/10/2026 14:16:16 info: [cmdhndlr]: User entered command: radio
 01/10/2026 14:16:20 info: [cmdhndlr]: User entered command: radio
 01/10/2026 14:18:17 info: [cmdhndlr]: User entered command: help
+01/10/2026 14:33:05 err: [INTA]: The INTA verification failed.
+01/10/2026 14:33:15 err: [INTA]: The INTA verification failed.
