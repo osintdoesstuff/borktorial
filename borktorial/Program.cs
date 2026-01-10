@@ -430,7 +430,7 @@ namespace borktorial
             // initialize news feed
             for (int i = 0; i < 15; i++)
             {
-                AddNews(newsGen.Generate());
+                addNews(newsGen.Generate());
             }
             while (true)
             {
@@ -995,42 +995,13 @@ namespace borktorial
                             Console.WriteLine(sysspecs);
                             break;
                         case "cat":
-                            int consoleWidth = Console.WindowWidth;
-                            string[] catLines = cat.Split(Environment.NewLine);
-
-                            int catWidth = 0;
-                            foreach (var line in catLines)
-                                if (line.Length > catWidth)
-                                    catWidth = line.Length;
-
-                            int startPos = consoleWidth - catWidth;
-                            int endPos = 0;
-
-                            for (int pos = startPos; pos >= endPos; pos--)
-                            {
-                                for (int y = 0; y < catLines.Length; y++)
-                                {
-                                    Console.SetCursorPosition(Math.Max(pos, 0), y);
-                                    string lineToPrint = catLines[y];
-
-                                    if (pos < 0)
-                                    {
-                                        lineToPrint = lineToPrint.Substring(-pos);
-                                    }
-
-                                    Console.Write(lineToPrint);
-                                }
-
-                                Thread.Sleep(100); // adjust speed
-
-                                for (int y = 0; y < catLines.Length; y++)
-                                {
-                                    Console.SetCursorPosition(0, y);
-                                    Console.Write(new string(' ', consoleWidth));
-                                }
-                            }
-                            Thread.Sleep(3500);
-                            Console.Clear();
+                            catGoBrr(100);
+                            break;
+                        case "slowcat":
+                            catGoBrr(200);
+                            break;
+                        case "fastcat":
+                            catGoBrr(50);
                             break;
                         case "check_unknown_ints":
                             Console.WriteLine("[INT 5Fh] Link to Kerbal Space Center success!");
@@ -1519,7 +1490,7 @@ namespace borktorial
                    DateTime.UtcNow.Second != lastNewsSecond &&
                    rand.Next(0, 5) == 0)
                 {
-                    AddNews(newsGen.Generate());
+                    addNews(newsGen.Generate());
                     if (rand.Next(0, 98) == 0) // 1 in 99
                     {
                         // Schonite dust collector
@@ -1579,7 +1550,7 @@ namespace borktorial
                 Console.ResetColor();
             }
         }
-        public static void AddNews(string news)
+        public static void addNews(string news)
         {
             currNews.Add(news);
 
@@ -1659,6 +1630,45 @@ namespace borktorial
                 accu += 1;
             }
             return (int)accu;
+        }
+        static void catGoBrr(int delay = 100)
+        {
+            int consoleWidth = Console.WindowWidth;
+            string[] catLines = cat.Split(Environment.NewLine);
+
+            int catWidth = 0;
+            foreach (var line in catLines)
+                if (line.Length > catWidth)
+                    catWidth = line.Length;
+
+            int startPos = consoleWidth - catWidth;
+            int endPos = 0;
+
+            for (int pos = startPos; pos >= endPos; pos--)
+            {
+                for (int y = 0; y < catLines.Length; y++)
+                {
+                    Console.SetCursorPosition(Math.Max(pos, 0), y);
+                    string lineToPrint = catLines[y];
+
+                    if (pos < 0)
+                    {
+                        lineToPrint = lineToPrint.Substring(-pos);
+                    }
+
+                    Console.Write(lineToPrint);
+                }
+                Thread.Sleep(delay);
+
+                for (int y = 0; y < catLines.Length; y++)
+                {
+                    Console.SetCursorPosition(0, y);
+                    Console.Write(new string(' ', consoleWidth));
+                }
+            }
+            Thread.Sleep(3500);
+            Console.Clear();
+            return;
         }
         /// <summary>
         /// Reset the state.
