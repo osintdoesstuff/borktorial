@@ -7,6 +7,7 @@ using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
 using System.Media;
+using System.Runtime.InteropServices;
 
 namespace borktorial
 {
@@ -120,11 +121,12 @@ namespace borktorial
         public static bool root = false;
         public static void publicMain(string[] mArgs)
         {
+            resetState();
             Main(mArgs);
         }
         static void Main(string[] args)
         {
-            resetState();
+            Debug.WriteLine("tada!");
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
             {
                 Thread.Sleep(int.Parse(args[1]));
