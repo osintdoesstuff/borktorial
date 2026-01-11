@@ -7,6 +7,8 @@ using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
 using System.Media;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace borktorial
 {
@@ -299,19 +301,22 @@ namespace borktorial
                 Console.Write("Primary Master...");
                 Thread.Sleep(500);
                 Console.Write("Landgate Xtreme ATA Drive [4096MB]\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Primary Slave...");
                 Thread.Sleep(500);
                 Console.Write("Pholops D.I.C.K 8x XD-ROM drive\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Master...");
                 Thread.Sleep(500);
                 Console.Write("None\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Slave...");
                 Thread.Sleep(500);
                 Console.Write("None\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.WriteLine("Booting from HDD...");
                 if (File.Exists("temp_fcBA39-FA31.bin"))
                 {
-                    File.Encrypt("temp_fcBA39-FA31.bin");
                     formatkey.SetValue("algl", "waluigi");
                     Console.Clear();
                     Console.WriteLine("\r\nNo boot device found.");
