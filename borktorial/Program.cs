@@ -444,12 +444,7 @@ namespace borktorial
             while (true)
             {
                 Console.Write("C:\\TW8000\\>");
-                string rawCommin = Console.ReadLine();
-                if(rawCommin == null)
-                {
-                    // null guard
-                    rawCommin = "";
-                }
+                string rawCommin = Console.ReadLine() ?? "";
                 string[] commin = rawCommin.ToLower().Split(' ');
                 try
                 {
@@ -595,6 +590,9 @@ namespace borktorial
                                 break;
                             }
                             break;
+                        case "win":
+                            Console.WriteLine("Failed to load VMM32.VXD. You must reinstall Windows");
+                            break;
                         case "dbg::spectre::console":
                             AnsiConsole.MarkupLine("[blue][bold]Test![/][/]");
                             AnsiConsole.Progress()
@@ -727,11 +725,7 @@ namespace borktorial
                             break;
                         case "lotto":
                             Console.Write("Enter lotto numbers: ");
-                            string userNums = Console.ReadLine().Replace("-", "").ToUpper();
-                            if(userNums == null)
-                            {
-                                userNums = "";
-                            }
+                            string userNums = Console.ReadLine().Replace("-", "").ToUpper() ?? "";
                             string actual;
                             do
                             {
@@ -742,7 +736,7 @@ namespace borktorial
                         case "shutdown":
                             Environment.Exit(0);
                             break; // this is unreachable code but the CSC needs it to compile
-                        case "test-dbg::toggle_virused":
+                        case "dbg::virusedToggle":
                             virused = !virused;
                             break;
                         case "color":

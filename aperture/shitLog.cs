@@ -24,6 +24,6 @@
         Null,
         Info,
         Warn,
-        Err,
+        Err
     }
 }
