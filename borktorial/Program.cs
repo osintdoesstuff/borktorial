@@ -1599,6 +1599,7 @@ namespace borktorial
                     _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 4),
                     _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 2),
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
+                    _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
                     _ => (Text: line, Weight: 1) // fallback for untagged lines
                 })
                 .ToList();
