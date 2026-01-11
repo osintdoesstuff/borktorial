@@ -7,7 +7,6 @@ using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
 using System.Media;
-using System.Runtime.InteropServices;
 
 namespace borktorial
 {
@@ -31,6 +30,7 @@ namespace borktorial
         public static bool forceNoBoot = false;
         public static bool failIntaAlways = false;
         public static int mSpeed = 1800;
+        public static mConnectTypes mCt = mConnectTypes.Null;
         public static int crshChance = 10000;
         public static readonly List<string> currNews = new(5);
         public static bool virused = false;
@@ -126,6 +126,8 @@ namespace borktorial
         }
         static void Main(string[] args)
         {
+            Stopwatch bootSw = new Stopwatch();
+            bootSw.Start();
             Debug.WriteLine("tada!");
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
             {
@@ -186,6 +188,7 @@ namespace borktorial
                 {
                     mSpeed = 8192;
                     mConnected = true;
+                    mCt = mConnectTypes.dbg;
                 }
                 if (args.Length >= 2 && string.Join(' ', args).Contains("NOBMPAR"))
                 {
@@ -276,6 +279,8 @@ namespace borktorial
                 {
                     Console.Title = $"broktorial: {splashPick()}";
                 }
+                bootSw.Stop();
+                shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.WriteLine($"GLaBIOS 3.14 Revision C (build {getBuildNum()})");
                 Console.WriteLine();
                 Console.Write("Memory test...");
@@ -348,42 +353,42 @@ namespace borktorial
                 Thread.Sleep(1250);
                 string[] loadMsgs = [
                     "Processing...",
-                "Doing big math...",
-                "Importing processing framework...",
-                "Waiting for HL3...",
-                "Stealing gmod loading screen ideas...",
-                "Wasting time...",
-                "Doing nothing...",
-                "Playing KSP...",
-                "i use WinNT btw",
-                "Wasting your time...",
-                "Loading...",
-                "Welcome to Zombo.com",
-                "Stealing Gordon Freeman's crowbar...",
-                "Participating in the 7-hour war...",
-                "Getting colonized by the British...",
-                "Doing small math...",
-                "EMERGENCY: THERE IS A FIRE AT THE WALRUS FACTORY!!!",
-                "Settling Arguement of Periapsis...",
-                "Merging into `master`...",
-                "Sending Val to Vall...",
-                "Doing important things...",
-                "Slapping 'AI' onto everything...",
-                "Trick XOR treating...",
-                "Piss.",
-                "Coupling engines...",
-                "Decoupling decoupler...",
-                "Installing KSRSS...",
-                "Calculating friction coefficient of sand...",
-                "Calling all stations...",
-                "Releasing HL3...",
-                "Installing Aperture Science Advanced Multi-Iteration Addition Processors (known in some circles as 'multipliers')",
-                "Discarding Zen of Python...",
-                "Breathing oxygen...",
-                "Segmentation fault.",
-                "Insulting Dr. Breen...",
-                "This is the 35th loading message",
-                "Re-entering atmosphere..."
+                    "Doing big math...",
+                    "Importing processing framework...",
+                    "Waiting for HL3...",
+                    "Stealing gmod loading screen ideas...",
+                    "Wasting time...",
+                    "Doing nothing...",
+                    "Playing KSP...",
+                    "i use WinNT btw",
+                    "Wasting your time...",
+                    "Loading...",
+                    "Welcome to Zombo.com",
+                    "Stealing Gordon Freeman's crowbar...",
+                    "Participating in the 7-hour war...",
+                    "Getting colonized by the British...",
+                    "Doing small math...",
+                    "EMERGENCY: THERE IS A FIRE AT THE WALRUS FACTORY!!!",
+                    "Settling Arguement of Periapsis...",
+                    "Merging into `master`...",
+                    "Sending Val to Vall...",
+                    "Doing important things...",
+                    "Slapping 'AI' onto everything...",
+                    "Trick XOR treating...",
+                    "Piss.",
+                    "Coupling engines...",
+                    "Decoupling decoupler...",
+                    "Installing KSRSS...",
+                    "Calculating friction coefficient of sand...",
+                    "Calling all stations...",
+                    "Releasing HL3...",
+                    "Installing Aperture Science Advanced Multi-Iteration Addition Processors (known in some circles as 'multipliers')",
+                    "Discarding Zen of Python...",
+                    "Breathing oxygen...",
+                    "Segmentation fault.",
+                    "Insulting Dr. Breen...",
+                    "This is the 35th loading message",
+                    "Re-entering atmosphere..."
                     ];
                 for (int i = 0; i < 16; i++)
                 {
@@ -404,7 +409,11 @@ namespace borktorial
                     password = Console.ReadLine() ?? "";
                 }
 
-                if (username == "root" && password == "Bacon532!")
+                //if (username == "root" && password == "Bacon532!") // this makes no sense on NT
+                //{
+                //    root = true;
+                //}
+                if (username == "SYSTEM" && rand.Next(0, 37) == 0)
                 {
                     root = true;
                 }
@@ -487,7 +496,6 @@ namespace borktorial
                                         {
                                             switch (commin[2])
                                             {
-                                                // Fun note: dl speeds are actually accurate to ones on a 9600bps modem
                                                 case "hl3":
                                                     Console.WriteLine("No.");
                                                     Console.WriteLine("\r\nDid you mean: pkgmngr install *hlvr*");
@@ -537,7 +545,7 @@ namespace borktorial
                                 else
                                 {
                                     Console.WriteLine("Please connect to the Internet.");
-                                    Console.WriteLine("Found 1 ISP in isps.cfg file: Fuckston Communications Services. 65536.65536.301.201");
+                                    Console.WriteLine("Found 1 ISP in isps.cfg file: Fuckston Communications Services. 1-800-intnet");
                                 }
                             }
                             break;
@@ -873,7 +881,7 @@ namespace borktorial
                                     }
                                 }
                             }
-                            if (commin[1] == "--nonormalcyallowed" || (System.DateTime.Now.Month == 4 && System.DateTime.Now.Day == 1))
+                            if (commin[1] == "--nonormalcyallowed" || specialDays.aprilfool)
                             {
                                 for (ulong i = 0; i < ulong.MaxValue; i++)
                                 {
@@ -907,7 +915,7 @@ namespace borktorial
                             Console.WriteLine("  format                    - Format drive");
                             Console.WriteLine();
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
-                                "\r\nNote: 65536.65536.301.201");
+                                "\r\nNote: Call 1-800-intnet for free internet");
                             break;
                         case "dohashidoshai!":
                             Console.WriteLine("HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF");
@@ -1025,12 +1033,13 @@ namespace borktorial
                             {
                                 switch (commin[1])
                                 {
-                                    case "65536.65536.301.201":
+                                    case "1-800-intnet":
                                         Console.WriteLine("Dialing...");
                                         PlayModemSound();
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
+                                        mCt = mConnectTypes.dUp;
                                         break;
                                     case "1-800-fastnet":
                                         Console.WriteLine("Dialing...");
@@ -1038,6 +1047,7 @@ namespace borktorial
                                         Console.WriteLine("Connected to Aperture V.32bis-compressed");
                                         mSpeed = 2000; // 16000bps
                                         mConnected = true;
+                                        mCt = mConnectTypes.dupCompressed;
                                         break;
                                     default:
                                         Console.WriteLine("Dialing...");
@@ -1052,6 +1062,7 @@ namespace borktorial
                             Thread.Sleep(rand.Next(2000, 3000));
                             mSpeed = 524288;
                             mConnected = true;
+                            mCt = mConnectTypes.etr;
                             Console.Write("Done!\r\n");
                             break;
                         case "satconnect":
@@ -1062,25 +1073,14 @@ namespace borktorial
                             Thread.Sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
+                            mCt = mConnectTypes.sat;
                             Console.Write($"Connected! Speed: {(float)mSpeed / (float)1024:F2}KB/s\r\n");
                             break;
                         case "This_command_is_not_actually_accessible_under_NORMAL_Cir**CUM**stances_**LOL**":
                             File.Create("GORDON").Dispose();
                             ftlCrash(0xCAFEBABE, "Woah, how did you access that?", "surprised-pikachu.jpg", false);
                             break;
-                        case "error_gen":
-                            string[] egTestCMD = errGen.Generate();
-                            Console.WriteLine($"-- {egTestCMD[0]} -- {egTestCMD[1]} --");
-                            break;
                         case "":
-                            break;
-                        case "time":
-                            string[] ampams = ["AM", "PM"];
-                            string ampam = ampams[rand.Next(0, 2)];
-                            Console.WriteLine($"The time is {tick / 216000}:{tick / 3600}:{tick / 60}{ampam}");
-                            break;
-                        case "date":
-                            Console.WriteLine("The date is 12/31/1995");
                             break;
                         case "drinkfood":
                             Console.Title = "";
@@ -1104,7 +1104,7 @@ namespace borktorial
                             Exception iex = new("DOHASHIDOSHAI");
                             throw new Exception("BORKYBORK", iex);
                         case "lambda":
-                            DateTime rightFuckingNow = DateTime.Now;
+                            DateTime rightFuckingNow = DateTime.UtcNow;
                             bool hlDay = false;
                             if (rightFuckingNow.Month == 11)
                             {
@@ -1187,13 +1187,16 @@ namespace borktorial
                                 Console.WriteLine("Fetching news...");
                                 if (!mConnected)
                                 {
-                                    Console.WriteLine("Please connct to the Internet.");
+                                    Console.WriteLine("Please connect to the Internet.");
                                     break;
                                 }
                                 Thread.Sleep(newsSizeSum / mSpeed);
                                 foreach (var item in currNews)
                                 {
-                                    Console.WriteLine($"NEWS: {item}");
+                                    if (!item.StartsWith("::p_"))
+                                    {
+                                        Console.WriteLine($"NEWS: {item}");
+                                    }
                                     Thread.Sleep(150);
                                 }
                                 break;
@@ -1201,7 +1204,7 @@ namespace borktorial
                             catch (Exception ex)
                             {
                                 Console.WriteLine("A error occurred while fetching the news.");
-                                shitLog.createEntry("[NEWS]", $"{ex.Message} {ex.StackTrace}", logType.Err);
+                                shitLog.createEntry("NEWS", $"{ex.Message} {ex.StackTrace}", logType.Err);
                                 break;
                             }
                         case "radio":
@@ -1362,7 +1365,7 @@ namespace borktorial
             Console.WriteLine("Technical-er details:\r\n");
             for (int i = 0; i < 8; i++)
             {
-                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608):D8}:DATA={rand.Next(0, 255):D8}");
+                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608):D8}:DATA={rand.Next(0, 255):D3}");
             }
             if (rand.Next(0, 1000000) == 420)
             {
@@ -1449,6 +1452,7 @@ namespace borktorial
         }
         static void timeLoop(int tl, int mcl)
         {
+            DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
             double sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
 
@@ -1477,6 +1481,11 @@ namespace borktorial
                 if (entropyAcc % 10 == 0 && rand.Next(0, 10) == 0)
                 {
                     entropyAcc -= rand.Next(0, 10);
+                }
+                if(lastSdDlt.Date != DateTime.UtcNow.Date)
+                {
+                    specialDays.update();
+                    lastSdDlt = DateTime.UtcNow;
                 }
                 if (tick % (tl*60000) == 0)
                 {
@@ -1717,5 +1726,14 @@ namespace borktorial
                 DateTime.UtcNow.Day == 27 &&
                 DateTime.UtcNow.Month == 9;
         }
+    }
+    public enum mConnectTypes
+    {
+        Null,
+        dUp,
+        dupCompressed,
+        sat,
+        etr,
+        dbg
     }
 }
