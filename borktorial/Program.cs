@@ -1230,6 +1230,51 @@ namespace borktorial
                                 });
                             }
                             break;
+                        case "impulse":
+                            try
+                            {
+                                if (commin.Length >= 2)
+                                {
+                                    switch (int.Parse(commin[1]))
+                                    {
+                                        case 0: // i0: standard bkt ticker
+                                            tick++;
+                                            break;
+                                        case 101:
+                                            Console.WriteLine("HOPIUM ADMINISTERED");
+                                            break;
+                                        case 202:
+                                            string fjbjB = "HALF-LIFE 3 IS COMING SOON! ";
+                                            string fjbjB2 = "ALERT: OUT OF HOPIUM! ";
+                                            Console.Clear();
+                                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                                            Console.BackgroundColor = ConsoleColor.Black;
+                                            for (int i = 0; i < 512; i++)
+                                            {
+                                                for (int j = 0; j < fjbjB.Length; j++)
+                                                {
+                                                    Console.Write(fjbjB[j]);
+                                                    Thread.Sleep(20);
+                                                    if((rand.Next(0, 7) == 0) && (j == fjbjB.Length-1))
+                                                    {
+                                                        for (int k = 0; k < fjbjB2.Length; k++)
+                                                        {
+                                                            Console.Write(fjbjB2[k]);
+                                                            Thread.Sleep(20);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                shitLog.createEntry("impulse", $"{ex.ToString}", logType.Err);
+                                continue; // do nothing
+                            }
+                            break;
                         default:
                             if (ballmerMode)
                             {

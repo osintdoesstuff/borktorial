@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -41,6 +41,14 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "newsGen.cs",
@@ -48,7 +56,7 @@
               "RelativeDocumentMoniker": "borktorial\\newsGen.cs",
               "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\newsGen.cs",
               "RelativeToolTip": "borktorial\\newsGen.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACMAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:19:54.898Z",
               "EditorCaption": ""
@@ -63,8 +71,7 @@
               "RelativeToolTip": "borktorial\\errgen.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:54.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:54.121Z"
             },
             {
               "$type": "Document",
@@ -76,8 +83,7 @@
               "RelativeToolTip": "aperture\\shitLog.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:51.084Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:51.084Z"
             },
             {
               "$type": "Document",
@@ -89,8 +95,7 @@
               "RelativeToolTip": "aperture\\apermain.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:50.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:50.288Z"
             },
             {
               "$type": "Document",
@@ -98,16 +103,12 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\Program.cs",
               "RelativeDocumentMoniker": "borktorial\\Program.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\Program.cs",
-              "RelativeToolTip": "borktorial\\Program.cs",
-              "ViewState": "AgIAAO8BAAAAAAAAAAAYwKcBAAARAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\Program.cs*",
+              "RelativeToolTip": "borktorial\\Program.cs*",
+              "ViewState": "AgIAAOIEAAAAAAAAAAAIwO4EAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:18:58.133Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             }
           ]
         }
