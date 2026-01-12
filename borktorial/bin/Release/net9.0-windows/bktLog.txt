@@ -314,3 +314,23 @@ Actual value was -86000. -    at System.ArgumentOutOfRangeException.ThrowLess[T]
 01/12/2026 08:53:21 info: [Bootymcbootface]: Init took 71ms!
 01/12/2026 08:55:34 info: [Bootymcbootface]: Init took 72ms!
 01/12/2026 08:57:10 info: [Bootymcbootface]: Init took 75ms!
+01/12/2026 09:01:56 info: [Bootymcbootface]: Init took 103ms!
+01/12/2026 09:02:28 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:28 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:29 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:29 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:30 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:30 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:30 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:31 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:31 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:32 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:32 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:02:35 info: [cmdhndlr]: User entered command: impulse
+01/12/2026 09:16:42 info: [Bootymcbootface]: Init took 65ms!
+01/12/2026 09:25:04 err: [impulse]: System.Func`1[System.String]
+01/12/2026 09:25:42 info: [Bootymcbootface]: Init took 74ms!
+01/12/2026 09:26:19 err: [impulse]: System.Func`1[System.String]
+01/12/2026 09:26:38 info: [Bootymcbootface]: Init took 93ms!
+01/12/2026 09:28:37 info: [Bootymcbootface]: Init took 58ms!
+01/12/2026 09:29:17 err: [impulse]: System.Func`1[System.String]

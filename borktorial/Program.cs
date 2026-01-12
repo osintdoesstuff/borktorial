@@ -1235,43 +1235,20 @@ namespace borktorial
                             {
                                 if (commin.Length >= 2)
                                 {
-                                    switch (int.Parse(commin[1]))
-                                    {
-                                        case 0: // i0: standard bkt ticker
-                                            tick++;
-                                            break;
-                                        case 101:
-                                            Console.WriteLine("HOPIUM ADMINISTERED");
-                                            break;
-                                        case 202:
-                                            string fjbjB = "HALF-LIFE 3 IS COMING SOON! ";
-                                            string fjbjB2 = "ALERT: OUT OF HOPIUM! ";
-                                            Console.Clear();
-                                            Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                            Console.BackgroundColor = ConsoleColor.Black;
-                                            for (int i = 0; i < 512; i++)
-                                            {
-                                                for (int j = 0; j < fjbjB.Length; j++)
-                                                {
-                                                    Console.Write(fjbjB[j]);
-                                                    Thread.Sleep(20);
-                                                    if((rand.Next(0, 7) == 0) && (j == fjbjB.Length-1))
-                                                    {
-                                                        for (int k = 0; k < fjbjB2.Length; k++)
-                                                        {
-                                                            Console.Write(fjbjB2[k]);
-                                                            Thread.Sleep(20);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                    }
+                                    impulse(int.Parse(commin[1]));
                                 }
                             }
                             catch(Exception ex)
                             {
                                 shitLog.createEntry("impulse", $"{ex.ToString}", logType.Err);
+                                if(ex.Message == "NO HOPIUM LEFT!!!")
+                                {
+                                    infLoop();
+                                    void infLoop()
+                                    {
+                                        infLoop(); // try to nuke the stack
+                                    }
+                                }
                                 continue; // do nothing
                             }
                             break;
@@ -1470,6 +1447,60 @@ namespace borktorial
                 Environment.Exit(69); // nice
             }
         }
+        static void impulse(int num) {
+            switch (num)
+            {
+                case 0: // i0: standard bkt ticker
+                    tick++;
+                    break;
+                case 101:
+                    Console.WriteLine("HOPIUM ADMINISTERED");
+                    break;
+                case 202:
+                    string fjbjB = "HALF-LIFE 3 IS COMING SOON! ";
+                    string fjbjB2 = "ALERT: OUT OF HOPIUM! ";
+                    string fjbjB3 = "HOPIUM LEVELS CRITICAL! ";
+                    double hopium = 5;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    for (int i = 0; i < 512; i++)
+                    {
+                        for (int j = 0; j < fjbjB.Length; j++)
+                        {
+                            hopium -= 0.005;
+                            Console.Write(fjbjB[j]);
+                            Thread.Sleep(20);
+                            if(hopium <= 0)
+                            {
+                                throw new Exception("NO HOPIUM LEFT!!!");
+                            }
+                            if(hopium < 3)
+                            {
+                                for (int k = 0; k < fjbjB3.Length; k++)
+                                {
+                                    hopium -= 0.1;
+                                    Console.Write(fjbjB3[k]);
+                                    Thread.Sleep(20);
+                                }
+                            }
+                            if ((rand.Next(0, 7) == 0) && (j == fjbjB.Length - 1))
+                            {
+                                for (int k = 0; k < fjbjB2.Length; k++)
+                                {
+                                    hopium -= 0.05;
+                                    Console.Write(fjbjB2[k]);
+                                    Thread.Sleep(20);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
         static void mp3PlayLoop(string path)
         {
             while (true)
@@ -1508,8 +1539,6 @@ namespace borktorial
                 
                 sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
                 sysstab = Math.Clamp(sC, 0.01, 50);
-
-                tick++;
                 if (tick % mcl == 0)
                 {
                     munCycle++;
@@ -1565,6 +1594,7 @@ namespace borktorial
                 int effectiveTick = tick * munCycle;
 
                 crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor))*(int)Math.Ceiling(sysstab);
+                tick++; // equivelant to i0
             }
         }
         static void interspeed()
