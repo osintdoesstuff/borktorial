@@ -312,9 +312,17 @@ namespace borktorial
                 Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Slave...");
                 Thread.Sleep(500);
-                Console.Write("None\r\n");
+                Console.Write("None\r\n\r\n");
                 Thread.Sleep(rand.Next(500, 1000));
-                Console.WriteLine("Booting from HDD...");
+                Console.Write("Booting from FDD...");
+                Thread.Sleep(rand.Next(500, 1000));
+                Console.Write("fail\r\n");
+                Thread.Sleep(rand.Next(500, 750));
+                Console.Write("Booting from CD-ROM...");
+                Thread.Sleep(rand.Next(500, 1000));
+                Console.Write("fail\r\n");
+                Thread.Sleep(rand.Next(500, 750));
+                Console.Write("Booting from HDD...");
                 if (File.Exists("temp_fcBA39-FA31.bin"))
                 {
                     formatkey.SetValue("algl", "waluigi");
@@ -1275,6 +1283,9 @@ namespace borktorial
                                 }
                                 continue; // do nothing
                             }
+                            break;
+                        case "title":
+                            Console.Title = splashPick();
                             break;
                         default:
                             if (ballmerMode)
