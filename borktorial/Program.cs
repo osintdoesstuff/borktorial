@@ -523,7 +523,7 @@ namespace borktorial
                                                     int pkgSize = rand.Next(16384, 1048576);
                                                     Console.WriteLine($"Installing {pkgSize}B package...");
                                                     Thread.Sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
-                                                    if (rand.Next(1, 256) == 255)
+                                                    if (rand.Next(1, 256) == 255 && (!specialDays.marsDay))
                                                     {
                                                         virused = true;
                                                     }
@@ -1038,6 +1038,10 @@ namespace borktorial
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
+                                        if (specialDays.marsDay)
+                                        {
+                                            mSpeed += (mSpeed/4);
+                                        }
                                         mCt = mConnectTypes.dUp;
                                         break;
                                     case "1-800-fastnet":
@@ -1046,6 +1050,10 @@ namespace borktorial
                                         Console.WriteLine("Connected to Aperture V.32bis-compressed");
                                         mSpeed = 2000; // 16000bps
                                         mConnected = true;
+                                        if (specialDays.marsDay)
+                                        {
+                                            mSpeed += (mSpeed / 4);
+                                        }
                                         mCt = mConnectTypes.dupCompressed;
                                         break;
                                     default:
@@ -1061,6 +1069,10 @@ namespace borktorial
                             Thread.Sleep(rand.Next(2000, 3000));
                             mSpeed = 524288;
                             mConnected = true;
+                            if (specialDays.marsDay)
+                            {
+                                mSpeed += (mSpeed / 4);
+                            }
                             mCt = mConnectTypes.etr;
                             Console.Write("Done!\r\n");
                             break;
@@ -1072,6 +1084,10 @@ namespace borktorial
                             Thread.Sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
+                            if (specialDays.marsDay)
+                            {
+                                mSpeed += (mSpeed / 4);
+                            }
                             mCt = mConnectTypes.sat;
                             Console.Write($"Connected! Speed: {(float)mSpeed / (float)1024:F2}KB/s\r\n");
                             break;
@@ -1207,7 +1223,15 @@ namespace borktorial
                                 break;
                             }
                         case "radio":
-                            sf59("msc_canyon");
+                            if (!specialDays.marsDay)
+                            {
+                                Console.WriteLine("Now listening: 89.25MHz. The Human Music");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
+                            }
+                                sf59("msc_canyon");
                             Thread rLoop = new(() =>
                             {
                                 radioLoop("rd0.wav");
@@ -1577,7 +1601,14 @@ namespace borktorial
                     {
                         // Schonite dust collector
                         schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
-                        schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                        if (!specialDays.marsDay)
+                        {
+                            schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                        }
+                        else
+                        {
+                            schonite -= Math.Clamp(rand.NextSingle()*0.1, 0.001, 100);
+                        }
                     }
                     if (rand.Next(0, 99) == 0)
                     {
@@ -1591,6 +1622,10 @@ namespace borktorial
                 }
                 int baseValue = 5000;      // Starting risk
                 int scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
+                if (specialDays.marsDay)
+                {
+                    scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
+                }
                 int effectiveTick = tick * munCycle;
 
                 crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor))*(int)Math.Ceiling(sysstab);
@@ -1603,8 +1638,16 @@ namespace borktorial
             {
                 if (mConnected == true)
                 {
-                    mSpeed += rand.Next(-((int)mSpeed/4), ((int)mSpeed/4));
-                    mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                    if (!specialDays.marsDay)
+                    {
+                        mSpeed += rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                        mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                    }
+                    else
+                    {
+                        mSpeed += rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
+                        mSpeed -= rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
+                    }
                     Thread.Sleep(rand.Next(650, 6000));
                     if(mSpeed <= 0)
                     {
@@ -1650,6 +1693,10 @@ namespace borktorial
         }
         public static string splashPick()
         {
+            if (specialDays.marsDay)
+            {
+                return "WE'RE SAFE ON MARS!";
+            }
             if (specialDays.crimbus) 
             {
                 return "Merry xmas";
@@ -1712,6 +1759,10 @@ namespace borktorial
             if (specialDays.seecretFriday)
             {
                 accu += 1;
+            }
+            if (specialDays.marsDay)
+            {
+                accu -= 1;
             }
             return (int)accu;
         }
@@ -1791,6 +1842,9 @@ namespace borktorial
         public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
             DateTime.UtcNow.Day == 27 &&
             DateTime.UtcNow.Month == 9;
+        public static bool marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
+            DateTime.UtcNow.Day == 6 &&
+            DateTime.UtcNow.Month == 8;
         public static void update()
         {
             aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
@@ -1800,6 +1854,9 @@ namespace borktorial
             bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
                 DateTime.UtcNow.Month == 9;
+            marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
+            DateTime.UtcNow.Day == 6 &&
+            DateTime.UtcNow.Month == 8;
         }
     }
     public enum mConnectTypes
