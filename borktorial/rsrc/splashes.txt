@@ -1,15 +1,18 @@
-(e) (c) means common. (u) means uncommon. (r) means rare. (e) means weight=0
+(e) (c) means common. (u) means uncommon. (r) means rare. (e) means weight=0. (m) means only on specialDays.marsDay
 
 (c) Beta than Ever!
 (c) We have Liftoff!
 (c) 18-second prograde burn
-(c) Send all complaints to \Devices\Null!
+(c) Send all complaints to \Devices\Null! (because we're not POSIX-based savages)
 (c) Missingno!
 (c) IntelliSense!
 (c) Rated D for Dwarf!
 (c) Losing is fun!
 (c) The DF string dump is a good one
 (c) The fuck is a HURNERJSGER!?
+(c) [insert witty joke here]
+(c) Less addictive than KSP!
+(c) More addictive than Dark Souls!
 (u) NTISBTR.
 (u) "Infdev 20100630" is a beautiful name for a girl
 (u) R.I.P Sun Microsystems
@@ -20,6 +23,8 @@
 (u) RTFM
 (u) Thread >>> Task. There is 0 advantage to using tasks and i will die on this hill
 (u) To unlock this splash text, simply solve P=NP!
+(u) [insert uncommon splash text here]
+(u) <nr1000000-5000000> copies sold!
 (r) I like turtles
 (r) The sun may or may not presumably be a deadly laser
 (r) I hate myself(TM)
@@ -30,4 +35,12 @@
 (r) Oh, my pkcell
 (r) Git can stand for "Giant Idiotic Truckload of shit" when it breaks
 (r) GoRdON gEt aWaY fRom THe BeAm!!!
+(r) [insert rare splash text here]
+(r) Xenimal Crossing: New Headcrab
+(m) WE'RE SAFE ON MARS!!!
+(m) Bill Kerman made it there first.
+(m) Aw fuck i missed the transfer window :(
+(m) Are we sure we didn't accidentally land on Bounty?
+(m) [insert mars-related joke here]
+(m) 100% Dragon-free!
 (e) This splash won't appear. Ever.

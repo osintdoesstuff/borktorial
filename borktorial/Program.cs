@@ -1704,11 +1704,12 @@ namespace borktorial
         }
         public static string splashPick()
         {
+            int mdWeight = 0;
             if (specialDays.marsDay)
             {
-                return "WE'RE SAFE ON MARS!";
+                mdWeight = 4;
             }
-            if (specialDays.crimbus) 
+            if (specialDays.crimbus)
             {
                 return "Merry xmas";
             }
@@ -1738,6 +1739,7 @@ namespace borktorial
                     _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 2),
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
                     _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
+                    _ when line.StartsWith("(m) ") => (Text: line[4..], Weight: mdWeight),
                     _ => (Text: line, Weight: 1) // fallback for untagged lines
                 })
                 .ToList();
@@ -1757,7 +1759,7 @@ namespace borktorial
                     return splash.Text;
             }
 
-            return splashes[^1].Text;
+            return bktStf.pNrH(splashes[^1].Text, rand);
         }
         public static int getBuildNum()
         {
