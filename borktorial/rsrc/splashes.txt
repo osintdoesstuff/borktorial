@@ -9,6 +9,7 @@
 (c) Rated D for Dwarf!
 (c) Losing is fun!
 (c) The DF string dump is a good one
+(c) The fuck is a HURNERJSGER!?
 (u) NTISBTR.
 (u) "Infdev 20100630" is a beautiful name for a girl
 (u) R.I.P Sun Microsystems
@@ -18,6 +19,7 @@
 (u) Made in Java-but-Objectively-Better!
 (u) RTFM
 (u) Thread >>> Task. There is 0 advantage to using tasks and i will die on this hill
+(u) To unlock this splash text, simply solve P=NP!
 (r) I like turtles
 (r) The sun may or may not presumably be a deadly laser
 (r) I hate myself(TM)
@@ -27,4 +29,5 @@
 (r) How 'bout i do A N Y W A Y ?
 (r) Oh, my pkcell
 (r) Git can stand for "Giant Idiotic Truckload of shit" when it breaks
+(r) GoRdON gEt aWaY fRom THe BeAm!!!
 (e) This splash won't appear. Ever.
