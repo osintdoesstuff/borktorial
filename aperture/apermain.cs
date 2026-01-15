@@ -6,6 +6,7 @@
 
     public static class bktLV
     {
+        public static (int maj, int min, int pch, char rv) aprtVer = (0, 4, 3, 'a');
         public static int[] puC { get; } = [255, 127, 63, 31, 15, 7, 3, 2];
         public static int[] puD { get; } = [1, 3, 7, 15, 31, 63, 127, 254];
         public static int[] dallf() {

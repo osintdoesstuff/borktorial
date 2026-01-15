@@ -9,6 +9,7 @@ using aperture;
 using System.Media;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Runtime.InteropServices;
 
 namespace borktorial
 {
@@ -25,8 +26,8 @@ namespace borktorial
 			  || |-_\__   /
 			 ((_/`(____,-'
 			""";
-        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'd');
-        public static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
+        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 7, 'a');
+        public static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'c');
         public static bool jebconnect = false;
         public static bool mConnected = false;
         public static bool forceNoBoot = false;
@@ -51,13 +52,6 @@ namespace borktorial
         public static readonly ComputerInfo compi = new();
         public static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
         public static int[] cfg = [5, 100000, 15];
-        public static readonly float wSeed = (
-            (float)rand.Next(0, 6) +
-            (float)rand.Next(0, 4) +
-            (float)rand.Next(0, 10) +
-            0 +
-            0)/5;
-        public static Random wrand = new((int)wSeed * 1000);
         public static readonly string[] lines = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
@@ -128,6 +122,10 @@ namespace borktorial
         }
         static void Main(string[] args)
         {
+            if(bktLV.aprtVer != (0, 4, 2, 'f'))
+            {
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.2f, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
+            }
             Stopwatch bootSw = new Stopwatch();
             bootSw.Start();
             Debug.WriteLine("tada!");
@@ -1284,9 +1282,6 @@ namespace borktorial
                                 continue; // do nothing
                             }
                             break;
-                        case "title":
-                            Console.Title = splashPick();
-                            break;
                         default:
                             if (ballmerMode)
                             {
@@ -1598,6 +1593,7 @@ namespace borktorial
                 if (tick % (tl*60000) == 0)
                 {
                     specialDays.update();
+                    lastSdDlt = DateTime.UtcNow;
                 }
                 if (tick == int.MaxValue - 1)
                 {
@@ -1756,18 +1752,23 @@ namespace borktorial
             {
                 cumulative += splash.Weight;
                 if (roll < cumulative)
-                    return splash.Text;
+                    return parseBorkTag(splash.Text);
             }
 
-            return bktStf.pNrH(splashes[^1].Text, rand);
+            return parseBorkTag(splashes[^1].Text);
         }
         public static int getBuildNum()
         {
             float accu = 0;
             accu += (bktver.maj + pubver.maj) * 8;
+            accu += bktLV.aprtVer.maj * 7;
             accu += (bktver.min + pubver.min) * 4;
+            accu += bktLV.aprtVer.min * 5;
             accu += (bktver.pch + pubver.pch) * 2;
+            accu += bktLV.aprtVer.pch * 3;
             accu += (bktver.rv + pubver.rv);
+            accu += bktLV.aprtVer.rv;
+            accu += bktLV.puD[7] / bktLV.puC[7];
             accu /= 4;
             if (specialDays.seecretFriday)
             {
@@ -1782,7 +1783,7 @@ namespace borktorial
         static void catGoBrr(int delay = 100)
         {
             int consoleWidth = Console.WindowWidth;
-            string[] catLines = cat.Split(Environment.NewLine);
+            string[] catLines = cat.Split("\r\n");
 
             int catWidth = 0;
             foreach (var line in catLines)
@@ -1843,7 +1844,13 @@ namespace borktorial
             password = "";
             root = false;
             jmtrigger = false;
-            wrand = new Random((int)wSeed * 1000);
+        }
+        public static string parseBorkTag(string exp) 
+        {
+            exp = bktStf.pNrH(exp, rand);
+            exp = errGen.genCustomTemplate(exp)[0];
+            exp = newsGen.genCustomTemplate(exp);
+            return exp;
         }
     }
     public static class specialDays
