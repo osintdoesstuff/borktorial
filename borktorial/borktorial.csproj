@@ -31,9 +31,9 @@
     <EmbeddedResource Include="rsrc\modem.wav" />
     <EmbeddedResource Include="rsrc\rd_canyon.wav" />
     <EmbeddedResource Include="rsrc\splashes.txt" />
-    <EmbeddedResource Include="SECRETS\eula.txt" />
-    <EmbeddedResource Include="SECRETS\screenshot16.png" />
-    <EmbeddedResource Include="SECRETS\thisisabucket.7z" />
+    <EmbeddedResource Include="rsrc\eula.txt" />
+    <EmbeddedResource Include="rsrc\screenshot16.png" />
+    <EmbeddedResource Include="rsrc\thisisabucket.7z" />
   </ItemGroup>
 
   <ItemGroup>

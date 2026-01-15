@@ -1450,10 +1450,10 @@ namespace borktorial
         {
             var secrets = new Dictionary<string, (string resource, string filename)>
             {
-                ["waluigi"] = ("borktorial.SECRETS.screenshot16.png", "the mun awaits.png"),
-                ["igiulaw"] = ("borktorial.SECRETS.eula.txt", "eula.txt"),
-                ["luigi"] = ("borktorial.SECRETS.thisisabucket.7z",
-                             "THIS ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
+                ["waluigi"] = ("borktorial.rsrc.screenshot16.png", "the mun awaits.png"),
+                ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
+                ["luigi"] = ("borktorial.rsrc.thisisabucket.7z",
+                             "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
                 ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
             };
 
