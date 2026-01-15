@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "borktorial", "borktorial\bo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aperture", "aperture\aperture.csproj", "{AFEB2F96-3CFA-465F-9712-246F6B08FD35}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bktRsrc", "bktRsrc\bktRsrc.csproj", "{12CCE504-196C-4DAB-8FAB-DE77393D53CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AFEB2F96-3CFA-465F-9712-246F6B08FD35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFEB2F96-3CFA-465F-9712-246F6B08FD35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFEB2F96-3CFA-465F-9712-246F6B08FD35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12CCE504-196C-4DAB-8FAB-DE77393D53CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12CCE504-196C-4DAB-8FAB-DE77393D53CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12CCE504-196C-4DAB-8FAB-DE77393D53CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12CCE504-196C-4DAB-8FAB-DE77393D53CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,9 +7,6 @@ using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
 using System.Media;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Runtime.InteropServices;
 
 namespace borktorial
 {
@@ -1453,17 +1450,17 @@ namespace borktorial
         {
             var secrets = new Dictionary<string, (string resource, string filename)>
             {
-                ["waluigi"] = ("borktorial.SECRETS.screenshot16.png", "the mun awaits.png"),
-                ["igiulaw"] = ("borktorial.SECRETS.eula.txt", "eula.txt"),
-                ["luigi"] = ("borktorial.SECRETS.thisisabucket.7z",
+                ["waluigi"] = ("bktRsrc.SECRETS.screenshot16.png", "the mun awaits.png"),
+                ["igiulaw"] = ("bktRsrc.SECRETS.eula.txt", "eula.txt"),
+                ["luigi"] = ("bktRsrc.SECRETS.thisisabucket.7z",
                              "THIS ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
-                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
+                ["msc_canyon"] = ("bktRsrc.rsrc.rd_canyon.wav", "rd0.wav")
             };
 
             if (!secrets.TryGetValue(code, out var secret))
                 return;
 
-            using var stream = Assembly.GetExecutingAssembly()
+            using var stream = Assembly.LoadFrom("bktRsrc.dll")
                 .GetManifestResourceStream(secret.resource);
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
@@ -1695,7 +1692,7 @@ namespace borktorial
         public static void PlayModemSound()
         {
             using var stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("borktorial.rsrc.modem.wav");
+                .GetManifestResourceStream("bktRsrc.rsrc.modem.wav");
             new System.Media.SoundPlayer(stream).PlaySync();
         }
         public static string splashPick()
@@ -1717,8 +1714,8 @@ namespace borktorial
             {
                 return "Your car is on fire.";
             }
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
+            var assembly = Assembly.LoadFrom("bktRsrc.dll");
+            using var stream = assembly.GetManifestResourceStream("bktRsrc.rsrc.splashes.txt");
 
             if (stream is null)
                 return "missingno";

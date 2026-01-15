@@ -51,3 +51,5 @@ C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\ref\borktorial.
 C:\Users\osint2\bktDevGit2\borktorial\bin\Release\net9.0-windows\borktorial.pdb
 C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\borktorial.sourcelink.json
 C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\borktorial.pdb
+C:\Users\osint2\bktDevGit2\borktorial\bin\Release\net9.0-windows\bktRsrc.dll
+C:\Users\osint2\bktDevGit2\borktorial\bin\Release\net9.0-windows\bktRsrc.pdb

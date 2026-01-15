@@ -13,7 +13,8 @@
           "NAudio": "2.2.1",
           "Spectre.Console": "0.54.1-alpha.0.7",
           "System.Windows.Extensions": "10.0.0-rc.2.25502.107",
-          "aperture": "1.0.0"
+          "aperture": "1.0.0",
+          "bktRsrc": "1.0.0"
         },
         "runtime": {
           "borktorial.dll": {}
@@ -147,6 +148,14 @@
             "fileVersion": "1.0.0.0"
           }
         }
+      },
+      "bktRsrc/1.0.0": {
+        "runtime": {
+          "bktRsrc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -262,6 +271,11 @@
       "hashPath": "system.windows.extensions.10.0.0-rc.2.25502.107.nupkg.sha512"
     },
     "aperture/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "bktRsrc/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -602,3 +602,15 @@ Actual value was -86000. -    at System.ArgumentOutOfRangeException.ThrowLess[T]
 01/15/2026 11:24:56 info: [cmdhndlr]: User entered command: debug::title
 01/15/2026 11:25:43 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
 01/15/2026 11:25:43 info: [Bootymcbootface]: Init took 50ms!
+01/15/2026 14:05:23 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:05:23 info: [Bootymcbootface]: Init took 74ms!
+01/15/2026 14:07:11 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:07:11 info: [Bootymcbootface]: Init took 53ms!
+01/15/2026 14:08:22 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:08:22 info: [Bootymcbootface]: Init took 44ms!
+01/15/2026 14:11:49 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:11:49 info: [Bootymcbootface]: Init took 73ms!
+01/15/2026 14:12:57 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:12:57 info: [Bootymcbootface]: Init took 74ms!
+01/15/2026 14:13:33 info: [cmdhndlr]: User entered command: radio
+01/15/2026 14:13:42 info: [cmdhndlr]: User entered command: radio
