@@ -28,6 +28,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="rsrc\modem.wav" />
+    <EmbeddedResource Include="rsrc\rd_canyon.wav" />
+    <EmbeddedResource Include="rsrc\splashes.txt" />
+    <EmbeddedResource Include="SECRETS\eula.txt" />
+    <EmbeddedResource Include="SECRETS\screenshot16.png" />
+    <EmbeddedResource Include="SECRETS\thisisabucket.7z" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.7" />
     <PackageReference Include="System.Windows.Extensions" Version="10.0.0-rc.2.25502.107" />
@@ -35,7 +44,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\aperture\aperture.csproj" />
-    <ProjectReference Include="..\bktRsrc\bktRsrc.csproj" />
   </ItemGroup>
 
   <ItemGroup>

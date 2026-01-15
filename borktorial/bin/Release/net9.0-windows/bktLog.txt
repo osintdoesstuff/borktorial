@@ -614,3 +614,7 @@ Actual value was -86000. -    at System.ArgumentOutOfRangeException.ThrowLess[T]
 01/15/2026 14:12:57 info: [Bootymcbootface]: Init took 74ms!
 01/15/2026 14:13:33 info: [cmdhndlr]: User entered command: radio
 01/15/2026 14:13:42 info: [cmdhndlr]: User entered command: radio
+01/15/2026 14:21:33 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:21:33 info: [Bootymcbootface]: Init took 74ms!
+01/15/2026 14:21:39 warn: [BOOT]: APRT version mismatch. Expected 0.4.2f, got 0.4.3a
+01/15/2026 14:21:39 info: [Bootymcbootface]: Init took 82ms!

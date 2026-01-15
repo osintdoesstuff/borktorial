@@ -256,16 +256,6 @@
         "runtime": {
           "bin/placeholder/aperture.dll": {}
         }
-      },
-      "bktRsrc/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v9.0",
-        "compile": {
-          "bin/placeholder/bktRsrc.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/bktRsrc.dll": {}
-        }
       }
     }
   },
@@ -676,11 +666,6 @@
       "type": "project",
       "path": "../aperture/aperture.csproj",
       "msbuildProject": "../aperture/aperture.csproj"
-    },
-    "bktRsrc/1.0.0": {
-      "type": "project",
-      "path": "../bktRsrc/bktRsrc.csproj",
-      "msbuildProject": "../bktRsrc/bktRsrc.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -690,8 +675,7 @@
       "NAudio >= 2.2.1",
       "Spectre.Console >= 0.54.1-alpha.0.7",
       "System.Windows.Extensions >= 10.0.0-rc.2.25502.107",
-      "aperture >= 1.0.0",
-      "bktRsrc >= 1.0.0"
+      "aperture >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -728,9 +712,6 @@
           "projectReferences": {
             "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj": {
               "projectPath": "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj"
-            },
-            "C:\\Users\\osint2\\bktDevGit2\\bktRsrc\\bktRsrc.csproj": {
-              "projectPath": "C:\\Users\\osint2\\bktDevGit2\\bktRsrc\\bktRsrc.csproj"
             }
           }
         }
