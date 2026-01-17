@@ -268,6 +268,7 @@ obj\Release\net9.0-windows\win-x64\borktorial.dll
 --targetarch:x64
 --dehydrate
 -O
+-g
 --exportsfile:obj\Release\net9.0-windows\win-x64\native\borktorial.def
 --export-dynamic-symbol:DotNetRuntimeDebugHeader,DATA
 --initassembly:System.Private.CoreLib

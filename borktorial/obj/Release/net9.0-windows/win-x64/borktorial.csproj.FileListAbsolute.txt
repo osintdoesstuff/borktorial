@@ -568,3 +568,6 @@ C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\win-x64\borktor
 C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\win-x64\refint\borktorial.dll
 C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\win-x64\borktorial.genruntimeconfig.cache
 C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\win-x64\ref\borktorial.dll
+C:\Users\osint2\bktDevGit2\borktorial\bin\Release\net9.0-windows\win-x64\borktorial.pdb
+C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\win-x64\borktorial.sourcelink.json
+C:\Users\osint2\bktDevGit2\borktorial\obj\Release\net9.0-windows\win-x64\borktorial.pdb

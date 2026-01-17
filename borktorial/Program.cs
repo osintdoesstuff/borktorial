@@ -7,6 +7,15 @@ using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
 using System.Media;
+using System.Security.Principal;
+using System.Windows.Forms;
+using Panel = Spectre.Console.Panel;
+using System.Linq.Expressions;
+using System.Collections.Specialized;
+using System.ComponentModel.Design.Serialization;
+using System.Collections.Concurrent;
+using NAudio.CoreAudioApi;
+using System.Drawing;
 
 namespace borktorial
 {
@@ -119,9 +128,9 @@ namespace borktorial
         }
         static void Main(string[] args)
         {
-            if(bktLV.aprtVer != (0, 4, 2, 'f'))
+            if(bktLV.aprtVer != (0, 4, 3, 'a'))
             {
-                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.2f, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
             Stopwatch bootSw = new Stopwatch();
             bootSw.Start();
@@ -278,7 +287,7 @@ namespace borktorial
                 }
                 bootSw.Stop();
                 shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
-                Console.WriteLine($"GLaBIOS 3.14 Revision C (build {getBuildNum()})");
+                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
@@ -1257,6 +1266,13 @@ namespace borktorial
                                 });
                             }
                             break;
+                        case "msgbox":
+                            MessageBox.Show("THE MAGIC OF WINDOWS FORMS!", "bkt",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1,
+                                MessageBoxOptions.DefaultDesktopOnly,
+                                false);
+                            break;
                         case "impulse":
                             try
                             {
@@ -1278,6 +1294,13 @@ namespace borktorial
                                 }
                                 continue; // do nothing
                             }
+                            break;
+                        case "clock":
+                            // NOTE: This uses the Borktorial Internal Clock.
+                            // The BIC is synced with **UTC TIME**
+                            // This will not be correct for a lot of people
+                            // And i don't fucking care.
+                            Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
                             if (ballmerMode)
@@ -1474,6 +1497,11 @@ namespace borktorial
                 Environment.Exit(69); // nice
             }
         }
+        /// <summary>
+        /// SOURCE! SOURCE!
+        /// </summary>
+        /// <param name="num">number</param>
+        /// <exception cref="Exception">HOPIUM ADMINISTERED</exception>
         static void impulse(int num) {
             switch (num)
             {
@@ -1523,6 +1551,41 @@ namespace borktorial
                         }
                     }
                     break;
+                case 404:
+                    string f22Raptor = "DWARVES! ";
+                    for (int i = 0; i < 4096; i++)
+                    {
+                        void annoy1()
+                        {
+                            f22Raptor += "DWARVES! ";
+                            DialogResult ffmf = MessageBox.Show("PLAY DWARF FORTRESS NOW!!!",
+                                "borktorial",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1,
+                                0,
+                                false);
+                            if (ffmf != DialogResult.Yes)
+                            {
+                                ffmf = MessageBox.Show("PLAY DWARF FORTRESS NOW!!!",
+                                    "borktorial",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Information,
+                                    MessageBoxDefaultButton.Button1,
+                                    0,
+                                    false);
+                            }
+                        }
+                        for (int k = 0; k < f22Raptor.Length; k++)
+                        {
+                            Console.Write(f22Raptor[k]);
+                            Thread.Sleep(20+(int)(Math.Log10(f22Raptor.Length)));
+                            
+                        }
+                        new Thread(annoy1).Start();
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -1552,6 +1615,14 @@ namespace borktorial
                 radio1.PlaySync();
             }
         }
+        /// <summary>
+        /// The Borktorial Server Thread.
+        /// This along with a whole bunch of other shit constitues the Borktorial Server (or "master")
+        /// The "client" or "slave" uses all this shit to do stuff
+        /// </summary>
+        /// <param name="tl">Tick Length</param>
+        /// <param name="mcl">Mun Cycle Length</param>
+        /// <exception cref="Exception">General shit went wrong</exception>
         static void timeLoop(int tl, int mcl)
         {
             DateTime lastSdDlt = DateTime.UtcNow;
@@ -1733,7 +1804,7 @@ namespace borktorial
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
                     _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
                     _ when line.StartsWith("(m) ") => (Text: line[4..], Weight: mdWeight),
-                    _ => (Text: line, Weight: 1) // fallback for untagged lines
+                    _ => (Text: line, Weight: 0)
                 })
                 .ToList();
 
@@ -1841,6 +1912,7 @@ namespace borktorial
             password = "";
             root = false;
             jmtrigger = false;
+            specialDays.update();
         }
         public static string parseBorkTag(string exp) 
         {
