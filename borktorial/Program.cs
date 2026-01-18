@@ -1931,8 +1931,8 @@ namespace borktorial
         public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
             DateTime.UtcNow.Day == 27 &&
             DateTime.UtcNow.Month == 9;
-        public static bool marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
-            DateTime.UtcNow.Day == 6 &&
+        public static bool marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday &&
+            DateTime.UtcNow.Day == 5 &&
             DateTime.UtcNow.Month == 8;
         public static void update()
         {
@@ -1943,8 +1943,8 @@ namespace borktorial
             bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
                 DateTime.UtcNow.Month == 9;
-            marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
-            DateTime.UtcNow.Day == 6 &&
+            marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday &&
+            DateTime.UtcNow.Day == 5 &&
             DateTime.UtcNow.Month == 8;
         }
     }
