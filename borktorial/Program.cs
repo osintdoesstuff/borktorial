@@ -25,8 +25,8 @@ namespace borktorial
 			  || |-_\__   /
 			 ((_/`(____,-'
 			""";
-        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 7, 'a');
-        public static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'c');
+        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 7, 'b');
+        public static (int maj, int min, int pch, char rv) pubver = (1, 2, 1, 'a');
         public static bool jebconnect = false;
         public static bool mConnected = false;
         public static bool forceNoBoot = false;
