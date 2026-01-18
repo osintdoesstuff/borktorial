@@ -9,10 +9,9 @@ using aperture;
 using System.Media;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
-
 namespace borktorial
 {
-    public static class Program
+    public class Program
     {
         public static readonly string cat = """
 			 |\\_,-~/
