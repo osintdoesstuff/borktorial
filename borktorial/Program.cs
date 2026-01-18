@@ -408,7 +408,6 @@ namespace borktorial
                     "Breathing oxygen...",
                     "Segmentation fault.",
                     "Insulting Dr. Breen...",
-                    "This is the 35th loading message",
                     "Re-entering atmosphere..."
                     ];
                 for (int i = 0; i < rand.Next(5, 16); i++)
