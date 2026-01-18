@@ -7,15 +7,8 @@ using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
 using System.Media;
-using System.Security.Principal;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
-using System.Linq.Expressions;
-using System.Collections.Specialized;
-using System.ComponentModel.Design.Serialization;
-using System.Collections.Concurrent;
-using NAudio.CoreAudioApi;
-using System.Drawing;
 
 namespace borktorial
 {
@@ -49,7 +42,7 @@ namespace borktorial
         public static Random rand = new();
         public static Thread drdhtsr;
         public static int jebcounter = 0;
-        public static int munCycle = 0;
+        public static double munCycle = 0;
         public static int tick = 0;
         public static double ninovium = 1;
         public static double schonite = 1;
@@ -57,7 +50,7 @@ namespace borktorial
         public static bool radioStopped = true;
         public static readonly ComputerInfo compi = new();
         public static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
-        public static int[] cfg = [5, 100000, 15];
+        public static int[] cfg = [15, 100000, 15];
         public static readonly string[] lines = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
@@ -112,8 +105,8 @@ namespace borktorial
 			RAM: 640KB conventional, 384KB shadow, 15360KB extended
 			Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
 			OS: NTOSKRNL v4.0, NT-DOS v2.2
-			Video: Standard IBM VGA
-			Sound: PC beeper, AdLib
+			Video: Citrus GT-6500 ISA
+			Sound: PC beeper, SB1.0
 			Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
 			Network: Connected
 			Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
@@ -128,6 +121,14 @@ namespace borktorial
         }
         static void Main(string[] args)
         {
+            AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
+            Thread.Sleep(2000);
+            AnsiConsole.MarkupLine("8192KB [green]OK[/]");
+            AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
+            AnsiConsole.MarkupLine("Modes: EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), [rgb(255,255,0)]Citrus[/] extensions");
+            AnsiConsole.MarkupLine("");
+            Thread.Sleep(5000);
+            Console.Clear();
             if(bktLV.aprtVer != (0, 4, 3, 'a'))
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
@@ -162,7 +163,7 @@ namespace borktorial
                 else
                 {
                     File.AppendAllText("config.ssc", "5;100000;15");
-                    cfg = [5, 100000, 15];
+                    cfg = [15, 100000, 15];
                 }
             }
             catch (Exception ex)
@@ -288,19 +289,20 @@ namespace borktorial
                 bootSw.Stop();
                 shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
+                AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
                 {
                     Thread.Sleep(800);
-                    Console.Write("16384kb ok\r\n");
+                    AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
                 else
                 {
                     Thread.Sleep(2000);
-                    Console.Write("16384kb ok\r\n");
+                    AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
-                Console.WriteLine("Press [F15] to enter SETUP...");
+                AnsiConsole.MarkupLine("Press [white]F11[/] to enter SETUP...");
                 Thread.Sleep(3000);
                 Console.Write("Primary Master...");
                 Thread.Sleep(500);
@@ -320,13 +322,15 @@ namespace borktorial
                 Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Booting from FDD...");
                 Thread.Sleep(rand.Next(500, 1000));
-                Console.Write("fail\r\n");
+                AnsiConsole.Markup("[red]fail[/]\r\n");
                 Thread.Sleep(rand.Next(500, 750));
                 Console.Write("Booting from CD-ROM...");
                 Thread.Sleep(rand.Next(500, 1000));
-                Console.Write("fail\r\n");
+                AnsiConsole.Markup("[red]fail[/]\r\n");
                 Thread.Sleep(rand.Next(500, 750));
                 Console.Write("Booting from HDD...");
+                Thread.Sleep(rand.Next(250, 750));
+                AnsiConsole.Markup("[green]ok![/]\r\n");
                 if (File.Exists("temp_fcBA39-FA31.bin"))
                 {
                     formatkey.SetValue("algl", "waluigi");
@@ -387,7 +391,7 @@ namespace borktorial
                     "Doing small math...",
                     "EMERGENCY: THERE IS A FIRE AT THE WALRUS FACTORY!!!",
                     "Settling Arguement of Periapsis...",
-                    "Merging into `master`...",
+                    "Merging into `main`...",
                     "Sending Val to Vall...",
                     "Doing important things...",
                     "Slapping 'AI' onto everything...",
@@ -407,7 +411,7 @@ namespace borktorial
                     "This is the 35th loading message",
                     "Re-entering atmosphere..."
                     ];
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < rand.Next(5, 16); i++)
                 {
                     Console.Clear();
                     Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
@@ -1628,7 +1632,18 @@ namespace borktorial
             DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
             double sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
-
+            double ht0 = 0;
+            double[] ht0Grph = [0.01, 0.1, 0.2, 0.3, 0.4,
+            0.5, 0.6, 0.7, 0.8, 0.9,
+            1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3,
+            1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65,
+            1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0,
+            1.95, 1.9, 1.85, 1.8, 1.75, 1.7,
+            1.65, 1.6, 1.55, 1.5, 1.45, 1.4,
+            1.35, 1.3, 1.25, 1.2, 1.15, 1.1, 1.05, 1.0,
+            0.9, 0.8, 0.7, 0.6, 0.5,
+            0.4, 0.3, 0.2, 0.1, 0.01];
+            int ht0Idx = 0;
             int lastNewsSecond = -1;
 
             while (true)
@@ -1639,7 +1654,7 @@ namespace borktorial
                 sysstab = Math.Clamp(sC, 0.01, 50);
                 if (tick % mcl == 0)
                 {
-                    munCycle++;
+                    munCycle+=ht0;
                 }
                 if (tick % 10000 == 0 && !specialDays.bktDay)
                 {
@@ -1693,15 +1708,24 @@ namespace borktorial
                             Console.Title = $"broktorial: {splashPick()}";
                         }
                     }
+                    if (tick % 4 == 0)
+                    {
+                        if(ht0Idx > ht0Grph.Length - 1)
+                        {
+                            ht0Idx = 0;
+                        }
+                        ht0Idx++;
+                        ht0 = ht0Grph[ht0Idx];
+                    }
                     lastNewsSecond = DateTime.UtcNow.Second;
                 }
                 int baseValue = 5000;      // Starting risk
-                int scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
+                double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
                 if (specialDays.marsDay)
                 {
                     scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
                 }
-                int effectiveTick = tick * munCycle;
+                double effectiveTick = tick * munCycle;
 
                 crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor))*(int)Math.Ceiling(sysstab);
                 tick++; // equivelant to i0
