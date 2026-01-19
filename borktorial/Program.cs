@@ -1635,7 +1635,7 @@ namespace borktorial
             DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
             double sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
-            double ht0 = 0;
+            double ht0 = 0.01;
             double[] ht0Grph = [0.01, 0.1, 0.2, 0.3, 0.4,
             0.5, 0.6, 0.7, 0.8, 0.9,
             1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3,
@@ -1718,7 +1718,7 @@ namespace borktorial
                             ht0Idx = 0;
                         }
                         ht0Idx++;
-                        ht0 = ht0Grph[ht0Idx];
+                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.05);
                     }
                     lastNewsSecond = DateTime.UtcNow.Second;
                 }
