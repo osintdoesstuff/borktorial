@@ -120,11 +120,12 @@ namespace borktorial
         }
         static void Main(string[] args)
         {
+            // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
             Thread.Sleep(2000);
             AnsiConsole.MarkupLine("8192KB [green]OK[/]");
             AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
-            AnsiConsole.MarkupLine("Modes: EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), [rgb(255,255,0)]Citrus[/] extensions");
+            AnsiConsole.MarkupLine("Modes: EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
             AnsiConsole.MarkupLine("");
             Thread.Sleep(5000);
             Console.Clear();
@@ -1152,6 +1153,10 @@ namespace borktorial
                                         IsBackground = true
                                     }.Start();
                                 }
+                                else
+                                {
+                                    Console.WriteLine($"cannot find: {commin[0]}");
+                                }
                                 while (true)
                                 {
                                     Console.Write('λ');
@@ -1213,7 +1218,7 @@ namespace borktorial
                                 {
                                     newsSizeSum += item.Length;
                                 }
-                                Console.WriteLine("Fetching news...");
+                                Console.WriteLine($"Fetching news (size: {bktStf.byteFormat((ulong)newsSizeSum)})...");
                                 if (!mConnected)
                                 {
                                     Console.WriteLine("Please connect to the Internet.");
@@ -1320,7 +1325,7 @@ namespace borktorial
                             Console.WriteLine($"cannot find: {commin[0]}");
                             break;
                     }
-                    shitLog.createEntry("cmdhndlr", $"User entered command: {commin[0]}", logType.Info);
+                    shitLog.createEntry("cmdhndlr", $"User entered command: {rawCommin}", logType.Info);
                 }
                 // MInor SPecialized EXception service
                 catch (NullReferenceException ex)

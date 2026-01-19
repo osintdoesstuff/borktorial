@@ -46,5 +46,31 @@
             }
             return input;
         }
+        public static string byteFormat(UInt128 bytes) 
+        {
+            if (bytes < (UInt128)Math.Pow(1024, 1))
+                return $"{bytes}B";
+            else if (bytes < (UInt128)Math.Pow(1024, 2))
+                return $"{bytes / (UInt128)Math.Pow(1024, 1)}KB";
+            else if (bytes < (UInt128)Math.Pow(1024, 3))
+                return $"{bytes / (UInt128)Math.Pow(1024, 2)}MB";
+            else if (bytes < (UInt128)Math.Pow(1024, 4))
+                return $"{bytes / (UInt128)Math.Pow(1024, 3)}GB";
+            else if (bytes < (UInt128)Math.Pow(1024, 5))
+                return $"{bytes / (UInt128)Math.Pow(1024, 4)}TB";
+            else if (bytes < (UInt128)Math.Pow(1024, 6))
+                return $"{bytes / (UInt128)Math.Pow(1024, 5)}PB";
+            else if (bytes < (UInt128)Math.Pow(1024, 7))
+                return $"{bytes / (UInt128)Math.Pow(1024, 6)}EB";
+            else if (bytes < (UInt128)Math.Pow(1024, 8))
+                return $"{bytes / (UInt128)Math.Pow(1024, 7)}ZB";
+            else if (bytes < (UInt128)Math.Pow(1024, 9))
+                return $"{bytes / (UInt128)Math.Pow(1024, 8)}YB";
+            else if (bytes < (UInt128)Math.Pow(1024, 10))
+                return $"{bytes / (UInt128)Math.Pow(1024, 9)}RB";
+            else if (bytes < (UInt128)Math.Pow(1024, 11))
+                return $"{bytes / (UInt128)Math.Pow(1024, 10)}QB";
+            else return $"Too big.";
+        }
     }
 }

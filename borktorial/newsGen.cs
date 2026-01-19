@@ -30,7 +30,8 @@ namespace borktorial
             "OEM deals bring <product> to <competitor> systems.",
             "<company> cuts <nr500-5000> jobs amid restructuring.",
             "Service pack <nr1-4> for <product> fixes <nr20-150> known issues.",
-            "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor."
+            "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor.",
+            "Florida <mw> throws baby alligator into <v_102>"
                 ];
 
         static readonly string[] companies = [
@@ -187,6 +188,24 @@ namespace borktorial
             "Electric Cafe",
             "Data Haven"
                 ];
+        static readonly string[] mw = [
+            "man",
+            "woman",
+            "unearthly anomaly"
+                ];
+        static readonly string[] v102 = [
+            "Wendy's",
+            "Enrichment Center",
+            "Cookie mines",
+            "News studio",
+            "Dremelmoth office",
+            "Borktorial Server",
+            "Car dealership",
+            "Arms dealer's house",
+            "Nuclear gas centrifuge",
+            "Baldi's Schoolhouse",
+            "The Nether"
+                ];
 
         public static string Generate()
         {
@@ -215,6 +234,8 @@ namespace borktorial
             {
                 gNe = gNe.Replace("<bbsname>", bbsNameGen());
             }
+            gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
+            gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
 
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);
