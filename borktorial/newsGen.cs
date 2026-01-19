@@ -270,6 +270,9 @@ namespace borktorial
                 gNe = gNe.Replace("<bbsname>", bbsNameGen());
             }
 
+            gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
+            gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
+
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);
 
@@ -277,6 +280,7 @@ namespace borktorial
         }
         public static string bbsNameGen()
         {
+
             string[] bbs_adjectives = ["Silicon", "Digital", "Cyber", "Neon", "Electric", "Data"];
             string[] bbs_nouns = ["Dreams", "Dungeon", "Zone", "Haven", "Cafe", "Nexus"];
             string[] bbs_prefixes = ["The ", ""];
