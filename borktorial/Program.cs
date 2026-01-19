@@ -49,7 +49,7 @@ namespace borktorial
         public static bool radioStopped = true;
         public static readonly ComputerInfo compi = new();
         public static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
-        public static int[] cfg = [15, 100000, 15];
+        public static int[] cfg = [15, 10000, 15];
         public static readonly string[] lines = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
