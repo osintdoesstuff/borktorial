@@ -125,7 +125,7 @@ namespace borktorial
             Thread.Sleep(2000);
             AnsiConsole.MarkupLine("8192KB [green]OK[/]");
             AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
-            AnsiConsole.MarkupLine("Modes: EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
+            AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
             AnsiConsole.MarkupLine("");
             Thread.Sleep(5000);
             Console.Clear();
@@ -144,9 +144,9 @@ namespace borktorial
             {
                 rand = new Random(0x4E54);
             }
+            string cfgFn = "bktcfg.ssc";
             try
             {
-                string cfgFn = "bktcfg.ssc";
                 if (File.Exists(cfgFn)) // Semicolon Separated Config
                 {
                     string configC = File.ReadAllText(cfgFn);
@@ -173,8 +173,8 @@ namespace borktorial
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Config error: {ex.Message}");
-                File.AppendAllText("config.ssc", "5;100000;15");
+                shitLog.createEntry("CFGLDR", $"Config error: {ex.Message} {ex.StackTrace}", logType.Err);
+                File.AppendAllText(cfgFn, "5;100000;15;2");
             }
 
             if (args.Length >= 1 && args[0] == "/waluigi")
@@ -1295,7 +1295,6 @@ namespace borktorial
                             }
                             catch(Exception ex)
                             {
-                                shitLog.createEntry("impulse", $"{ex.ToString}", logType.Err);
                                 if(ex.Message == "NO HOPIUM LEFT!!!")
                                 {
                                     infLoop();
@@ -1371,7 +1370,7 @@ namespace borktorial
 
                 if (rand.Next(0, crshChance) == 0)
                 {
-                    string[] errG = errGen.Generate(); // Pay attention to this "errGen" thing. It'll be important
+                    string[] errG = errGen.Generate();
                     uint errCode = (uint)rand.Next(); // DONTFIXME: The values this shit returns are probably gonna be pretty fuckin' funny
                     ftlCrash(errCode, errG[0], errG[1], false);
                 }
