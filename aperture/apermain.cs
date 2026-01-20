@@ -70,7 +70,7 @@
                 return $"{bytes / (UInt128)Math.Pow(1024, 9)}RB";
             else if (bytes < (UInt128)Math.Pow(1024, 11))
                 return $"{bytes / (UInt128)Math.Pow(1024, 10)}QB";
-            else return $"Too big.";
+            else return $"Yes.";
         }
     }
 }

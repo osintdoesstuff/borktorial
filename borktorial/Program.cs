@@ -128,7 +128,6 @@ namespace borktorial
             AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
             AnsiConsole.MarkupLine("");
             Thread.Sleep(5000);
-            Console.Clear();
             if(bktLV.aprtVer != (0, 4, 3, 'a'))
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
@@ -293,6 +292,7 @@ namespace borktorial
                 }
                 bootSw.Stop();
                 shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
+                Console.Clear();
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
                 Console.WriteLine();

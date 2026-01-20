@@ -1,5 +1,7 @@
 (e) (c) means common. (u) means uncommon. (r) means rare. (e) means weight=0. (m) means only on specialDays.marsDay
 (e) Buncha other tags as well, <{tag}> represents those
+(e) No tag means weight=0 too
+
 (c) Beta than Ever!
 (c) We have Liftoff!
 (c) 18-second prograde burn
