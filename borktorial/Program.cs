@@ -45,6 +45,7 @@ namespace borktorial
         public static int tick = 0;
         public static double ninovium = 1;
         public static double schonite = 1;
+        public static string cfgFn = "bktcfg.ssc";
         public static double sysstab = 1;
         public static bool radioStopped = true;
         public static readonly ComputerInfo compi = new();
@@ -143,11 +144,11 @@ namespace borktorial
             {
                 rand = new Random(0x4E54);
             }
-            string cfgFn = "bktcfg.ssc";
             try
             {
                 if (File.Exists(cfgFn)) // Semicolon Separated Config
                 {
+                    shitLog.createEntry("CFGLDR", $"Loading {cfgFn}...", logType.Info);
                     string configC = File.ReadAllText(cfgFn);
                     string[] cfgR = configC.Split(";");
                     int[] cfgP = new int[256];
@@ -163,11 +164,20 @@ namespace borktorial
                     {
                         shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
                     }
+                    shitLog.createEntry("CFGLDR", "Config loading success!", logType.Info);
                 }
                 else
                 {
-                    File.AppendAllText(cfgFn, "5;10000;15;2");
-                    cfg = [15, 10000, 15, 2];
+                    shitLog.createEntry("CFGLDR", "No config found! Using default!", logType.Warn);
+                    cfg = new int[256];
+                    cfg[0] = 15; // Tick length in ms
+                    cfg[1] = 10000; // Mun cycle length in ticks
+                    cfg[2] = 15; // Unused (this used to be autosave interval but we don't have saves anymore)
+                    cfg[3] = 2; // Version
+                    cfg[4] = 0; // Fail NTGINA find
+                    cfg[5] = 0; // No fun pre-logon boot text
+                    cfg[6] = 0; // No asking for username and password
+                    saveCfg();
                 }
             }
             catch (Exception ex)
@@ -377,6 +387,14 @@ namespace borktorial
                     ftlCrash(0x12345678, "MEM_DETECT_FAIL", "ntxmem", false);
                 }
                 Thread.Sleep(1250);
+                if (cfg[3] == 1)
+                {
+                    Console.WriteLine("CRITICAL: Cannot find NTGINA.DLL. System halted");
+                    while (true)
+                    {
+                        Thread.Sleep(int.MaxValue);
+                    }
+                }
                 string[] loadMsgs = [
                     "Processing...",
                     "Doing big math...",
@@ -415,32 +433,38 @@ namespace borktorial
                     "Insulting Dr. Breen...",
                     "Re-entering atmosphere..."
                     ];
-                for (int i = 0; i < rand.Next(5, 16); i++)
+                if (cfg[5] == 0)
                 {
-                    Console.Clear();
-                    Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
-                    Thread.Sleep(rand.Next(500, 801));
+                    for (int i = 0; i < rand.Next(5, 16); i++)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
+                        Thread.Sleep(rand.Next(500, 801));
+                    }
                 }
                 Console.Clear();
-                while (string.IsNullOrWhiteSpace(username))
+                if (cfg[6] == 0)
                 {
-                    Console.Write("Username: ");
-                    username = Console.ReadLine()?.Trim() ?? "";
-                }
+                    while (string.IsNullOrWhiteSpace(username))
+                    {
+                        Console.Write("Username: ");
+                        username = Console.ReadLine()?.Trim() ?? "";
+                    }
 
-                while (string.IsNullOrWhiteSpace(password))
-                {
-                    Console.Write("Password: ");
-                    password = Console.ReadLine() ?? "";
-                }
+                    while (string.IsNullOrWhiteSpace(password))
+                    {
+                        Console.Write("Password: ");
+                        password = Console.ReadLine() ?? "";
+                    }
 
-                //if (username == "root" && password == "Bacon532!") // this makes no sense on NT
-                //{
-                //    root = true;
-                //}
-                if (username == "SYSTEM" && rand.Next(0, 37) == 0)
-                {
-                    root = true;
+                    //if (username == "root" && password == "Bacon532!") // this makes no sense on NT
+                    //{
+                    //    root = true;
+                    //}
+                    if (username == "SYSTEM" && rand.Next(0, 37) == 0)
+                    {
+                        root = true;
+                    }
                 }
                 Thread timeThread = new(() =>
                 {
@@ -1118,22 +1142,23 @@ namespace borktorial
                         case "":
                             break;
                         case "drinkfood":
-                            Console.Title = "";
+                            Console.TreatControlCAsInput = true;
+                            // just like real psychadelics, it's fun for a bit
+                            // and then it fucking obiliterates everything
+                            File.AppendAllText(cfgFn, ";1");
                             while (true)
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
-                                Console.BackgroundColor = (ConsoleColor)rand.Next(0, 16);
-                                Console.ForegroundColor = (ConsoleColor)rand.Next(0, 16);
-                                Console.Write((char)rand.Next(32, 256));
-                                Console.TreatControlCAsInput = true;
-                                if (Console.Title.Length < 32)
-                                {
-                                    Console.Title += (char)rand.Next(32, 256);
-                                }
-                                if (rand.Next(0, 65536) == 0)
-                                {
-                                    Console.Clear();
-                                }
+                                AnsiConsole.Markup($"[rgb({rand.Next(0,256)},{rand.Next(0, 256)},{rand.Next(0, 256)}) on rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)})][blink][bold]?[/][/][/]");
+                                //Console.Title += (char)rand.Next(32, 256);
+                                //if(Console.Title.Length > 32)
+                                //{
+                                //    Console.Title = "";
+                                //}
+                                //if (rand.Next(0, 65536) == 0)
+                                //{
+                                //    Console.Clear();
+                                //}
                             }
                         case "logtesto":
                             Exception iex = new("DOHASHIDOSHAI");
@@ -1597,6 +1622,21 @@ namespace borktorial
                     }
 
                     break;
+                case 405:
+                    string[] frames = [
+                        "=--\0---\0---",
+                        "-=-\0---\0---",
+                        "--=\0---\0---",
+                        "---\0--=\0---",
+                        "---\0-=-\0---",
+                        "---\0=--\0---",
+                        "---\0---\0=--",
+                        "---\0---\0-=-",
+                        "---\0---\0--=",
+                    ];
+                    playAnim(frames, 500);
+                    Console.WriteLine("WOOAH LOOK AT THAT = GO!");
+                    break;
                 default:
                     break;
             }
@@ -1791,6 +1831,24 @@ namespace borktorial
                 currNews.RemoveAt(0); // Remove first/oldest
             }
         }
+        public static void saveCfg()
+        {
+            string cfgS = "";
+            foreach(var item in cfg)
+            {
+                cfgS += (";" + item.ToString("D10"));
+            }
+            cfgS = cfgS.Remove(0, 1);
+            try
+            {
+                File.Delete(cfgFn);
+            }
+            catch(Exception ex)
+            {
+                shitLog.createEntry("SAVECFG", $"Error: {ex.Message} {ex.StackTrace}", logType.Err);
+            }
+            File.AppendAllText(cfgFn, cfgS);
+        }
         public static void PlayModemSound()
         {
             using var stream = Assembly.GetExecutingAssembly()
@@ -1944,6 +2002,23 @@ namespace borktorial
             root = false;
             jmtrigger = false;
             specialDays.update();
+        }
+        public static void playAnim(string[] frames, int delay, bool clrCns=true, int bg=0, int fg=15)
+        {
+
+            Console.BackgroundColor = (ConsoleColor)bg;
+            Console.ForegroundColor = (ConsoleColor)fg;
+            if (clrCns)
+            {
+                Console.Clear();
+            }
+            foreach(var item in frames)
+            {
+                Console.WriteLine(item.Replace("\0", "\r\n"));
+                Thread.Sleep(delay);
+                Console.Clear();
+            }
+            return;
         }
         public static string parseBorkTag(string exp) 
         {
