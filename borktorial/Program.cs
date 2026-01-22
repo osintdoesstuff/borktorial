@@ -104,7 +104,7 @@ namespace borktorial
 			Also, i like bacon-flavored Shapez. Maybe you could use that for a command?
 			""";
         public static bool jmtrigger = false;
-        public static readonly string sysspecs = """
+        public static readonly string sysspecs = $"""
 			CPU: Intel 486DX C-Step@50MHz
 			RAM: 640KB conventional, 384KB shadow, 15360KB extended
 			Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
@@ -112,7 +112,7 @@ namespace borktorial
 			Video: Citrus GT-6500 ISA
 			Sound: PC beeper, SB1.0
 			Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
-			Network: Connected
+			Network: {mConnected}. Use NETINFO for futher info
 			Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
 			""";
         public static string username = "";
@@ -1319,6 +1319,52 @@ namespace borktorial
                                 MessageBoxDefaultButton.Button1,
                                 MessageBoxOptions.DefaultDesktopOnly,
                                 false);
+                            break;
+                        case "netinfo":
+                            Console.WriteLine("nUtils Utility Pack 1.4 - NETINFO");
+                            Console.WriteLine("Developed by Oog and Grug. (C) 1993,94,95");
+                            Console.WriteLine("Published and supported by Clickcookie. Inc (C) 1994,95\r\n");
+                            Console.WriteLine("Now detecting...");
+                            int iMspeed = mSpeed;
+                            iMspeed += rand.Next(-500, 501);
+                            iMspeed -= rand.Next(-500, 501);
+                            string mCtStr = "none";
+                            if(mCt == mConnectTypes.Null)
+                            {
+                                mCtStr = "none";
+                            }
+                            else if(mCt == mConnectTypes.dUp)
+                            {
+                                mCtStr = "dialup";
+                            }
+                            else if(mCt == mConnectTypes.dupCompressed)
+                            {
+                                mCtStr = "compressed dialup";
+                            }
+                            else if(mCt == mConnectTypes.sat)
+                            {
+                                mCtStr = "satellite";
+                            }
+                            else
+                            {
+                                mCtStr = "unknown";
+                            }
+                            Thread.Sleep(rand.Next(1250, 5000));
+                            if (!mConnected)
+                            {
+                                Console.WriteLine("connection type: none\r\n" +
+                                    "speed: 0B/s\r\n" +
+                                    "connected: no\r\n" +
+                                    "variance: ???");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"connection type: {mCtStr}\r\n" +
+                                    $"speed: {bktStf.byteFormat((UInt128)iMspeed)}/s\r\n" +
+                                    $"connected: yes\r\n" +
+                                    $"variance range: -{bktStf.byteFormat((UInt128)(iMspeed/4.5))}/s to {bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s"
+                                    );
+                            }
                             break;
                         case "impulse":
                             try
