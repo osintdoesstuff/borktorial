@@ -16,7 +16,7 @@
                 _ => "unk"
             };
             File.AppendAllText("bktLog.txt",
-                $"{DateTime.UtcNow} {typeStr}: [{proc}]: {descr}\r\n");
+                $"[{DateTime.UtcNow.ToString("R")}] {typeStr}: [{proc}]: {descr}\r\n");
         }
     }
     public enum logType
