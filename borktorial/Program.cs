@@ -483,7 +483,7 @@ namespace borktorial
                 Thread msVarier = new(interspeed);
                 msVarier.Start();
                 Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
-                Thread.Sleep(5000); // wait for the server to initialize
+                Thread.Sleep(rand.Next(750, 1500));
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
                 if (specialDays.bktDay)
                 {

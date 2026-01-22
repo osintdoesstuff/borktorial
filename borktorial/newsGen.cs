@@ -296,7 +296,7 @@ namespace borktorial
             gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
             gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
             gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
-            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(wpets.Length)]);
+            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(scpclasses.Length)]);
 
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);
