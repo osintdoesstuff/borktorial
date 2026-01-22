@@ -31,7 +31,8 @@ namespace borktorial
             "<company> cuts <nr500-5000> jobs amid restructuring.",
             "Service pack <nr1-4> for <product> fixes <nr20-150> known issues.",
             "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor.",
-            "Florida <mw> throws baby alligator into <v_102>"
+            "Florida <mw> throws baby alligator into <v_102>",
+            "Pet <wpet>. Dangerous fad or juicy new market?"
                 ];
 
         static readonly string[] companies = [
@@ -206,6 +207,27 @@ namespace borktorial
             "Baldi's Schoolhouse",
             "The Nether"
                 ];
+        static readonly string[] wpets = [
+            "rocks",
+            "stickbugs", // (side note: you got stickbugged. 6 or so years after that became completely irrelevant)
+            "LSTMs",
+            "GLaDOS's (GLaDi? What would be the plural of \"GLaDOS\". News station doesn't know that's for sure)",
+            "giant squids",
+            "<scpclass>-class SCPs",
+            "molluscs",
+            "humans",
+            "morons"
+                ];
+        static readonly string[] scpclasses = [
+            "Safe",
+            "Euclid",
+            "Keter",
+            "Thaumiel (did we spell that right?)",
+            "Apollyon (again, did we spell that right?)",
+            "Decommisioned",
+            "Pending",
+            "Explained"
+                ];
 
         public static string Generate()
         {
@@ -236,7 +258,8 @@ namespace borktorial
             }
             gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
             gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
-
+            gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
+            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(wpets.Length)]);
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);
 
@@ -272,6 +295,8 @@ namespace borktorial
 
             gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
             gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
+            gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
+            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(wpets.Length)]);
 
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);

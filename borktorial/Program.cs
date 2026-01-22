@@ -33,7 +33,11 @@ namespace borktorial
         public static int mSpeed = 1800;
         public static mConnectTypes mCt = mConnectTypes.Null;
         public static int crshChance = 10000;
-        public static readonly List<string> currNews = new(5);
+        public static readonly List<string> currNews = new(4096); /* 
+                                                                   While only 5 of the slots are used,
+                                                                   For some fucking reason, this OOBs every so often so fuck it
+                                                                   we'll give it 4096 slots.
+                                                                   */
         public static bool virused = false;
         public static bool ballmerMode = false;
         public static readonly bool __5a85 = OperatingSystem.IsWindows();
@@ -479,6 +483,7 @@ namespace borktorial
                 Thread msVarier = new(interspeed);
                 msVarier.Start();
                 Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
+                Thread.Sleep(5000); // wait for the server to initialize
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
                 if (specialDays.bktDay)
                 {
@@ -486,10 +491,15 @@ namespace borktorial
                 }
             }
             // initialize news feed
-            for (int i = 0; i < 15; i++)
+            try
             {
-                addNews(newsGen.Generate());
+                for (int i = 0; i < 15; i++)
+                {
+                    addNews(newsGen.Generate());
+                }
             }
+            catch(IndexOutOfRangeException) { currNews.Clear(); }
+
             while (true)
             {
                 Console.Write("C:\\TW8000\\>");
