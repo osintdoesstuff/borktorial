@@ -6,12 +6,14 @@ using System.Reflection;
 using Spectre.Console;
 using Microsoft.VisualBasic.Devices;
 using aperture;
-
+using System.Media;
+using System.Windows.Forms;
+using Panel = Spectre.Console.Panel;
 namespace borktorial
 {
-    public static class Program
+    public class Program
     {
-        static readonly string cat = """
+        public static readonly string cat = """
 			 |\\_,-~/
 			 / _  _ |    ,--.
 			(  @  @ )   / ,-'
@@ -22,38 +24,38 @@ namespace borktorial
 			  || |-_\__   /
 			 ((_/`(____,-'
 			""";
-        static (int maj, int min, int pch, char rv) bktver = (0, 5, 6, 'd');
-        static (int maj, int min, int pch, char rv) pubver = (1, 1, 0, 'b');
-        static bool jebconnect = false;
-        static bool mConnected = false;
-        static bool forceNoBoot = false;
-        static bool failIntaAlways = false;
-        static int mSpeed = 1800;
-        static int crshChance = 10000;
-        static readonly List<string> currNews = new(5);
-        static bool virused = false;
-        static bool ballmerMode = false;
-        static readonly bool __5a85 = OperatingSystem.IsWindows();
-        static bool gordonSummoned = File.Exists("GORDON");
+        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 7, 'b');
+        public static (int maj, int min, int pch, char rv) pubver = (1, 2, 1, 'a');
+        public static bool jebconnect = false;
+        public static bool mConnected = false;
+        public static bool forceNoBoot = false;
+        public static bool failIntaAlways = false;
+        public static int mSpeed = 1800;
+        public static mConnectTypes mCt = mConnectTypes.Null;
+        public static int crshChance = 10000;
+        public static readonly List<string> currNews = new(4096); /* 
+                                                                   While only 5 of the slots are used,
+                                                                   For some fucking reason, this OOBs every so often so fuck it
+                                                                   we'll give it 4096 slots.
+                                                                   */
+        public static bool virused = false;
+        public static bool ballmerMode = false;
+        public static readonly bool __5a85 = OperatingSystem.IsWindows();
+        public static bool gordonSummoned = File.Exists("GORDON");
         public static Random rand = new();
-        static Thread drdhtsr;
-        static int jebcounter = 0;
-        static int munCycle = 0;
-        static int tick = 0;
-        static double ninovium = 1;
-        static double schonite = 1;
-        static double sysstab = 1;
-        static readonly ComputerInfo compi = new();
-        static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
-        static int[] cfg = [5, 100000, 15];
-        static readonly float wSeed = (
-            (float)rand.Next(0, 6) +
-            (float)rand.Next(0, 4) +
-            (float)rand.Next(0, 10) +
-            0 +
-            0)/5;
-        public static Random wrand = new((int)wSeed * 1000);
-        static readonly string[] lines = [
+        public static Thread drdhtsr;
+        public static int jebcounter = 0;
+        public static double munCycle = 0;
+        public static int tick = 0;
+        public static double ninovium = 1;
+        public static double schonite = 1;
+        public static string cfgFn = "bktcfg.ssc";
+        public static double sysstab = 1;
+        public static bool radioStopped = true;
+        public static readonly ComputerInfo compi = new();
+        public static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
+        public static int[] cfg = [15, 10000, 15, 2];
+        public static readonly string[] lines = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
             "Wisely done, Mr. Freeman",
@@ -69,7 +71,7 @@ namespace borktorial
             "Science isn't about WHY. It's about WHY NOT. Why is so much of our science dangerous? Why not marry safe science if you love it so much. In fact, why not invent a special safety door that won't hit you on the butt on the way out, because you are fired.",
             "Dr. Freeman to Anomalous Materials test laboratory immediately."
             ];
-        static readonly string[] linesAttr = [
+        public static readonly string[] linesAttr = [
             "-Cave Johnson",
             "-G-man",
             "-Dr. Breen",
@@ -79,7 +81,7 @@ namespace borktorial
             "-Aristotle",
             "-Sun Tzu"
             ];
-        static readonly string[] linesBooks = [
+        public static readonly string[] linesBooks = [
             "How to fire test subjects",
             "How to ruin a science lab",
             "How to blame Black Mesa for issues you've had",
@@ -92,7 +94,7 @@ namespace borktorial
             "On the Art of Blowing Shit Up",
             "How to blame Aperture Science for issues you've had"
             ];
-        static readonly String JEBMSG = """
+        public static readonly string JEBMSG = """
 			Jebediah Kerman did not die
 			He survived the Shitfuck 15 mission.
 			Press K to celebrate.
@@ -101,24 +103,43 @@ namespace borktorial
 
 			Also, i like bacon-flavored Shapez. Maybe you could use that for a command?
 			""";
-        static bool jmtrigger = false;
-        static readonly string sysspecs = """
+        public static bool jmtrigger = false;
+        public static readonly string sysspecs = $"""
 			CPU: Intel 486DX C-Step@50MHz
 			RAM: 640KB conventional, 384KB shadow, 15360KB extended
 			Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
 			OS: NTOSKRNL v4.0, NT-DOS v2.2
-			Video: Standard IBM VGA
-			Sound: PC beeper, AdLib
+			Video: Citrus GT-6500 ISA
+			Sound: PC beeper, SB1.0
 			Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
-			Network: Connected
+			Network: {mConnected}. Use NETINFO for futher info
 			Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
 			""";
-        static string username = "";
-        static string password = "";
-        static bool root = false;
-        static void Main(string[] args)
+        public static string username = "";
+        public static string password = "";
+        public static bool root = false;
+        public static void publicMain(string[] mArgs)
         {
             resetState();
+            Main(mArgs);
+        }
+        static void Main(string[] args)
+        {
+            // hide the init time away
+            AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
+            Thread.Sleep(2000);
+            AnsiConsole.MarkupLine("8192KB [green]OK[/]");
+            AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
+            AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
+            AnsiConsole.MarkupLine("");
+            Thread.Sleep(5000);
+            if(bktLV.aprtVer != (0, 4, 3, 'a'))
+            {
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
+            }
+            Stopwatch bootSw = new Stopwatch();
+            bootSw.Start();
+            Debug.WriteLine("tada!");
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
             {
                 Thread.Sleep(int.Parse(args[1]));
@@ -129,9 +150,10 @@ namespace borktorial
             }
             try
             {
-                if (File.Exists("config.ssc")) // Semicolon Separated Config
+                if (File.Exists(cfgFn)) // Semicolon Separated Config
                 {
-                    string configC = File.ReadAllText("config.ssc");
+                    shitLog.createEntry("CFGLDR", $"Loading {cfgFn}...", logType.Info);
+                    string configC = File.ReadAllText(cfgFn);
                     string[] cfgR = configC.Split(";");
                     int[] cfgP = new int[256];
                     int iteration = 0;
@@ -142,17 +164,30 @@ namespace borktorial
                         iteration++;
                     }
                     cfg = cfgP;
+                    if (cfg[3] != 2)
+                    {
+                        shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
+                    }
+                    shitLog.createEntry("CFGLDR", "Config loading success!", logType.Info);
                 }
                 else
                 {
-                    File.AppendAllText("config.ssc", "5;100000;15");
-                    cfg = [5, 100000, 15];
+                    shitLog.createEntry("CFGLDR", "No config found! Using default!", logType.Warn);
+                    cfg = new int[256];
+                    cfg[0] = 15; // Tick length in ms
+                    cfg[1] = 10000; // Mun cycle length in ticks
+                    cfg[2] = 15; // Unused (this used to be autosave interval but we don't have saves anymore)
+                    cfg[3] = 2; // Version
+                    cfg[4] = 0; // Fail NTGINA find
+                    cfg[5] = 0; // No fun pre-logon boot text
+                    cfg[6] = 0; // No asking for username and password
+                    saveCfg();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Config error: {ex.Message}");
-                File.AppendAllText("config.ssc", "5;100000;15");
+                shitLog.createEntry("CFGLDR", $"Config error: {ex.Message} {ex.StackTrace}", logType.Err);
+                File.AppendAllText(cfgFn, "5;100000;15;2");
             }
 
             if (args.Length >= 1 && args[0] == "/waluigi")
@@ -178,6 +213,7 @@ namespace borktorial
                 {
                     mSpeed = 8192;
                     mConnected = true;
+                    mCt = mConnectTypes.dbg;
                 }
                 if (args.Length >= 2 && string.Join(' ', args).Contains("NOBMPAR"))
                 {
@@ -255,11 +291,10 @@ namespace borktorial
                 Console.WriteLine("  * The DLL is corrupted");
                 Console.WriteLine("  * Your copy was tampered with somehow");
                 Console.WriteLine("  * The program just hates you in particular\r\n");
+                Console.WriteLine("Retry in 10 seconds.");
                 shitLog.createEntry("INTA", "The INTA verification failed.", logType.Err);
-                while (true)
-                {
-                    Thread.Sleep(int.MaxValue);
-                }
+                Thread.Sleep(10000);
+                publicMain([]);
             }
             if (!forceNoBoot)
             {
@@ -269,37 +304,54 @@ namespace borktorial
                 {
                     Console.Title = $"broktorial: {splashPick()}";
                 }
-                Console.WriteLine($"GLaBIOS 3.14 Revision C (build {getBuildNum()})");
+                bootSw.Stop();
+                shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
+                Console.Clear();
+                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
+                AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
                 {
                     Thread.Sleep(800);
-                    Console.Write("16384kb ok\r\n");
+                    AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
                 else
                 {
                     Thread.Sleep(2000);
-                    Console.Write("16384kb ok\r\n");
+                    AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
-                Console.WriteLine("Press [F15] to enter SETUP...");
+                AnsiConsole.MarkupLine("Press [white]F11[/] to enter SETUP...");
                 Thread.Sleep(3000);
                 Console.Write("Primary Master...");
                 Thread.Sleep(500);
                 Console.Write("Landgate Xtreme ATA Drive [4096MB]\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Primary Slave...");
                 Thread.Sleep(500);
                 Console.Write("Pholops D.I.C.K 8x XD-ROM drive\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Master...");
                 Thread.Sleep(500);
                 Console.Write("None\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Slave...");
                 Thread.Sleep(500);
-                Console.Write("None\r\n");
-                Console.WriteLine("Booting from HDD...");
+                Console.Write("None\r\n\r\n");
+                Thread.Sleep(rand.Next(500, 1000));
+                Console.Write("Booting from FDD...");
+                Thread.Sleep(rand.Next(500, 1000));
+                AnsiConsole.Markup("[red]fail[/]\r\n");
+                Thread.Sleep(rand.Next(500, 750));
+                Console.Write("Booting from CD-ROM...");
+                Thread.Sleep(rand.Next(500, 1000));
+                AnsiConsole.Markup("[red]fail[/]\r\n");
+                Thread.Sleep(rand.Next(500, 750));
+                Console.Write("Booting from HDD...");
+                Thread.Sleep(rand.Next(250, 750));
+                AnsiConsole.Markup("[green]ok![/]\r\n");
                 if (File.Exists("temp_fcBA39-FA31.bin"))
                 {
-                    File.Encrypt("temp_fcBA39-FA31.bin");
                     formatkey.SetValue("algl", "waluigi");
                     Console.Clear();
                     Console.WriteLine("\r\nNo boot device found.");
@@ -339,67 +391,84 @@ namespace borktorial
                     ftlCrash(0x12345678, "MEM_DETECT_FAIL", "ntxmem", false);
                 }
                 Thread.Sleep(1250);
+                if (cfg[3] == 1)
+                {
+                    Console.WriteLine("CRITICAL: Cannot find NTGINA.DLL. System halted");
+                    while (true)
+                    {
+                        Thread.Sleep(int.MaxValue);
+                    }
+                }
                 string[] loadMsgs = [
                     "Processing...",
-                "Doing big math...",
-                "Importing processing framework...",
-                "Waiting for HL3...",
-                "Stealing gmod loading screen ideas...",
-                "Wasting time...",
-                "Doing nothing...",
-                "Playing KSP...",
-                "i use WinNT btw",
-                "Wasting your time...",
-                "Loading...",
-                "Welcome to Zombo.com",
-                "Stealing Gordon Freeman's crowbar...",
-                "Participating in the 7-hour war...",
-                "Getting colonized by the British...",
-                "Doing small math...",
-                "EMERGENCY: THERE IS A FIRE AT THE WALRUS FACTORY!!!",
-                "Settling Arguement of Periapsis...",
-                "Merging into `master`...",
-                "Sending Val to Vall...",
-                "Doing important things...",
-                "Slapping 'AI' onto everything...",
-                "Trick XOR treating...",
-                "Piss.",
-                "Coupling engines...",
-                "Decoupling decoupler...",
-                "Installing KSRSS...",
-                "Calculating friction coefficient of sand...",
-                "Calling all stations...",
-                "Releasing HL3...",
-                "Installing Aperture Science Advanced Multi-Iteration Addition Processors (known in some circles as 'multipliers')",
-                "Discarding Zen of Python...",
-                "Breathing oxygen...",
-                "Segmentation fault.",
-                "Insulting Dr. Breen...",
-                "This is the 35th loading message",
-                "Re-entering atmosphere..."
+                    "Doing big math...",
+                    "Importing processing framework...",
+                    "Waiting for HL3...",
+                    "Stealing gmod loading screen ideas...",
+                    "Wasting time...",
+                    "Doing nothing...",
+                    "Playing KSP...",
+                    "i use WinNT btw",
+                    "Wasting your time...",
+                    "Loading...",
+                    "Welcome to Zombo.com",
+                    "Stealing Gordon Freeman's crowbar...",
+                    "Participating in the 7-hour war...",
+                    "Getting colonized by the British...",
+                    "Doing small math...",
+                    "EMERGENCY: THERE IS A FIRE AT THE WALRUS FACTORY!!!",
+                    "Settling Arguement of Periapsis...",
+                    "Merging into `main`...",
+                    "Sending Val to Vall...",
+                    "Doing important things...",
+                    "Slapping 'AI' onto everything...",
+                    "Trick XOR treating...",
+                    "Piss.",
+                    "Coupling engines...",
+                    "Decoupling decoupler...",
+                    "Installing KSRSS...",
+                    "Calculating friction coefficient of sand...",
+                    "Calling all stations...",
+                    "Releasing HL3...",
+                    "Installing Aperture Science Advanced Multi-Iteration Addition Processors (known in some circles as 'multipliers')",
+                    "Discarding Zen of Python...",
+                    "Breathing oxygen...",
+                    "Segmentation fault.",
+                    "Insulting Dr. Breen...",
+                    "Re-entering atmosphere..."
                     ];
-                for (int i = 0; i < 16; i++)
+                if (cfg[5] == 0)
                 {
-                    Console.Clear();
-                    Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
-                    Thread.Sleep(rand.Next(500, 801));
+                    for (int i = 0; i < rand.Next(5, 16); i++)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
+                        Thread.Sleep(rand.Next(500, 801));
+                    }
                 }
                 Console.Clear();
-                while (string.IsNullOrWhiteSpace(username))
+                if (cfg[6] == 0)
                 {
-                    Console.Write("Username: ");
-                    username = Console.ReadLine()?.Trim() ?? "";
-                }
+                    while (string.IsNullOrWhiteSpace(username))
+                    {
+                        Console.Write("Username: ");
+                        username = Console.ReadLine()?.Trim() ?? "";
+                    }
 
-                while (string.IsNullOrWhiteSpace(password))
-                {
-                    Console.Write("Password: ");
-                    password = Console.ReadLine() ?? "";
-                }
+                    while (string.IsNullOrWhiteSpace(password))
+                    {
+                        Console.Write("Password: ");
+                        password = Console.ReadLine() ?? "";
+                    }
 
-                if (username == "root" && password == "Bacon532!")
-                {
-                    root = true;
+                    //if (username == "root" && password == "Bacon532!") // this makes no sense on NT
+                    //{
+                    //    root = true;
+                    //}
+                    if (username == "SYSTEM" && rand.Next(0, 37) == 0)
+                    {
+                        root = true;
+                    }
                 }
                 Thread timeThread = new(() =>
                 {
@@ -414,6 +483,7 @@ namespace borktorial
                 Thread msVarier = new(interspeed);
                 msVarier.Start();
                 Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
+                Thread.Sleep(rand.Next(750, 1500));
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
                 if (specialDays.bktDay)
                 {
@@ -421,19 +491,19 @@ namespace borktorial
                 }
             }
             // initialize news feed
-            for (int i = 0; i < 15; i++)
+            try
             {
-                AddNews(newsGen.Generate());
+                for (int i = 0; i < 15; i++)
+                {
+                    addNews(newsGen.Generate());
+                }
             }
+            catch(IndexOutOfRangeException) { currNews.Clear(); }
+
             while (true)
             {
                 Console.Write("C:\\TW8000\\>");
-                string rawCommin = Console.ReadLine();
-                if(rawCommin == null)
-                {
-                    // null guard
-                    rawCommin = "";
-                }
+                string rawCommin = Console.ReadLine() ?? "";
                 string[] commin = rawCommin.ToLower().Split(' ');
                 try
                 {
@@ -480,7 +550,6 @@ namespace borktorial
                                         {
                                             switch (commin[2])
                                             {
-                                                // Fun note: dl speeds are actually accurate to ones on a 9600bps modem
                                                 case "hl3":
                                                     Console.WriteLine("No.");
                                                     Console.WriteLine("\r\nDid you mean: pkgmngr install *hlvr*");
@@ -508,7 +577,7 @@ namespace borktorial
                                                     int pkgSize = rand.Next(16384, 1048576);
                                                     Console.WriteLine($"Installing {pkgSize}B package...");
                                                     Thread.Sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
-                                                    if (rand.Next(1, 256) == 255)
+                                                    if (rand.Next(1, 256) == 255 && (!specialDays.marsDay))
                                                     {
                                                         virused = true;
                                                     }
@@ -530,14 +599,14 @@ namespace borktorial
                                 else
                                 {
                                     Console.WriteLine("Please connect to the Internet.");
-                                    Console.WriteLine("Found 1 ISP in isps.cfg file: Fuckston Communications Services. 65536.65536.301.201");
+                                    Console.WriteLine("Found 1 ISP in isps.cfg file: Fuckston Communications Services. 1-800-intnet");
                                 }
                             }
                             break;
                         case "reboot":
                             if (virused == false)
                             {
-                                Main(["vs", "49"]);
+                                publicMain(["vs", "49"]);
                             }
                             if (virused == true)
                             {
@@ -579,6 +648,9 @@ namespace borktorial
                                 Console.WriteLine("Computer is clean.");
                                 break;
                             }
+                            break;
+                        case "win":
+                            Console.WriteLine("Failed to load VMM32.VXD. You must reinstall Windows");
                             break;
                         case "dbg::spectre::console":
                             AnsiConsole.MarkupLine("[blue][bold]Test![/][/]");
@@ -712,11 +784,7 @@ namespace borktorial
                             break;
                         case "lotto":
                             Console.Write("Enter lotto numbers: ");
-                            string userNums = Console.ReadLine().Replace("-", "").ToUpper();
-                            if(userNums == null)
-                            {
-                                userNums = "";
-                            }
+                            string userNums = Console.ReadLine().Replace("-", "").ToUpper() ?? "";
                             string actual;
                             do
                             {
@@ -727,7 +795,7 @@ namespace borktorial
                         case "shutdown":
                             Environment.Exit(0);
                             break; // this is unreachable code but the CSC needs it to compile
-                        case "test-dbg::toggle_virused":
+                        case "dbg::virusedToggle":
                             virused = !virused;
                             break;
                         case "color":
@@ -866,7 +934,7 @@ namespace borktorial
                                     }
                                 }
                             }
-                            if (commin[1] == "--nonormalcyallowed" || (System.DateTime.Now.Month == 4 && System.DateTime.Now.Day == 1))
+                            if (commin[1] == "--nonormalcyallowed" || specialDays.aprilfool)
                             {
                                 for (ulong i = 0; i < ulong.MaxValue; i++)
                                 {
@@ -900,7 +968,7 @@ namespace borktorial
                             Console.WriteLine("  format                    - Format drive");
                             Console.WriteLine();
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
-                                "\r\nNote: 65536.65536.301.201");
+                                "\r\nNote: Call 1-800-intnet for free internet");
                             break;
                         case "dohashidoshai!":
                             Console.WriteLine("HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF");
@@ -971,7 +1039,7 @@ namespace borktorial
                                                     if (i > 485824)
                                                     {
                                                         File.AppendAllText($"temp_fcBA39-FA31.bin", errGen.sf15(8192, 0));
-                                                        Main(["BABOON", "LAGOON"]);
+                                                        publicMain(["BABOON", "LAGOON"]);
                                                     }
                                                 }
                                                 break;
@@ -988,42 +1056,13 @@ namespace borktorial
                             Console.WriteLine(sysspecs);
                             break;
                         case "cat":
-                            int consoleWidth = Console.WindowWidth;
-                            string[] catLines = cat.Split(Environment.NewLine);
-
-                            int catWidth = 0;
-                            foreach (var line in catLines)
-                                if (line.Length > catWidth)
-                                    catWidth = line.Length;
-
-                            int startPos = consoleWidth - catWidth;
-                            int endPos = 0;
-
-                            for (int pos = startPos; pos >= endPos; pos--)
-                            {
-                                for (int y = 0; y < catLines.Length; y++)
-                                {
-                                    Console.SetCursorPosition(Math.Max(pos, 0), y);
-                                    string lineToPrint = catLines[y];
-
-                                    if (pos < 0)
-                                    {
-                                        lineToPrint = lineToPrint.Substring(-pos);
-                                    }
-
-                                    Console.Write(lineToPrint);
-                                }
-
-                                Thread.Sleep(100); // adjust speed
-
-                                for (int y = 0; y < catLines.Length; y++)
-                                {
-                                    Console.SetCursorPosition(0, y);
-                                    Console.Write(new string(' ', consoleWidth));
-                                }
-                            }
-                            Thread.Sleep(3500);
-                            Console.Clear();
+                            catGoBrr(100);
+                            break;
+                        case "slowcat":
+                            catGoBrr(200);
+                            break;
+                        case "fastcat":
+                            catGoBrr(50);
                             break;
                         case "check_unknown_ints":
                             Console.WriteLine("[INT 5Fh] Link to Kerbal Space Center success!");
@@ -1047,12 +1086,17 @@ namespace borktorial
                             {
                                 switch (commin[1])
                                 {
-                                    case "65536.65536.301.201":
+                                    case "1-800-intnet":
                                         Console.WriteLine("Dialing...");
                                         PlayModemSound();
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
+                                        if (specialDays.marsDay)
+                                        {
+                                            mSpeed += (mSpeed/4);
+                                        }
+                                        mCt = mConnectTypes.dUp;
                                         break;
                                     case "1-800-fastnet":
                                         Console.WriteLine("Dialing...");
@@ -1060,6 +1104,11 @@ namespace borktorial
                                         Console.WriteLine("Connected to Aperture V.32bis-compressed");
                                         mSpeed = 2000; // 16000bps
                                         mConnected = true;
+                                        if (specialDays.marsDay)
+                                        {
+                                            mSpeed += (mSpeed / 4);
+                                        }
+                                        mCt = mConnectTypes.dupCompressed;
                                         break;
                                     default:
                                         Console.WriteLine("Dialing...");
@@ -1074,6 +1123,11 @@ namespace borktorial
                             Thread.Sleep(rand.Next(2000, 3000));
                             mSpeed = 524288;
                             mConnected = true;
+                            if (specialDays.marsDay)
+                            {
+                                mSpeed += (mSpeed / 4);
+                            }
+                            mCt = mConnectTypes.etr;
                             Console.Write("Done!\r\n");
                             break;
                         case "satconnect":
@@ -1084,60 +1138,43 @@ namespace borktorial
                             Thread.Sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
+                            if (specialDays.marsDay)
+                            {
+                                mSpeed += (mSpeed / 4);
+                            }
+                            mCt = mConnectTypes.sat;
                             Console.Write($"Connected! Speed: {(float)mSpeed / (float)1024:F2}KB/s\r\n");
                             break;
                         case "This_command_is_not_actually_accessible_under_NORMAL_Cir**CUM**stances_**LOL**":
                             File.Create("GORDON").Dispose();
                             ftlCrash(0xCAFEBABE, "Woah, how did you access that?", "surprised-pikachu.jpg", false);
                             break;
-                        case "error_gen":
-                            string[] egTestCMD = errGen.Generate();
-                            Console.WriteLine($"-- {egTestCMD[0]} -- {egTestCMD[1]} --");
-                            break;
                         case "":
                             break;
-                        case "debug_crash":
-                            switch (commin[1])
-                            {
-                                case "true":
-                                    ftlCrash((uint)rand.Next(), "UNKNOWN_ERROR", "ERRHNDLR.SYS", false);
-                                    break;
-                                case "false":
-                                    ftlCrash((uint)rand.Next(), "BORK", "TESTY", true);
-                                    break;
-                            }
-                            break;
-                        case "time":
-                            string[] ampams = ["AM", "PM"];
-                            string ampam = ampams[rand.Next(0, 2)];
-                            Console.WriteLine($"The time is {tick / 216000}:{tick / 3600}:{tick / 60}{ampam}");
-                            break;
-                        case "date":
-                            Console.WriteLine("The date is 12/31/1995");
-                            break;
                         case "drinkfood":
-                            Console.Title = "";
+                            Console.TreatControlCAsInput = true;
+                            // just like real psychadelics, it's fun for a bit
+                            // and then it fucking obiliterates everything
+                            File.AppendAllText(cfgFn, ";1");
                             while (true)
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
-                                Console.BackgroundColor = (ConsoleColor)rand.Next(0, 16);
-                                Console.ForegroundColor = (ConsoleColor)rand.Next(0, 16);
-                                Console.Write((char)rand.Next(32, 256));
-                                Console.TreatControlCAsInput = true;
-                                if (Console.Title.Length < 32)
-                                {
-                                    Console.Title += (char)rand.Next(32, 256);
-                                }
-                                if (rand.Next(0, 65536) == 0)
-                                {
-                                    Console.Clear();
-                                }
+                                AnsiConsole.Markup($"[rgb({rand.Next(0,256)},{rand.Next(0, 256)},{rand.Next(0, 256)}) on rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)})][blink][bold]?[/][/][/]");
+                                //Console.Title += (char)rand.Next(32, 256);
+                                //if(Console.Title.Length > 32)
+                                //{
+                                //    Console.Title = "";
+                                //}
+                                //if (rand.Next(0, 65536) == 0)
+                                //{
+                                //    Console.Clear();
+                                //}
                             }
                         case "logtesto":
                             Exception iex = new("DOHASHIDOSHAI");
                             throw new Exception("BORKYBORK", iex);
                         case "lambda":
-                            DateTime rightFuckingNow = DateTime.Now;
+                            DateTime rightFuckingNow = DateTime.UtcNow;
                             bool hlDay = false;
                             if (rightFuckingNow.Month == 11)
                             {
@@ -1155,6 +1192,10 @@ namespace borktorial
                                     {
                                         IsBackground = true
                                     }.Start();
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"cannot find: {commin[0]}");
                                 }
                                 while (true)
                                 {
@@ -1217,16 +1258,19 @@ namespace borktorial
                                 {
                                     newsSizeSum += item.Length;
                                 }
-                                Console.WriteLine("Fetching news...");
+                                Console.WriteLine($"Fetching news (size: {bktStf.byteFormat((ulong)newsSizeSum)})...");
                                 if (!mConnected)
                                 {
-                                    Console.WriteLine("Please connct to the Internet.");
+                                    Console.WriteLine("Please connect to the Internet.");
                                     break;
                                 }
                                 Thread.Sleep(newsSizeSum / mSpeed);
                                 foreach (var item in currNews)
                                 {
-                                    Console.WriteLine($"NEWS: {item}");
+                                    if (!item.StartsWith("::p_"))
+                                    {
+                                        Console.WriteLine($"NEWS: {item}");
+                                    }
                                     Thread.Sleep(150);
                                 }
                                 break;
@@ -1234,9 +1278,26 @@ namespace borktorial
                             catch (Exception ex)
                             {
                                 Console.WriteLine("A error occurred while fetching the news.");
-                                shitLog.createEntry("[NEWS]", $"{ex.Message} {ex.StackTrace}", logType.Err);
+                                shitLog.createEntry("NEWS", $"{ex.Message} {ex.StackTrace}", logType.Err);
                                 break;
                             }
+                        case "radio":
+                            if (!specialDays.marsDay)
+                            {
+                                Console.WriteLine("Now listening: 89.25MHz. The Human Music");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
+                            }
+                                sf59("msc_canyon");
+                            Thread rLoop = new(() =>
+                            {
+                                radioLoop("rd0.wav");
+                            });
+                            rLoop.Start();
+                            radioStopped = !radioStopped;
+                            break;
                         case "the_most_useless_command_ever":
                             using (WebClient client = new())
                             {
@@ -1251,6 +1312,87 @@ namespace borktorial
                                     UseShellExecute = true
                                 });
                             }
+                            break;
+                        case "msgbox":
+                            MessageBox.Show("THE MAGIC OF WINDOWS FORMS!", "bkt",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1,
+                                MessageBoxOptions.DefaultDesktopOnly,
+                                false);
+                            break;
+                        case "netinfo":
+                            Console.WriteLine("nUtils Utility Pack 1.4 - NETINFO");
+                            Console.WriteLine("Developed by Oog and Grug. (C) 1993,94,95");
+                            Console.WriteLine("Published and supported by Clickcookie. Inc (C) 1994,95\r\n");
+                            Console.WriteLine("Now detecting...");
+                            int iMspeed = mSpeed;
+                            iMspeed += rand.Next(-500, 501);
+                            iMspeed -= rand.Next(-500, 501);
+                            string mCtStr = "none";
+                            if(mCt == mConnectTypes.Null)
+                            {
+                                mCtStr = "none";
+                            }
+                            else if(mCt == mConnectTypes.dUp)
+                            {
+                                mCtStr = "dialup";
+                            }
+                            else if(mCt == mConnectTypes.dupCompressed)
+                            {
+                                mCtStr = "compressed dialup";
+                            }
+                            else if(mCt == mConnectTypes.sat)
+                            {
+                                mCtStr = "satellite";
+                            }
+                            else
+                            {
+                                mCtStr = "unknown";
+                            }
+                            Thread.Sleep(rand.Next(1250, 5000));
+                            if (!mConnected)
+                            {
+                                Console.WriteLine("connection type: none\r\n" +
+                                    "speed: 0B/s\r\n" +
+                                    "connected: no\r\n" +
+                                    "variance: ???");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"connection type: {mCtStr}\r\n" +
+                                    $"speed: {bktStf.byteFormat((UInt128)iMspeed)}/s\r\n" +
+                                    $"connected: yes\r\n" +
+                                    $"variance range: -{bktStf.byteFormat((UInt128)(iMspeed/4.5))}/s to {bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s"
+                                    );
+                            }
+                            break;
+                        case "impulse":
+                            try
+                            {
+                                if (commin.Length >= 2)
+                                {
+                                    impulse(int.Parse(commin[1]));
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                if(ex.Message == "NO HOPIUM LEFT!!!")
+                                {
+                                    infLoop();
+                                    void infLoop()
+                                    {
+                                        infLoop(); // try to nuke the stack
+                                    }
+                                }
+                                continue; // do nothing
+                            }
+                            break;
+                        case "clock":
+                            // NOTE: This uses the Borktorial Internal Clock.
+                            // The BIC is synced with **UTC TIME**
+                            // This will not be correct for a lot of people
+                            // And i don't fucking care.
+                            Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
                             if (ballmerMode)
@@ -1268,19 +1410,19 @@ namespace borktorial
                             Console.WriteLine($"cannot find: {commin[0]}");
                             break;
                     }
-                    shitLog.createEntry("cmdhndlr", $"User entered command: {commin[0]}", logType.Info);
+                    shitLog.createEntry("cmdhndlr", $"User entered command: {rawCommin}", logType.Info);
                 }
                 // MInor SPecialized EXception service
-                catch (NullReferenceException)
+                catch (NullReferenceException ex)
                 {
                     Console.WriteLine("[Mispex] Null reference exception. Perhaps invalid input?");
-                    shitLog.createEntry("Mispex", $"Null ref exception", logType.Warn);
+                    shitLog.createEntry("Mispex", $"Null ref exception. {ex.StackTrace}", logType.Warn);
                     continue; // It'll be all FIIINE i'm sure of it
                 }
-                catch (DivideByZeroException)
+                catch (DivideByZeroException ex)
                 {
                     Console.WriteLine("[Mispex] Divide By Zero intercepted! X to throw.");
-                    shitLog.createEntry("Mispex", $"Division by zero!", logType.Err);
+                    shitLog.createEntry("Mispex", $"Division by zero! {ex.StackTrace}", logType.Err);
                     ConsoleKey dbzEKy = Console.ReadKey(true).Key;
                     switch (dbzEKy)
                     {
@@ -1291,7 +1433,7 @@ namespace borktorial
                 // General hndlr
                 catch (Exception ex)
                 {
-                    shitLog.createEntry("EXCPTHN", $"[{System.DateTime.Now}] {ex.Message} - {ex.StackTrace}\r\n", logType.Err);
+                    shitLog.createEntry("EXCPTHN", $"ERROR: {ex.Message} - {ex.StackTrace}\r\n", logType.Err);
                     Console.WriteLine("A fatal error has occurred and NT-DOS cannot continue");
                     Console.WriteLine("This error has been logged\r\n");
                     Console.WriteLine(ex);
@@ -1309,7 +1451,7 @@ namespace borktorial
 
                 if (rand.Next(0, crshChance) == 0)
                 {
-                    string[] errG = errGen.Generate(); // Pay attention to this "errGen" thing. It'll be important
+                    string[] errG = errGen.Generate();
                     uint errCode = (uint)rand.Next(); // DONTFIXME: The values this shit returns are probably gonna be pretty fuckin' funny
                     ftlCrash(errCode, errG[0], errG[1], false);
                 }
@@ -1386,7 +1528,7 @@ namespace borktorial
             Console.WriteLine("Technical-er details:\r\n");
             for (int i = 0; i < 8; i++)
             {
-                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608):D8}:DATA={rand.Next(0, 255):D8}");
+                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608):D8}:DATA={rand.Next(0, 255):D3}");
             }
             if (rand.Next(0, 1000000) == 420)
             {
@@ -1404,7 +1546,7 @@ namespace borktorial
                 // Russian Rolutte. With a if-else statement
                 if (rcvrable2 == 0)
                 {
-                    Main(["vs", "49"]);
+                    publicMain(["vs", "49"]);
                 }
                 else
                 {
@@ -1423,10 +1565,11 @@ namespace borktorial
         {
             var secrets = new Dictionary<string, (string resource, string filename)>
             {
-                ["waluigi"] = ("borktorial.SECRETS.screenshot16.png", "the mun awaits.png"),
-                ["igiulaw"] = ("borktorial.SECRETS.eula.txt", "eula.txt"),
-                ["luigi"] = ("borktorial.SECRETS.thisisabucket.7z",
-                             "THIS ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z")
+                ["waluigi"] = ("borktorial.rsrc.screenshot16.png", "the mun awaits.png"),
+                ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
+                ["luigi"] = ("borktorial.rsrc.thisisabucket.7z",
+                             "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
+                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
             };
 
             if (!secrets.TryGetValue(code, out var secret))
@@ -1437,12 +1580,123 @@ namespace borktorial
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             File.WriteAllBytes(secret.filename, ms.ToArray());
+            if (!code.StartsWith("msc_"))
+            {
+                File.SetCreationTime(secret.filename, DateTime.UnixEpoch);
+                File.SetLastWriteTime(secret.filename, DateTime.UnixEpoch);
+                File.SetLastAccessTime(secret.filename, DateTime.UnixEpoch);
 
-            File.SetCreationTime(secret.filename, DateTime.UnixEpoch);
-            File.SetLastWriteTime(secret.filename, DateTime.UnixEpoch);
-            File.SetLastAccessTime(secret.filename, DateTime.UnixEpoch);
+                Environment.Exit(69); // nice
+            }
+        }
+        /// <summary>
+        /// SOURCE! SOURCE!
+        /// </summary>
+        /// <param name="num">number</param>
+        /// <exception cref="Exception">HOPIUM ADMINISTERED</exception>
+        static void impulse(int num) {
+            switch (num)
+            {
+                case 0: // i0: standard bkt ticker
+                    tick++;
+                    break;
+                case 101:
+                    Console.WriteLine("HOPIUM ADMINISTERED");
+                    break;
+                case 202:
+                    string fjbjB = "HALF-LIFE 3 IS COMING SOON! ";
+                    string fjbjB2 = "ALERT: OUT OF HOPIUM! ";
+                    string fjbjB3 = "HOPIUM LEVELS CRITICAL! ";
+                    double hopium = 5;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    for (int i = 0; i < 512; i++)
+                    {
+                        for (int j = 0; j < fjbjB.Length; j++)
+                        {
+                            hopium -= 0.005;
+                            Console.Write(fjbjB[j]);
+                            Thread.Sleep(20);
+                            if(hopium <= 0)
+                            {
+                                throw new Exception("NO HOPIUM LEFT!!!");
+                            }
+                            if(hopium < 3)
+                            {
+                                for (int k = 0; k < fjbjB3.Length; k++)
+                                {
+                                    hopium -= 0.1;
+                                    Console.Write(fjbjB3[k]);
+                                    Thread.Sleep(20);
+                                }
+                            }
+                            if ((rand.Next(0, 7) == 0) && (j == fjbjB.Length - 1))
+                            {
+                                for (int k = 0; k < fjbjB2.Length; k++)
+                                {
+                                    hopium -= 0.05;
+                                    Console.Write(fjbjB2[k]);
+                                    Thread.Sleep(20);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case 404:
+                    string f22Raptor = "DWARVES! ";
+                    for (int i = 0; i < 4096; i++)
+                    {
+                        void annoy1()
+                        {
+                            f22Raptor += "DWARVES! ";
+                            DialogResult ffmf = MessageBox.Show("PLAY DWARF FORTRESS NOW!!!",
+                                "borktorial",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1,
+                                0,
+                                false);
+                            if (ffmf != DialogResult.Yes)
+                            {
+                                ffmf = MessageBox.Show("PLAY DWARF FORTRESS NOW!!!",
+                                    "borktorial",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Information,
+                                    MessageBoxDefaultButton.Button1,
+                                    0,
+                                    false);
+                            }
+                        }
+                        for (int k = 0; k < f22Raptor.Length; k++)
+                        {
+                            Console.Write(f22Raptor[k]);
+                            Thread.Sleep(20+(int)(Math.Log10(f22Raptor.Length)));
+                            
+                        }
+                        new Thread(annoy1).Start();
+                    }
 
-            Environment.Exit(69); // nice
+                    break;
+                case 405:
+                    string[] frames = [
+                        "=--\0---\0---",
+                        "-=-\0---\0---",
+                        "--=\0---\0---",
+                        "---\0--=\0---",
+                        "---\0-=-\0---",
+                        "---\0=--\0---",
+                        "---\0---\0=--",
+                        "---\0---\0-=-",
+                        "---\0---\0--=",
+                    ];
+                    playAnim(frames, 500);
+                    Console.WriteLine("WOOAH LOOK AT THAT = GO!");
+                    break;
+                default:
+                    break;
+            }
+            return;
         }
         static void mp3PlayLoop(string path)
         {
@@ -1460,11 +1714,39 @@ namespace borktorial
                 }
             }
         }
+        static void radioLoop(string fn)
+        {
+            SoundPlayer radio1 = new SoundPlayer(fn);
+            while (!radioStopped)
+            {
+                radio1.PlaySync();
+            }
+        }
+        /// <summary>
+        /// The Borktorial Server Thread.
+        /// This along with a whole bunch of other shit constitues the Borktorial Server (or "master")
+        /// The "client" or "slave" uses all this shit to do stuff
+        /// </summary>
+        /// <param name="tl">Tick Length</param>
+        /// <param name="mcl">Mun Cycle Length</param>
+        /// <exception cref="Exception">General shit went wrong</exception>
         static void timeLoop(int tl, int mcl)
         {
+            DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
             double sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
-
+            double ht0 = 0.01;
+            double[] ht0Grph = [0.01, 0.1, 0.2, 0.3, 0.4,
+            0.5, 0.6, 0.7, 0.8, 0.9,
+            1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3,
+            1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65,
+            1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0,
+            1.95, 1.9, 1.85, 1.8, 1.75, 1.7,
+            1.65, 1.6, 1.55, 1.5, 1.45, 1.4,
+            1.35, 1.3, 1.25, 1.2, 1.15, 1.1, 1.05, 1.0,
+            0.9, 0.8, 0.7, 0.6, 0.5,
+            0.4, 0.3, 0.2, 0.1, 0.01];
+            int ht0Idx = 0;
             int lastNewsSecond = -1;
 
             while (true)
@@ -1473,11 +1755,9 @@ namespace borktorial
                 
                 sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
                 sysstab = Math.Clamp(sC, 0.01, 50);
-
-                tick++;
                 if (tick % mcl == 0)
                 {
-                    munCycle++;
+                    munCycle+=ht0;
                 }
                 if (tick % 10000 == 0 && !specialDays.bktDay)
                 {
@@ -1491,9 +1771,15 @@ namespace borktorial
                 {
                     entropyAcc -= rand.Next(0, 10);
                 }
+                if(lastSdDlt.Date != DateTime.UtcNow.Date)
+                {
+                    specialDays.update();
+                    lastSdDlt = DateTime.UtcNow;
+                }
                 if (tick % (tl*60000) == 0)
                 {
                     specialDays.update();
+                    lastSdDlt = DateTime.UtcNow;
                 }
                 if (tick == int.MaxValue - 1)
                 {
@@ -1503,12 +1789,19 @@ namespace borktorial
                    DateTime.UtcNow.Second != lastNewsSecond &&
                    rand.Next(0, 5) == 0)
                 {
-                    AddNews(newsGen.Generate());
+                    addNews(newsGen.Generate());
                     if (rand.Next(0, 98) == 0) // 1 in 99
                     {
                         // Schonite dust collector
                         schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
-                        schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                        if (!specialDays.marsDay)
+                        {
+                            schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                        }
+                        else
+                        {
+                            schonite -= Math.Clamp(rand.NextSingle()*0.1, 0.001, 100);
+                        }
                     }
                     if (rand.Next(0, 99) == 0)
                     {
@@ -1518,13 +1811,27 @@ namespace borktorial
                             Console.Title = $"broktorial: {splashPick()}";
                         }
                     }
+                    if (tick % 4 == 0)
+                    {
+                        if(ht0Idx > ht0Grph.Length - 1)
+                        {
+                            ht0Idx = 0;
+                        }
+                        ht0Idx++;
+                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.05);
+                    }
                     lastNewsSecond = DateTime.UtcNow.Second;
                 }
                 int baseValue = 5000;      // Starting risk
-                int scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
-                int effectiveTick = tick * munCycle;
+                double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
+                if (specialDays.marsDay)
+                {
+                    scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
+                }
+                double effectiveTick = tick * munCycle;
 
                 crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor))*(int)Math.Ceiling(sysstab);
+                tick++; // equivelant to i0
             }
         }
         static void interspeed()
@@ -1533,8 +1840,16 @@ namespace borktorial
             {
                 if (mConnected == true)
                 {
-                    mSpeed += rand.Next(-((int)mSpeed/4), ((int)mSpeed/4));
-                    mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                    if (!specialDays.marsDay)
+                    {
+                        mSpeed += rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                        mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                    }
+                    else
+                    {
+                        mSpeed += rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
+                        mSpeed -= rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
+                    }
                     Thread.Sleep(rand.Next(650, 6000));
                     if(mSpeed <= 0)
                     {
@@ -1563,7 +1878,7 @@ namespace borktorial
                 Console.ResetColor();
             }
         }
-        public static void AddNews(string news)
+        public static void addNews(string news)
         {
             currNews.Add(news);
 
@@ -1572,15 +1887,38 @@ namespace borktorial
                 currNews.RemoveAt(0); // Remove first/oldest
             }
         }
+        public static void saveCfg()
+        {
+            string cfgS = "";
+            foreach(var item in cfg)
+            {
+                cfgS += (";" + item.ToString("D10"));
+            }
+            cfgS = cfgS.Remove(0, 1);
+            try
+            {
+                File.Delete(cfgFn);
+            }
+            catch(Exception ex)
+            {
+                shitLog.createEntry("SAVECFG", $"Error: {ex.Message} {ex.StackTrace}", logType.Err);
+            }
+            File.AppendAllText(cfgFn, cfgS);
+        }
         public static void PlayModemSound()
         {
             using var stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("borktorial.SECRETS.modem.wav");
+                .GetManifestResourceStream("borktorial.rsrc.modem.wav");
             new System.Media.SoundPlayer(stream).PlaySync();
         }
         public static string splashPick()
         {
-            if (specialDays.crimbus) 
+            int mdWeight = 0;
+            if (specialDays.marsDay)
+            {
+                mdWeight = 4;
+            }
+            if (specialDays.crimbus)
             {
                 return "Merry xmas";
             }
@@ -1606,10 +1944,12 @@ namespace borktorial
             var splashes = lines
                 .Select(line => line switch
                 {
-                    _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 10),
-                    _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 5),
+                    _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 4),
+                    _ when line.StartsWith("(u) ") => (Text: line[4..], Weight: 2),
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
-                    _ => (Text: line, Weight: 1) // fallback for untagged lines
+                    _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
+                    _ when line.StartsWith("(m) ") => (Text: line[4..], Weight: mdWeight),
+                    _ => (Text: line, Weight: 0)
                 })
                 .ToList();
 
@@ -1625,24 +1965,72 @@ namespace borktorial
             {
                 cumulative += splash.Weight;
                 if (roll < cumulative)
-                    return splash.Text;
+                    return parseBorkTag(splash.Text);
             }
 
-            return splashes[^1].Text;
+            return parseBorkTag(splashes[^1].Text);
         }
         public static int getBuildNum()
         {
             float accu = 0;
             accu += (bktver.maj + pubver.maj) * 8;
+            accu += bktLV.aprtVer.maj * 7;
             accu += (bktver.min + pubver.min) * 4;
+            accu += bktLV.aprtVer.min * 5;
             accu += (bktver.pch + pubver.pch) * 2;
+            accu += bktLV.aprtVer.pch * 3;
             accu += (bktver.rv + pubver.rv);
+            accu += bktLV.aprtVer.rv;
+            accu += bktLV.puD[7] / bktLV.puC[7];
             accu /= 4;
             if (specialDays.seecretFriday)
             {
                 accu += 1;
             }
+            if (specialDays.marsDay)
+            {
+                accu -= 1;
+            }
             return (int)accu;
+        }
+        static void catGoBrr(int delay = 100)
+        {
+            int consoleWidth = Console.WindowWidth;
+            string[] catLines = cat.Split("\r\n");
+
+            int catWidth = 0;
+            foreach (var line in catLines)
+                if (line.Length > catWidth)
+                    catWidth = line.Length;
+
+            int startPos = consoleWidth - catWidth;
+            int endPos = 0;
+
+            for (int pos = startPos; pos >= endPos; pos--)
+            {
+                for (int y = 0; y < catLines.Length; y++)
+                {
+                    Console.SetCursorPosition(Math.Max(pos, 0), y);
+                    string lineToPrint = catLines[y];
+
+                    if (pos < 0)
+                    {
+                        lineToPrint = lineToPrint.Substring(-pos);
+                    }
+
+                    Console.Write(lineToPrint);
+                }
+                Thread.Sleep(delay);
+
+                for (int y = 0; y < catLines.Length; y++)
+                {
+                    Console.SetCursorPosition(0, y);
+                    Console.Write(new string(' ', consoleWidth));
+                }
+            }
+            Thread.Sleep(3500);
+            Console.Clear();
+            return;
         }
         /// <summary>
         /// Reset the state.
@@ -1669,7 +2057,31 @@ namespace borktorial
             password = "";
             root = false;
             jmtrigger = false;
-            wrand = new Random((int)wSeed * 1000);
+            specialDays.update();
+        }
+        public static void playAnim(string[] frames, int delay, bool clrCns=true, int bg=0, int fg=15)
+        {
+
+            Console.BackgroundColor = (ConsoleColor)bg;
+            Console.ForegroundColor = (ConsoleColor)fg;
+            if (clrCns)
+            {
+                Console.Clear();
+            }
+            foreach(var item in frames)
+            {
+                Console.WriteLine(item.Replace("\0", "\r\n"));
+                Thread.Sleep(delay);
+                Console.Clear();
+            }
+            return;
+        }
+        public static string parseBorkTag(string exp) 
+        {
+            exp = bktStf.pNrH(exp, rand);
+            exp = errGen.genCustomTemplate(exp)[0];
+            exp = newsGen.genCustomTemplate(exp);
+            return exp;
         }
     }
     public static class specialDays
@@ -1681,6 +2093,9 @@ namespace borktorial
         public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
             DateTime.UtcNow.Day == 27 &&
             DateTime.UtcNow.Month == 9;
+        public static bool marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday &&
+            DateTime.UtcNow.Day == 5 &&
+            DateTime.UtcNow.Month == 8;
         public static void update()
         {
             aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
@@ -1690,6 +2105,18 @@ namespace borktorial
             bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
                 DateTime.UtcNow.Month == 9;
+            marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday &&
+            DateTime.UtcNow.Day == 5 &&
+            DateTime.UtcNow.Month == 8;
         }
+    }
+    public enum mConnectTypes
+    {
+        Null,
+        dUp,
+        dupCompressed,
+        sat,
+        etr,
+        dbg
     }
 }

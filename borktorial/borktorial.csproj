@@ -9,33 +9,31 @@
 	  <PublishTrimmed>true</PublishTrimmed>
 	  <!-- Optional, trims unused code -->
 	  <InvariantGlobalization>true</InvariantGlobalization>
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <!-- Optional, smaller binary -->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>True</Optimize>
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="modem.mp3" />
-    <None Remove="rsrc\splashes.txt" />
-    <None Remove="SECRETS\eula.txt" />
-    <None Remove="SECRETS\modem.wav" />
-    <None Remove="SECRETS\screenshot16.png" />
-    <None Remove="SECRETS\thisisabucket.7z" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="rsrc\modem.wav" />
+    <EmbeddedResource Include="rsrc\rd_canyon.wav" />
     <EmbeddedResource Include="rsrc\splashes.txt" />
-    <EmbeddedResource Include="SECRETS\eula.txt" />
-    <EmbeddedResource Include="SECRETS\modem.wav" />
-    <EmbeddedResource Include="SECRETS\screenshot16.png" />
-    <EmbeddedResource Include="SECRETS\thisisabucket.7z" />
+    <EmbeddedResource Include="rsrc\eula.txt" />
+    <EmbeddedResource Include="rsrc\screenshot16.png" />
+    <EmbeddedResource Include="rsrc\thisisabucket.7z" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,5 +44,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\aperture\aperture.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>

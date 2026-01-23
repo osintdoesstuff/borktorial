@@ -30,7 +30,9 @@ namespace borktorial
             "OEM deals bring <product> to <competitor> systems.",
             "<company> cuts <nr500-5000> jobs amid restructuring.",
             "Service pack <nr1-4> for <product> fixes <nr20-150> known issues.",
-            "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor."
+            "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor.",
+            "Florida <mw> throws baby alligator into <v_102>",
+            "Pet <wpet>. Dangerous fad or juicy new market?"
                 ];
 
         static readonly string[] companies = [
@@ -187,6 +189,45 @@ namespace borktorial
             "Electric Cafe",
             "Data Haven"
                 ];
+        static readonly string[] mw = [
+            "man",
+            "woman",
+            "unearthly anomaly"
+                ];
+        static readonly string[] v102 = [
+            "Wendy's",
+            "Enrichment Center",
+            "Cookie mines",
+            "News studio",
+            "Dremelmoth office",
+            "Borktorial Server",
+            "Car dealership",
+            "Arms dealer's house",
+            "Nuclear gas centrifuge",
+            "Baldi's Schoolhouse",
+            "The Nether"
+                ];
+        static readonly string[] wpets = [
+            "rocks",
+            "stickbugs", // (side note: you got stickbugged. 6 or so years after that became completely irrelevant)
+            "LSTMs",
+            "GLaDOS's (GLaDi? What would be the plural of \"GLaDOS\". News station doesn't know that's for sure)",
+            "giant squids",
+            "<scpclass>-class SCPs",
+            "molluscs",
+            "humans",
+            "morons"
+                ];
+        static readonly string[] scpclasses = [
+            "Safe",
+            "Euclid",
+            "Keter",
+            "Thaumiel (did we spell that right?)",
+            "Apollyon (again, did we spell that right?)",
+            "Decommisioned",
+            "Pending",
+            "Explained"
+                ];
 
         public static string Generate()
         {
@@ -215,6 +256,47 @@ namespace borktorial
             {
                 gNe = gNe.Replace("<bbsname>", bbsNameGen());
             }
+            gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
+            gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
+            gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
+            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(wpets.Length)]);
+            // Process number ranges
+            gNe = bktStf.pNrH(gNe, rand);
+
+            return gNe;
+        }
+        public static string genCustomTemplate(string template)
+        {
+            string gNe = template;
+
+            // Replace all tags
+            gNe = gNe.Replace("<company>", companies[rand.Next(companies.Length)]);
+            gNe = gNe.Replace("<competitor>", competitors[rand.Next(competitors.Length)]);
+            gNe = gNe.Replace("<product>", products[rand.Next(products.Length)]);
+            gNe = gNe.Replace("<competitor_product>", competitor_products[rand.Next(competitor_products.Length)]);
+            gNe = gNe.Replace("<person>", persons[rand.Next(persons.Length)]);
+            gNe = gNe.Replace("<scandal>", scandals[rand.Next(scandals.Length)]);
+            gNe = gNe.Replace("<problem>", problems[rand.Next(problems.Length)]);
+            gNe = gNe.Replace("<feature>", features[rand.Next(features.Length)]);
+            gNe = gNe.Replace("<technology>", technologies[rand.Next(technologies.Length)]);
+            gNe = gNe.Replace("<old_tech>", tech[rand.Next(tech.Length)]);
+            gNe = gNe.Replace("<event>", events[rand.Next(events.Length)]);
+            gNe = gNe.Replace("<industry>", industries[rand.Next(industries.Length)]);
+            gNe = gNe.Replace("<month>", months[rand.Next(months.Length)]);
+            int rc1 = rand.Next(0, 2);
+            if (rc1 == 0)
+            {
+                gNe = gNe.Replace("<bbsname>", bbsnames[rand.Next(bbsnames.Length)]);
+            }
+            else
+            {
+                gNe = gNe.Replace("<bbsname>", bbsNameGen());
+            }
+
+            gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
+            gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
+            gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
+            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(scpclasses.Length)]);
 
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);
@@ -223,6 +305,7 @@ namespace borktorial
         }
         public static string bbsNameGen()
         {
+
             string[] bbs_adjectives = ["Silicon", "Digital", "Cyber", "Neon", "Electric", "Data"];
             string[] bbs_nouns = ["Dreams", "Dungeon", "Zone", "Haven", "Cafe", "Nexus"];
             string[] bbs_prefixes = ["The ", ""];

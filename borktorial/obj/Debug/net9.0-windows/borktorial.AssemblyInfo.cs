@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("borktorial")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+26ece42b98471ddef0ffd21a88979f2a983ae606")]
 [assembly: System.Reflection.AssemblyProductAttribute("borktorial")]
 [assembly: System.Reflection.AssemblyTitleAttribute("borktorial")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
