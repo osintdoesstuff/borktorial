@@ -1505,7 +1505,7 @@ namespace borktorial
                 }
             }
         }
-        static string generateFile()
+        public static string generateFile()
         {
             string[] filenames = [
                 "AUTOEXEC", "CONFIG", "COMMAND", "BOOTLOG", "SYSTEM", "HIMEM", "MSCDEX", "SMARTDRV",
@@ -1545,9 +1545,9 @@ namespace borktorial
             return fullFn;
 
         }
-        static bool stopTsr = false;
+        public static bool stopTsr = false;
 
-        static void drdickhead_tsr()
+        public static void drdickhead_tsr()
         {
             while (!stopTsr)
             {
@@ -1564,7 +1564,7 @@ namespace borktorial
 
             Console.WriteLine("Dr. Dickhead TSR shutting down...");
         }
-        static void ftlCrash(uint errCode, string errName, string processName, bool recoverable)
+        public static void ftlCrash(uint errCode, string errName, string processName, bool recoverable)
         {
 
             Console.Clear();
@@ -1609,7 +1609,7 @@ namespace borktorial
                 Thread.Sleep(int.MaxValue);
             }
         }
-        static void sf59(string code)
+        public static void sf59(string code)
         {
             var secrets = new Dictionary<string, (string resource, string filename)>
             {
@@ -1642,7 +1642,7 @@ namespace borktorial
         /// </summary>
         /// <param name="num">number</param>
         /// <exception cref="Exception">HOPIUM ADMINISTERED</exception>
-        static void impulse(int num) {
+        public static void impulse(int num) {
             switch (num)
             {
                 case 0: // i0: standard bkt ticker
@@ -1746,7 +1746,7 @@ namespace borktorial
             }
             return;
         }
-        static void mp3PlayLoop(string path)
+        public static void mp3PlayLoop(string path)
         {
             while (true)
             {
@@ -1762,7 +1762,7 @@ namespace borktorial
                 }
             }
         }
-        static void radioLoop(string fn)
+        public static void radioLoop(string fn)
         {
             SoundPlayer radio1 = new SoundPlayer(fn);
             while (!radioStopped)
@@ -1778,7 +1778,7 @@ namespace borktorial
         /// <param name="tl">Tick Length</param>
         /// <param name="mcl">Mun Cycle Length</param>
         /// <exception cref="Exception">General shit went wrong</exception>
-        static void timeLoop(int tl, int mcl)
+        public static void timeLoop(int tl, int mcl)
         {
             DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
@@ -1882,7 +1882,7 @@ namespace borktorial
                 tick++; // equivelant to i0
             }
         }
-        static void interspeed()
+        public static void interspeed()
         {
             while (true)
             {
@@ -1910,7 +1910,7 @@ namespace borktorial
                 }
             }
         }
-        static void __49291()
+        public static void __49291()
         {
             while (true)
             {
@@ -2083,7 +2083,7 @@ namespace borktorial
         /// <summary>
         /// Reset the state.
         /// </summary>
-        static void resetState()
+        public static void resetState()
         {
             jebconnect = false;
             mConnected = false;
