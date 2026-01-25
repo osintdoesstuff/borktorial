@@ -1,15 +1,16 @@
-﻿using Microsoft.Win32;
+﻿using aperture;
+using KeraLua;
+using Microsoft.VisualBasic.Devices;
+using Microsoft.Win32;
 using NAudio.Wave;
+using Spectre.Console;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
+using System.Media;
 using System.Net;
 using System.Reflection;
-using Spectre.Console;
-using Microsoft.VisualBasic.Devices;
-using aperture;
-using System.Media;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
-using KeraLua;
 namespace borktorial
 {
     public class Program
@@ -142,6 +143,11 @@ namespace borktorial
             AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
             AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
             AnsiConsole.MarkupLine("");
+            if (!Directory.Exists("mods"))
+            {
+                Directory.CreateDirectory("mods");
+                File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
+            }
             Thread.Sleep(5000);
             if(bktLV.aprtVer != (0, 4, 3, 'a'))
             {
@@ -315,7 +321,44 @@ namespace borktorial
                     Console.Title = $"broktorial: {splashPick()}";
                 }
                 bootSw.Stop();
-                shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
+                if (File.Exists(Path.Combine("mods", "initmods.lua")))
+                {
+                    using (var lua = new NLua.Lua())
+                    {
+                        lua.LoadCLRPackage();
+
+                        try
+                        {
+                            var luAsm = Assembly.GetExecutingAssembly().GetName().Name;
+
+                            var lut = typeof(Program).FullName;
+
+                            lua.DoString($@"
+                                            luanet.load_assembly('{luAsm}')
+                                            Sys = luanet.import_type('{lut}')
+                                        ");
+
+                            if (lua["Sys"] == null)
+                            {
+                                shitLog.createEntry("LUALDR", "Failed to load ASM.", logType.Err);
+                            }
+                            else
+                            {
+                                lua.DoFile(Path.Combine("mods", "initmods.lua"));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                            throw;
+                        }
+                    }
+                }
+                else
+                {
+
+                }
+                    shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
@@ -1159,8 +1202,6 @@ namespace borktorial
                             File.Create("GORDON").Dispose();
                             ftlCrash(0xCAFEBABE, "Woah, how did you access that?", "surprised-pikachu.jpg", false);
                             break;
-                        case "":
-                            break;
                         case "drinkfood":
                             Console.TreatControlCAsInput = true;
                             // just like real psychadelics, it's fun for a bit
@@ -1405,6 +1446,10 @@ namespace borktorial
                             Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
+                            if(string.IsNullOrWhiteSpace(string.Join(" ", commin)))
+                            {
+                                break; // do nothing.
+                            }
                             string scriptName = Path.Combine("mods", commin[0] + ".lua");
                             if (File.Exists(scriptName))
                             {
@@ -1431,7 +1476,10 @@ namespace borktorial
                                         }
                                         else
                                         {
-                                            lua["Args"] = string.Join(" ", commin);
+                                            lua["Args"] = string.Join(" ", commin.Skip(1));
+                                            lua["ArgsRaw"] = string.Join(" ", rawCommin.Split(" ").Skip(1)); // listen man if it works.
+                                            lua["ArgsNoSkip"] = string.Join(" ", commin);
+                                            lua["ArgsRawNoSkip"] = rawCommin;
                                             lua.DoFile(scriptName);
                                         }
                                     }
@@ -2106,6 +2154,14 @@ namespace borktorial
             root = false;
             jmtrigger = false;
             specialDays.update();
+        }
+        /// <summary>
+        /// Wrapper for byteFormat
+        /// </summary>
+        /// <param name="bytes">Bytes</param>
+        public static string bfWrap(UInt128 bytes)
+        {
+            return bktStf.byteFormat(bytes);
         }
         public static void playAnim(string[] frames, int delay, bool clrCns=true, int bg=0, int fg=15)
         {
