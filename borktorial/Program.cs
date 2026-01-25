@@ -9,53 +9,64 @@ using aperture;
 using System.Media;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
+using KeraLua;
 namespace borktorial
 {
     public class Program
     {
-        public static readonly string cat = """
-			 |\\_,-~/
-			 / _  _ |    ,--.
-			(  @  @ )   / ,-'
-			 \  _T_/-._( (
-			 /         `. \
-			|         _  \ |
-			 \ \ ,  /      |
-			  || |-_\__   /
-			 ((_/`(____,-'
-			""";
-        public static (int maj, int min, int pch, char rv) bktver = (0, 5, 7, 'b');
-        public static (int maj, int min, int pch, char rv) pubver = (1, 2, 1, 'a');
-        public static bool jebconnect = false;
-        public static bool mConnected = false;
-        public static bool forceNoBoot = false;
-        public static bool failIntaAlways = false;
-        public static int mSpeed = 1800;
-        public static mConnectTypes mCt = mConnectTypes.Null;
-        public static int crshChance = 10000;
-        public static readonly List<string> currNews = new(4096); /* 
-                                                                   While only 5 of the slots are used,
-                                                                   For some fucking reason, this OOBs every so often so fuck it
-                                                                   we'll give it 4096 slots.
-                                                                   */
-        public static bool virused = false;
-        public static bool ballmerMode = false;
-        public static readonly bool __5a85 = OperatingSystem.IsWindows();
-        public static bool gordonSummoned = File.Exists("GORDON");
-        public static Random rand = new();
-        public static Thread drdhtsr;
-        public static int jebcounter = 0;
-        public static double munCycle = 0;
-        public static int tick = 0;
-        public static double ninovium = 1;
-        public static double schonite = 1;
-        public static string cfgFn = "bktcfg.ssc";
-        public static double sysstab = 1;
-        public static bool radioStopped = true;
-        public static readonly ComputerInfo compi = new();
-        public static readonly RegistryKey formatkey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC");
-        public static int[] cfg = [15, 10000, 15, 2];
-        public static readonly string[] lines = [
+        public static string cat { get; } = """
+             |\\_,-~/
+             / _  _ |    ,--.
+            (  @  @ )   / ,-'
+             \  _T_/-._( (
+             /         `. \
+            |         _  \ |
+             \ \ ,  /      |
+              || |-_\__   /
+             ((_/`(____,-'
+            """;
+
+        public static (int maj, int min, int pch, char rv) bktver { get; set; } = (0, 5, 7, 'b');
+        public static (int maj, int min, int pch, char rv) pubver { get; set; } = (1, 2, 1, 'a');
+
+        public static bool jebconnect { get; set; } = false;
+        public static bool mConnected { get; set; } = false;
+        public static bool forceNoBoot { get; set; } = false;
+        public static bool failIntaAlways { get; set; } = false;
+        public static bool virused { get; set; } = false;
+        public static bool ballmerMode { get; set; } = false;
+        public static bool gordonSummoned { get; set; } = File.Exists("GORDON");
+        public static bool radioStopped { get; set; } = true;
+        public static bool jmtrigger { get; set; } = false;
+        public static bool root { get; set; } = false;
+
+        public static bool __5a85 { get; } = OperatingSystem.IsWindows();
+
+        public static int mSpeed { get; set; } = 1800;
+        public static int crshChance { get; set; } = 10000;
+        public static int jebcounter { get; set; } = 0;
+        public static int tick { get; set; } = 0;
+        public static double munCycle { get; set; } = 0;
+        public static double ninovium { get; set; } = 1;
+        public static double schonite { get; set; } = 1;
+        public static double sysstab { get; set; } = 1;
+
+        public static mConnectTypes mCt { get; set; } = mConnectTypes.Null;
+
+        public static Random rand { get; set; } = new();
+        public static Thread drdhtsr { get; set; }
+        public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
+        public static RegistryKey formatkey { get; } = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC"); // RegistryKey itself shouldn't be swapped
+
+        public static string cfgFn { get; set; } = "bktcfg.ssc";
+        public static string username { get; set; } = "";
+        public static string password { get; set; } = "";
+
+        public static List<string> currNews { get; set; } = new(4096);
+
+        public static int[] cfg { get; set; } = [15, 10000, 15, 2];
+
+        public static string[] lines { get; } = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
             "Wisely done, Mr. Freeman",
@@ -70,8 +81,9 @@ namespace borktorial
             "Gentlemen, I give you the Long Fall Boot. Think of it as foot-based suit of armor for the Portal Device. I'm not gonna lie to you, it's expensive as hell. But check this out: we told this Test Subject to just go ahead and try to land on her head. Heh heh! She can't do it! Good work, boots.",
             "Science isn't about WHY. It's about WHY NOT. Why is so much of our science dangerous? Why not marry safe science if you love it so much. In fact, why not invent a special safety door that won't hit you on the butt on the way out, because you are fired.",
             "Dr. Freeman to Anomalous Materials test laboratory immediately."
-            ];
-        public static readonly string[] linesAttr = [
+        ];
+
+        public static string[] linesAttr { get; } = [
             "-Cave Johnson",
             "-G-man",
             "-Dr. Breen",
@@ -80,8 +92,9 @@ namespace borktorial
             "-Socrates",
             "-Aristotle",
             "-Sun Tzu"
-            ];
-        public static readonly string[] linesBooks = [
+        ];
+
+        public static string[] linesBooks { get; } = [
             "How to fire test subjects",
             "How to ruin a science lab",
             "How to blame Black Mesa for issues you've had",
@@ -93,31 +106,28 @@ namespace borktorial
             "How to Be a Moron: The Definitive Guide",
             "On the Art of Blowing Shit Up",
             "How to blame Aperture Science for issues you've had"
-            ];
-        public static readonly string JEBMSG = """
-			Jebediah Kerman did not die
-			He survived the Shitfuck 15 mission.
-			Press K to celebrate.
-			Props to Jeb.
-			Good job.
+        ];
 
-			Also, i like bacon-flavored Shapez. Maybe you could use that for a command?
-			""";
-        public static bool jmtrigger = false;
-        public static readonly string sysspecs = $"""
-			CPU: Intel 486DX C-Step@50MHz
-			RAM: 640KB conventional, 384KB shadow, 15360KB extended
-			Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
-			OS: NTOSKRNL v4.0, NT-DOS v2.2
-			Video: Citrus GT-6500 ISA
-			Sound: PC beeper, SB1.0
-			Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
-			Network: {mConnected}. Use NETINFO for futher info
-			Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
-			""";
-        public static string username = "";
-        public static string password = "";
-        public static bool root = false;
+        public static string JEBMSG { get; } = """
+            Jebediah Kerman did not die
+            He survived the Shitfuck 15 mission.
+            Press K to celebrate.
+            Props to Jeb.
+            Good job.
+
+            Also, i like bacon-flavored Shapez. Maybe you could use that for a command?
+            """;
+        public static string sysspecs => $"""
+            CPU: Intel 486DX C-Step@50MHz
+            RAM: 640KB conventional, 384KB shadow, 15360KB extended
+            Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
+            OS: NTOSKRNL v4.0, NT-DOS v2.2
+            Video: Citrus GT-6500 ISA
+            Sound: PC beeper, SB1.0
+            Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
+            Network: {mConnected}. Use NETINFO for futher info
+            Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
+            """;
         public static void publicMain(string[] mArgs)
         {
             resetState();
@@ -1395,6 +1405,41 @@ namespace borktorial
                             Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
+                            string scriptName = Path.Combine("cmds", commin[0] + ".lua");
+                            if (File.Exists(scriptName))
+                            {
+                                using (var lua = new NLua.Lua())
+                                {
+                                    lua.LoadCLRPackage();
+
+                                    try
+                                    {
+                                        var luAsm = Assembly.GetExecutingAssembly().GetName().Name;
+
+                                        var lut = typeof(Program).FullName;
+
+                                        lua.DoString($@"
+                                            luanet.load_assembly('{luAsm}')
+                                            Sys = luanet.import_type('{lut}')
+                                        ");
+
+                                        if (lua["Sys"] == null)
+                                        {
+                                            shitLog.createEntry("LUALDR", "Failed to load ASM. Sys was null.", logType.Err);
+                                        }
+                                        else
+                                        {
+                                            lua["Args"] = string.Join(" ", commin);
+                                            lua.DoFile(scriptName);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                                    }
+                                }
+                                break;
+                            }
                             if (ballmerMode)
                             {
                                 if (string.Join(' ', commin) ==
