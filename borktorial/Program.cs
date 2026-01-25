@@ -553,6 +553,7 @@ namespace borktorial
             }
             catch(IndexOutOfRangeException) { currNews.Clear(); }
 
+            Console.TreatControlCAsInput = true;
             while (true)
             {
                 Console.Write("C:\\TW8000\\>");
