@@ -1436,6 +1436,7 @@ namespace borktorial
                                     catch (Exception ex)
                                     {
                                         shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                                        throw;
                                     }
                                 }
                                 break;
