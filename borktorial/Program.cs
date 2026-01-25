@@ -1426,6 +1426,8 @@ namespace borktorial
                                         if (lua["Sys"] == null)
                                         {
                                             shitLog.createEntry("LUALDR", "Failed to load ASM. Sys was null.", logType.Err);
+                                            Console.WriteLine("Error: Sys was equal to null");
+                                            break;
                                         }
                                         else
                                         {
