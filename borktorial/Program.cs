@@ -1405,7 +1405,7 @@ namespace borktorial
                             Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
-                            string scriptName = Path.Combine("cmds", commin[0] + ".lua");
+                            string scriptName = Path.Combine("mods", commin[0] + ".lua");
                             if (File.Exists(scriptName))
                             {
                                 using (var lua = new NLua.Lua())
