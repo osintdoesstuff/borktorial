@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Remove="modem.mp3" />
+    <None Remove="rsrc\sttw.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
     <EmbeddedResource Include="rsrc\splashes.txt" />
     <EmbeddedResource Include="rsrc\eula.txt" />
     <EmbeddedResource Include="rsrc\screenshot16.png" />
+    <EmbeddedResource Include="rsrc\sttw.txt" />
     <EmbeddedResource Include="rsrc\thisisabucket.7z" />
   </ItemGroup>
 

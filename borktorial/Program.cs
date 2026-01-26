@@ -1789,7 +1789,30 @@ namespace borktorial
                     playAnim(frames, 500);
                     Console.WriteLine("WOOAH LOOK AT THAT = GO!");
                     break;
+                case 1033:
+                    sttw();
+                    break;
                 default:
+                    int d4 = rand.Next(0, 3);
+                    if (d4 == 0)
+                    {
+                        impulse(rand.Next(0, 65535));
+                    }
+                    else if (d4 == 1)
+                    {
+                        Console.WriteLine($"No function found at idx {num}");
+                    }
+                    else if (d4 == 2)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("CPU triple fault detected!");
+                        Console.WriteLine($"Dump made at C:\\NTDOS\\CRSHHND\\DUMP3955.BIN");
+                        Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        return;
+                    }
                     break;
             }
             return;
@@ -2065,6 +2088,26 @@ namespace borktorial
             }
 
             return parseBorkTag(splashes[^1].Text);
+        }
+        public static void sttw()
+        {
+            Console.WriteLine("Now loading STTW...");
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt");
+
+            if (stream is null)
+                throw new Exception("Error: Could not start STTW");
+
+            using var reader = new StreamReader(stream);
+            var lines = reader.ReadToEnd()
+                .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            Console.Clear();
+            foreach (var ln in lines)
+            {
+                Console.WriteLine(ln);
+                Thread.Sleep(150);
+            }
+
         }
         public static int getBuildNum()
         {
