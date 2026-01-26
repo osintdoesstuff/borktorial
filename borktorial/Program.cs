@@ -1205,7 +1205,8 @@ namespace borktorial
                             Console.TreatControlCAsInput = true;
                             // just like real psychadelics, it's fun for a bit
                             // and then it fucking obiliterates everything
-                            File.AppendAllText(cfgFn, ";1");
+                            cfg[4] = 1;
+                            saveCfg();
                             while (true)
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
