@@ -81,8 +81,7 @@
               "RelativeToolTip": "borktorial\\GlobalSuppressions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-20T16:12:58.657Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-20T16:12:58.657Z"
             },
             {
               "$type": "Document",
@@ -106,8 +105,7 @@
               "RelativeToolTip": "borktorial\\newsGen.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:54.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:54.898Z"
             },
             {
               "$type": "Document",
@@ -119,8 +117,7 @@
               "RelativeToolTip": "borktorial\\errgen.cs",
               "ViewState": "AgIAAKoAAAAAAAAAAAAAwAQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:54.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:54.121Z"
             },
             {
               "$type": "Document",
@@ -144,8 +141,7 @@
               "RelativeToolTip": "aperture\\apermain.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAswDEAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:50.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:50.288Z"
             },
             {
               "$type": "Document",
@@ -153,9 +149,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\Program.cs",
               "RelativeDocumentMoniker": "borktorial\\Program.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\Program.cs",
-              "RelativeToolTip": "borktorial\\Program.cs",
-              "ViewState": "AgIAAB4CAAAAAAAAAAAwwCwCAAAYAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\Program.cs*",
+              "RelativeToolTip": "borktorial\\Program.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:18:58.133Z",
               "EditorCaption": ""

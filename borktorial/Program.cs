@@ -1,11 +1,9 @@
 ﻿using aperture;
-using KeraLua;
 using Microsoft.VisualBasic.Devices;
 using Microsoft.Win32;
 using NAudio.Wave;
 using Spectre.Console;
 using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
 using System.Media;
 using System.Net;
 using System.Reflection;
