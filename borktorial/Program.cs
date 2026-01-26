@@ -2196,9 +2196,13 @@ namespace borktorial
         public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
             DateTime.UtcNow.Day == 27 &&
             DateTime.UtcNow.Month == 9;
-        public static bool marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday &&
-            DateTime.UtcNow.Day == 5 &&
-            DateTime.UtcNow.Month == 8;
+        public static bool marsDay =
+            DateTime.UtcNow.Month == 8 &&        
+            DateTime.UtcNow.Day == 6 &&          
+            DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday && 
+            (DateTime.UtcNow.Hour > 5 ||        
+             (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+
         public static void update()
         {
             aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
@@ -2208,9 +2212,11 @@ namespace borktorial
             bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
                 DateTime.UtcNow.Month == 9;
-            marsDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday &&
-            DateTime.UtcNow.Day == 5 &&
-            DateTime.UtcNow.Month == 8;
+            marsDay = DateTime.UtcNow.Month == 8 &&
+            DateTime.UtcNow.Day == 6 &&
+            DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
+            (DateTime.UtcNow.Hour > 5 ||
+             (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
         }
     }
     public enum mConnectTypes
