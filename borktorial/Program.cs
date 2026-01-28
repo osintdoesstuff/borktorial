@@ -61,6 +61,8 @@ namespace borktorial
         public static string username { get; set; } = "";
         public static string password { get; set; } = "";
 
+        public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
+
         public static List<string> currNews { get; set; } = new(4096);
 
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
@@ -1795,6 +1797,19 @@ namespace borktorial
                     sttw();
                     break;
                 default:
+                    if (iRnd == 4)
+                    {
+                        char[] ns = num.ToString().ToCharArray();
+                        int sum = 1;
+                        foreach(var item in ns)
+                        {
+                            sum += item;
+                        }
+                        if (sum % 7 == 0)
+                        {
+                            // i dunno what should happen when this condition is met yet.
+                        }
+                    }
                     int d4 = rand.Next(0, 3);
                     if (d4 == 0)
                     {
