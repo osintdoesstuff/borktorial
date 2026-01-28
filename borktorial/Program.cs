@@ -1802,6 +1802,10 @@ namespace borktorial
                     if (iRnd == 4)
                     {
                         char[] ns = num.ToString().ToCharArray();
+                        if(ns.Length < 4)
+                        {
+                            return;
+                        }
                         int sum = 1;
                         foreach(var item in ns)
                         {
