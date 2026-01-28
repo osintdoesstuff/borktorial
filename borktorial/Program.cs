@@ -551,7 +551,9 @@ namespace borktorial
             }
             catch(IndexOutOfRangeException) { currNews.Clear(); }
 
-            Console.TreatControlCAsInput = true;
+            // note: Ctrl+C being input somehow makes this break. i dunno how.
+            // i don't wanna KNOW how
+            // Console.TreatControlCAsInput = true;
             while (true)
             {
                 Console.Write("C:\\TW8000\\>");
