@@ -1797,6 +1797,8 @@ namespace borktorial
                     sttw();
                     break;
                 default:
+                    // note: iRnd is a value decided at start-time
+                    // that equals to a random value from 0 to 11
                     if (iRnd == 4)
                     {
                         char[] ns = num.ToString().ToCharArray();
