@@ -16,9 +16,9 @@
         public byte[] contents;
         public attrib[] attribs;
     }
-    public struct vdir
+    public struct vDir
     {
-        public vdir(string nm, List<vFile> fls, attrib[] attr)
+        public vDir(string nm, List<vFile> fls, attrib[] attr)
         {
             name = nm;
             files = fls;
