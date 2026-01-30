@@ -3,6 +3,7 @@
 namespace aperture
 {
     // this is AI slop code but it WORKS
+
     public class fileSys
     {
         public List<vFile> rootFiles = new(65536);

@@ -640,10 +640,10 @@ namespace borktorial
                             break;
 
                         case "dbg::fs_save":
-                            string savePath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.json";
+                            string savePath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.bin";
                             try
                             {
-                                File.WriteAllText(savePath, fs.ToJson());
+                                File.WriteAllBytes(savePath, fs.ToBinary());
                                 Console.WriteLine($"Filesystem saved to {savePath}");
                             }
                             catch (Exception ex)
@@ -653,11 +653,11 @@ namespace borktorial
                             break;
 
                         case "dbg::fs_load":
-                            string loadPath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.json";
+                            string loadPath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.bin";
                             try
                             {
-                                string json = File.ReadAllText(loadPath);
-                                fs = fileSys.FromJson(json);
+                                byte[] data = File.ReadAllBytes(loadPath);
+                                fs = fileSys.FromBinary(data);
                                 Console.WriteLine($"Filesystem loaded from {loadPath}");
                             }
                             catch (Exception ex)
@@ -1972,16 +1972,16 @@ namespace borktorial
                     fs.mkFile("ntdetect.com");
 
                     // EGG
-                    fs.mkFile("WINNT\\System32\\Drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
+                    fs.mkFile("WINNT\\System32\\drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
                     break;
                 case 5001:
-                    File.WriteAllText("bktfs", fs.ToJson());
+                    File.WriteAllBytes("bktfs", fs.ToBinary());
                     break;
                 case 5002:
                     if (File.Exists("bktfs")) 
                     {
                         // load
-                        fs = fileSys.FromJson(File.ReadAllText("bktfs"));
+                        fs = fileSys.FromBinary(File.ReadAllBytes("bktfs"));
                     }
                     else
                     {
