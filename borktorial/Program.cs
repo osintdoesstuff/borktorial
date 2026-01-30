@@ -57,6 +57,7 @@ namespace borktorial
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
         public static RegistryKey formatkey { get; } = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC"); // RegistryKey itself shouldn't be swapped
 
+        public static fileSys fs { get; set; } = new();
         public static string cfgFn { get; set; } = "bktcfg.ssc";
         public static string username { get; set; } = "";
         public static string password { get; set; } = "";
@@ -586,14 +587,137 @@ namespace borktorial
                         case "hl3":
                             Console.WriteLine("HALF-LIFE 3 CONFIRMED");
                             break;
+                        //case "dir":
+                        //    Console.WriteLine("Volume Serial Number is 4655-434B");
+                        //    Console.WriteLine("Directory listing of C:");
+                        //    for (int i = 0; i < rand.Next(4, 21); i++)
+                        //    {
+                        //        Console.WriteLine($"    {generateFile()} - {rand.Next(512, 65536)}");
+                        //    }
+                        //    Console.WriteLine();
+                        //    break;
                         case "dir":
                             Console.WriteLine("Volume Serial Number is 4655-434B");
-                            Console.WriteLine("Directory listing of C:");
-                            for (int i = 0; i < rand.Next(4, 21); i++)
-                            {
-                                Console.WriteLine($"    {generateFile()} - {rand.Next(512, 65536)}");
-                            }
+                            Console.WriteLine($"Directory listing of {fs.workingPath}");
                             Console.WriteLine();
+
+                            var dirContents = fs.GetDirContents(fs.workingPath);
+                            if (dirContents == null)
+                            {
+                                Console.WriteLine("Invalid path");
+                                break;
+                            }
+
+                            foreach (var dir in dirContents.Value.dirs)
+                            {
+                                Console.WriteLine($"    <DIR>  {dir.name}");
+                            }
+
+                            foreach (var file in dirContents.Value.files)
+                            {
+                                Console.WriteLine($"    {file.name} - {file.contents.Length} bytes");
+                            }
+
+                            Console.WriteLine();
+                            break;
+
+                        case "cd":
+                            if (rawCommin.Split(' ').Length < 2)
+                            {
+                                Console.WriteLine($"Current directory: {fs.workingPath}");
+                            }
+                            else
+                            {
+                                if (fs.changeDir(rawCommin.Split(' ')[1]))
+                                {
+                                    Console.WriteLine($"Changed to: {fs.workingPath}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid path");
+                                }
+                            }
+                            break;
+
+                        case "dbg::fs_save":
+                            string savePath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.json";
+                            try
+                            {
+                                File.WriteAllText(savePath, fs.ToJson());
+                                Console.WriteLine($"Filesystem saved to {savePath}");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Failed to save: {ex.Message}");
+                            }
+                            break;
+
+                        case "dbg::fs_load":
+                            string loadPath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.json";
+                            try
+                            {
+                                string json = File.ReadAllText(loadPath);
+                                fs = fileSys.FromJson(json);
+                                Console.WriteLine($"Filesystem loaded from {loadPath}");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Failed to load: {ex.Message}");
+                            }
+                            break;
+
+                        case "create":
+                            if (rawCommin.Split(' ').Length < 2)
+                            {
+                                Console.WriteLine("Usage: create <filename>");
+                            }
+                            else
+                            {
+                                if (fs.mkFile(rawCommin.Split(' ')[1]))
+                                {
+                                    Console.WriteLine($"Created: {rawCommin.Split(' ')[1]}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Failed to create file");
+                                }
+                            }
+                            break;
+
+                        case "del":
+                            if (rawCommin.Split(' ').Length < 2)
+                            {
+                                Console.WriteLine("Usage: del <filename>");
+                            }
+                            else
+                            {
+                                if (fs.delFile(rawCommin.Split(' ')[1]))
+                                {
+                                    Console.WriteLine($"Deleted: {rawCommin.Split(' ')[1]}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("File not found");
+                                }
+                            }
+                            break;
+
+                        case "deltree":
+                            if (rawCommin.Split(' ').Length < 2)
+                            {
+                                Console.WriteLine("Usage: deltree <directory>");
+                            }
+                            else
+                            {
+                                if (fs.delDir(rawCommin.Split(' ')[1]))
+                                {
+                                    Console.WriteLine($"Deleted directory tree: {rawCommin.Split(' ')[1]}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Directory not found");
+                                }
+                            }
                             break;
                         case "pkgmngr":
                             if (commin.Length >= 3)
@@ -1795,6 +1919,75 @@ namespace borktorial
                     break;
                 case 1033:
                     sttw();
+                    break;
+                case 5000:
+                    // Root directories
+                    fs.mkDir("WINNT");
+                    fs.mkDir("Program Files");
+                    fs.mkDir("Temp");
+
+                    // WINNT structure
+                    fs.mkDir("WINNT\\System32");
+                    fs.mkDir("WINNT\\System32\\config");
+                    fs.mkDir("WINNT\\System32\\drivers");
+                    fs.mkDir("WINNT\\System32\\spool");
+                    fs.mkDir("WINNT\\System32\\spool\\printers");
+                    fs.mkDir("WINNT\\System");
+                    fs.mkDir("WINNT\\Temp");
+                    fs.mkDir("WINNT\\Fonts");
+                    fs.mkDir("WINNT\\Help");
+
+                    // User profiles
+                    fs.mkDir("WINNT\\Profiles");
+                    fs.mkDir("WINNT\\Profiles\\Administrator");
+                    fs.mkDir("WINNT\\Profiles\\Administrator\\Desktop");
+                    fs.mkDir("WINNT\\Profiles\\Administrator\\Start Menu");
+                    fs.mkDir("WINNT\\Profiles\\Administrator\\Start Menu\\Programs");
+                    fs.mkDir("WINNT\\Profiles\\Administrator\\Personal");
+                    fs.mkDir("WINNT\\Profiles\\Default User");
+                    fs.mkDir("WINNT\\Profiles\\Default User\\Desktop");
+                    fs.mkDir("WINNT\\Profiles\\Default User\\Start Menu");
+
+                    // System files
+                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe");
+                    fs.mkFile("WINNT\\System32\\hal.dll");
+                    fs.mkFile("WINNT\\System32\\ntdll.dll");
+                    fs.mkFile("WINNT\\System32\\kernel32.dll");
+                    fs.mkFile("WINNT\\System32\\user32.dll");
+                    fs.mkFile("WINNT\\System32\\gdi32.dll");
+                    fs.mkFile("WINNT\\System32\\smss.exe");
+                    fs.mkFile("WINNT\\System32\\csrss.exe");
+
+
+                    // Registry hives
+                    fs.mkFile("WINNT\\System32\\config\\SAM");
+                    fs.mkFile("WINNT\\System32\\config\\SECURITY");
+                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE");
+                    fs.mkFile("WINNT\\System32\\config\\SYSTEM");
+                    fs.mkFile("WINNT\\System32\\config\\DEFAULT");
+
+                    // Boot files
+                    fs.mkFile("boot.ini");
+                    fs.mkFile("ntldr");
+                    fs.mkFile("ntdetect.com");
+
+                    // EGG
+                    fs.mkFile("WINNT\\System32\\Drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
+                    break;
+                case 5001:
+                    File.WriteAllText("bktfs", fs.ToJson());
+                    break;
+                case 5002:
+                    if (File.Exists("bktfs")) 
+                    {
+                        // load
+                        fs = fileSys.FromJson(File.ReadAllText("bktfs"));
+                    }
+                    else
+                    {
+                        // don't do shit
+                        break;
+                    }
                     break;
                 default:
                     // note: iRnd is a value decided at start-time

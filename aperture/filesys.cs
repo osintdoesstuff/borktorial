@@ -1,4 +1,6 @@
-﻿namespace aperture
+﻿using System.Text.Json;
+
+namespace aperture
 {
     // this is AI slop code but it WORKS
     public class fileSys
@@ -6,6 +8,147 @@
         public List<vFile> rootFiles = new(65536);
         public List<vDir> rootDirs = new(65536);
         public string workingPath = "\\";
+
+        //=== SERIALIZATION ===
+
+        private static readonly JsonSerializerOptions jsonOpts = new()
+        {
+            IncludeFields = true,
+            WriteIndented = true  // remove this if you want compact JSON
+        };
+
+        /// <summary>
+        /// Serialize to JSON string
+        /// </summary>
+        public string ToJson()
+        {
+            var data = new fsData
+            {
+                workingPath = this.workingPath,
+                rootFiles = this.rootFiles,
+                rootDirs = this.rootDirs
+            };
+            return JsonSerializer.Serialize(data, jsonOpts);
+        }
+
+        /// <summary>
+        /// Load from JSON string
+        /// </summary>
+        public static fileSys FromJson(string json)
+        {
+            var data = JsonSerializer.Deserialize<fsData>(json, jsonOpts);
+            return new fileSys
+            {
+                workingPath = data.workingPath ?? "\\",
+                rootFiles = data.rootFiles ?? new List<vFile>(),
+                rootDirs = data.rootDirs ?? new List<vDir>()
+            };
+        }
+
+        /// <summary>
+        /// Serialize to binary blob
+        /// </summary>
+        public byte[] ToBinary()
+        {
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+
+            bw.Write(workingPath);
+            WriteFileList(bw, rootFiles);
+            WriteDirList(bw, rootDirs);
+
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Load from binary blob
+        /// </summary>
+        public static fileSys FromBinary(byte[] data)
+        {
+            using var ms = new MemoryStream(data);
+            using var br = new BinaryReader(ms);
+
+            var fs = new fileSys();
+            fs.workingPath = br.ReadString();
+            fs.rootFiles = ReadFileList(br);
+            fs.rootDirs = ReadDirList(br);
+
+            return fs;
+        }
+
+        //=== BINARY HELPERS ===
+
+        private static void WriteFileList(BinaryWriter bw, List<vFile> files)
+        {
+            bw.Write(files.Count);
+            foreach (var f in files)
+            {
+                bw.Write(f.name);
+                bw.Write(f.contents.Length);
+                bw.Write(f.contents);
+                bw.Write(f.attribs.Length);
+                foreach (var a in f.attribs)
+                    bw.Write((int)a);
+            }
+        }
+
+        private static void WriteDirList(BinaryWriter bw, List<vDir> dirs)
+        {
+            bw.Write(dirs.Count);
+            foreach (var d in dirs)
+            {
+                bw.Write(d.name);
+                bw.Write(d.attribs.Length);
+                foreach (var a in d.attribs)
+                    bw.Write((int)a);
+                WriteFileList(bw, d.files);
+                WriteDirList(bw, d.subDirs);  // recursive
+            }
+        }
+
+        private static List<vFile> ReadFileList(BinaryReader br)
+        {
+            int count = br.ReadInt32();
+            var files = new List<vFile>(count);
+            for (int i = 0; i < count; i++)
+            {
+                string name = br.ReadString();
+                int contentLen = br.ReadInt32();
+                byte[] contents = br.ReadBytes(contentLen);
+                int attrLen = br.ReadInt32();
+                var attribs = new attrib[attrLen];
+                for (int j = 0; j < attrLen; j++)
+                    attribs[j] = (attrib)br.ReadInt32();
+                files.Add(new vFile(name, contents, attribs));
+            }
+            return files;
+        }
+
+        private static List<vDir> ReadDirList(BinaryReader br)
+        {
+            int count = br.ReadInt32();
+            var dirs = new List<vDir>(count);
+            for (int i = 0; i < count; i++)
+            {
+                string name = br.ReadString();
+                int attrLen = br.ReadInt32();
+                var attribs = new attrib[attrLen];
+                for (int j = 0; j < attrLen; j++)
+                    attribs[j] = (attrib)br.ReadInt32();
+                var files = ReadFileList(br);
+                var subDirs = ReadDirList(br);  // recursive
+                dirs.Add(new vDir(name, files, subDirs, attribs));
+            }
+            return dirs;
+        }
+
+        // Helper struct for JSON (cleaner serialization)
+        private struct fsData
+        {
+            public string workingPath;
+            public List<vFile> rootFiles;
+            public List<vDir> rootDirs;
+        }
 
         //=== PRIVATE HELPERS ===
 
@@ -25,7 +168,7 @@
         }
 
         // Gets contents of a directory by path (null if not found)
-        private (List<vFile> files, List<vDir> dirs)? GetDirContents(string path)
+        public (List<vFile> files, List<vDir> dirs)? GetDirContents(string path)
         {
             string[] parts = ParsePath(ResolvePath(path));
 
