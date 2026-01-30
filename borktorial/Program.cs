@@ -2153,7 +2153,7 @@ namespace borktorial
                             ht0Idx = 0;
                         }
                         ht0Idx++;
-                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.05);
+                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble()*0.01);
                     }
                     lastNewsSecond = DateTime.UtcNow.Second;
                 }
