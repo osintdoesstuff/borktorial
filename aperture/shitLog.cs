@@ -7,6 +7,16 @@
     {
         public static void createEntry(string proc, string descr, logType lt)
         {
+            const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
+            var logFile = new FileInfo("bktLog.txt");
+
+            if (logFile.Exists && logFile.Length > maxSize)
+            {
+                var timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+                var archive = $"bktLog-{timestamp}.txt";
+                File.Move("bktLog.txt", archive);
+                createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
+            }
             string typeStr = lt switch
             {
                 logType.Null => "null",
