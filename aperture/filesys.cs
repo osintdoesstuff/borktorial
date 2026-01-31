@@ -19,34 +19,6 @@ namespace aperture
         };
 
         /// <summary>
-        /// Serialize to JSON string
-        /// </summary>
-        public string ToJson()
-        {
-            var data = new fsData
-            {
-                workingPath = this.workingPath,
-                rootFiles = this.rootFiles,
-                rootDirs = this.rootDirs
-            };
-            return JsonSerializer.Serialize(data, jsonOpts);
-        }
-
-        /// <summary>
-        /// Load from JSON string
-        /// </summary>
-        public static fileSys FromJson(string json)
-        {
-            var data = JsonSerializer.Deserialize<fsData>(json, jsonOpts);
-            return new fileSys
-            {
-                workingPath = data.workingPath ?? "\\",
-                rootFiles = data.rootFiles ?? new List<vFile>(),
-                rootDirs = data.rootDirs ?? new List<vDir>()
-            };
-        }
-
-        /// <summary>
         /// Serialize to binary blob
         /// </summary>
         public byte[] ToBinary()
@@ -141,14 +113,6 @@ namespace aperture
                 dirs.Add(new vDir(name, files, subDirs, attribs));
             }
             return dirs;
-        }
-
-        // Helper struct for JSON (cleaner serialization)
-        private struct fsData
-        {
-            public string workingPath;
-            public List<vFile> rootFiles;
-            public List<vDir> rootDirs;
         }
 
         //=== PRIVATE HELPERS ===
@@ -357,7 +321,7 @@ namespace aperture
         }
         public string name;
         public List<vFile> files;
-        public List<vDir> subDirs;  // <-- ADDED THIS
+        public List<vDir> subDirs;  // this shit is needed
         public attrib[] attribs;
     }
 
