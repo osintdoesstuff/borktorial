@@ -560,7 +560,7 @@ namespace borktorial
             // Console.TreatControlCAsInput = true;
             while (true)
             {
-                Console.Write("C:\\TW8000\\>");
+                Console.Write("C:\\>");
                 string rawCommin = Console.ReadLine() ?? "";
                 string[] commin = rawCommin.ToLower().Split(' ');
                 try
