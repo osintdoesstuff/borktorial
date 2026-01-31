@@ -154,6 +154,7 @@ namespace borktorial
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
+            impulse(5000);
             Stopwatch bootSw = new Stopwatch();
             bootSw.Start();
             Debug.WriteLine("tada!");
