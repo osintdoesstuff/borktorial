@@ -58,6 +58,7 @@ namespace borktorial
         public static RegistryKey formatkey { get; } = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC"); // RegistryKey itself shouldn't be swapped
 
         public static fileSys fs { get; set; } = new();
+        public static bool rbt0 { get; set; } = false;
         public static string cfgFn { get; set; } = "bktcfg.ssc";
         public static string username { get; set; } = "";
         public static string password { get; set; } = "";
@@ -137,6 +138,11 @@ namespace borktorial
         }
         static void Main(string[] args)
         {
+            if (rbt0)
+            {
+                Thread.Sleep(200); // wait for everything to settle the fuck down
+                rbt0 = false;
+            }
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
             Thread.Sleep(2000);
@@ -787,6 +793,7 @@ namespace borktorial
                         case "reboot":
                             if (virused == false)
                             {
+                                rbt0 = true;
                                 publicMain(["vs", "49"]);
                             }
                             if (virused == true)
@@ -2038,6 +2045,10 @@ namespace borktorial
         {
             while (true)
             {
+                if (rbt0)
+                {
+                    return;
+                }
                 using (var mp3Reader = new Mp3FileReader(path))
                 using (var waveOut = new WaveOutEvent())
                 {
@@ -2055,6 +2066,10 @@ namespace borktorial
             SoundPlayer radio1 = new SoundPlayer(fn);
             while (!radioStopped)
             {
+                if (rbt0)
+                {
+                    return;
+                }
                 radio1.PlaySync();
             }
         }
@@ -2088,7 +2103,12 @@ namespace borktorial
             while (true)
             {
                 Thread.Sleep(tl);
-                
+
+                if (rbt0)
+                {
+                    return;
+                }
+
                 sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
                 sysstab = Math.Clamp(sC, 0.01, 50);
                 if (tick % mcl == 0)
@@ -2174,6 +2194,10 @@ namespace borktorial
         {
             while (true)
             {
+                if (rbt0)
+                {
+                    return;
+                }
                 if (mConnected == true)
                 {
                     if (!specialDays.marsDay)
@@ -2202,6 +2226,10 @@ namespace borktorial
         {
             while (true)
             {
+                if (rbt0)
+                {
+                    return;
+                }
                 Thread.Sleep(rand.Next(5000, 30000));
                 for (int i = 0; i < rand.Next(5, 50); i++)
                 {
