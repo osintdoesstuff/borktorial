@@ -12,12 +12,6 @@ namespace aperture
 
         //=== SERIALIZATION ===
 
-        private static readonly JsonSerializerOptions jsonOpts = new()
-        {
-            IncludeFields = true,
-            WriteIndented = true  // remove this if you want compact JSON
-        };
-
         /// <summary>
         /// Serialize to binary blob
         /// </summary>
@@ -251,6 +245,25 @@ namespace aperture
                 if (files[i].name == name) return false;
 
             files.Add(new vFile(name, contents ?? Array.Empty<byte>(), attribs ?? Array.Empty<attrib>()));
+            return true;
+        }
+        public bool mkFileChr(string path, char[] contents = null, attrib[] attribs = null)
+        {
+            List<byte> tempBytes = new();
+            foreach(var item in contents)
+            {
+                tempBytes.Add((byte)item);
+            }
+            byte[] ctBytes = tempBytes.ToArray();
+            var result = GetParent(path);
+            if (result == null) return false;
+
+            var (files, _, name) = result.Value;
+
+            for (int i = 0; i < files.Count; i++)
+                if (files[i].name == name) return false;
+
+            files.Add(new vFile(name, ctBytes ?? Array.Empty<byte>(), attribs ?? Array.Empty<attrib>()));
             return true;
         }
 

@@ -370,6 +370,7 @@ namespace borktorial
                 Console.Clear();
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
+                AnsiConsole.MarkupLine("Original BIOS (C) [rgb(31,63,127)]IBM[/] 1981-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
@@ -560,13 +561,14 @@ namespace borktorial
                 }
             }
             catch(IndexOutOfRangeException) { currNews.Clear(); }
+            impulse(5002);
 
             // note: Ctrl+C being input somehow makes this break. i dunno how.
             // i don't wanna KNOW how
             // Console.TreatControlCAsInput = true;
             while (true)
             {
-                Console.Write("C:\\>");
+                Console.Write($"C:{fs.workingPath}>");
                 string rawCommin = Console.ReadLine() ?? "";
                 string[] commin = rawCommin.ToLower().Split(' ');
                 try
@@ -1929,10 +1931,13 @@ namespace borktorial
                     sttw();
                     break;
                 case 5000:
+                    char[] bootiniContents = """
+                        [bootldr]
+                        ; ntdos bootloader 1.3
+                        default IDE0:\part0\NTLDR /SRLOUTONLY
+                        """.ToCharArray();
                     // Root directories
                     fs.mkDir("WINNT");
-                    fs.mkDir("Program Files");
-                    fs.mkDir("Temp");
 
                     // WINNT structure
                     fs.mkDir("WINNT\\System32");
@@ -1957,27 +1962,27 @@ namespace borktorial
                     fs.mkDir("WINNT\\Profiles\\Default User\\Start Menu");
 
                     // System files
-                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe");
-                    fs.mkFile("WINNT\\System32\\hal.dll");
-                    fs.mkFile("WINNT\\System32\\ntdll.dll");
-                    fs.mkFile("WINNT\\System32\\kernel32.dll");
-                    fs.mkFile("WINNT\\System32\\user32.dll");
-                    fs.mkFile("WINNT\\System32\\gdi32.dll");
-                    fs.mkFile("WINNT\\System32\\smss.exe");
-                    fs.mkFile("WINNT\\System32\\csrss.exe");
+                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe", bktStf.mkRndByteArray(32753));
+                    fs.mkFile("WINNT\\System32\\hal.dll", bktStf.mkRndByteArray(19285));
+                    fs.mkFile("WINNT\\System32\\ntdll.dll", bktStf.mkRndByteArray(25932));
+                    fs.mkFile("WINNT\\System32\\kernel32.dll", bktStf.mkRndByteArray(49521));
+                    fs.mkFile("WINNT\\System32\\user32.dll", bktStf.mkRndByteArray(19564));
+                    fs.mkFile("WINNT\\System32\\gdi32.dll", bktStf.mkRndByteArray(45943));
+                    fs.mkFile("WINNT\\System32\\smss.exe", bktStf.mkRndByteArray(19532));
+                    fs.mkFile("WINNT\\System32\\csrss.exe", bktStf.mkRndByteArray(25316));
 
 
                     // Registry hives
-                    fs.mkFile("WINNT\\System32\\config\\SAM");
-                    fs.mkFile("WINNT\\System32\\config\\SECURITY");
-                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE");
-                    fs.mkFile("WINNT\\System32\\config\\SYSTEM");
-                    fs.mkFile("WINNT\\System32\\config\\DEFAULT");
+                    fs.mkFile("WINNT\\System32\\config\\SAM", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SECURITY", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SYSTEM", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\DEFAULT", bktStf.mkRndByteArray(32768));
 
                     // Boot files
-                    fs.mkFile("boot.ini");
-                    fs.mkFile("ntldr");
-                    fs.mkFile("ntdetect.com");
+                    fs.mkFileChr("boot.ini", bootiniContents);
+                    fs.mkFile("ntldr", bktStf.mkRndByteArray(5942));
+                    fs.mkFile("ntdetect.com", bktStf.mkRndByteArray(2585));
 
                     // EGG
                     fs.mkFile("WINNT\\System32\\drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
@@ -2099,6 +2104,7 @@ namespace borktorial
             0.4, 0.3, 0.2, 0.1, 0.01];
             int ht0Idx = 0;
             int lastNewsSecond = -1;
+            int lastFsSaveSecond = -1;
 
             while (true)
             {
@@ -2140,6 +2146,12 @@ namespace borktorial
                 if (tick == int.MaxValue - 1)
                 {
                     throw new Exception("[TIMETHRD] Stop bro go touch some fuckin' grass");
+                }
+                if (DateTime.UtcNow.Second % 10 == 0 &&
+                    DateTime.UtcNow.Second != lastFsSaveSecond)
+                {
+                    impulse(5001);
+                    lastFsSaveSecond = DateTime.UtcNow.Second;
                 }
                 if (DateTime.UtcNow.Second % 10 == 0 &&
                    DateTime.UtcNow.Second != lastNewsSecond &&

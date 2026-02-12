@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "oEfOuEa6yTE=",
+  "dgSpecHash": "uumfEsB6jz4=",
   "success": true,
   "projectFilePath": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\osint2\\.nuget\\packages\\keralua\\1.4.9\\keralua.1.4.9.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.11\\microsoft.dotnet.ilcompiler.9.0.11.nupkg.sha512",
-    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.11\\microsoft.net.illink.tasks.9.0.11.nupkg.sha512",
+    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.13\\microsoft.net.illink.tasks.9.0.13.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\naudio\\2.2.1\\naudio.2.2.1.nupkg.sha512",

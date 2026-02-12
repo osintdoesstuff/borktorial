@@ -72,5 +72,15 @@
                 return $"{bytes / (UInt128)Math.Pow(1024, 10)}QB";
             else return $"Yes.";
         }
+        public static byte[] mkRndByteArray(int length)
+        {
+            List<byte> tempBytes = new();
+            Random rand = new();
+            for (int i = 0; i < length; i++)
+            {
+                tempBytes.Add((byte)rand.Next(0, 256));
+            }
+            return tempBytes.ToArray();
+        }
     }
 }
