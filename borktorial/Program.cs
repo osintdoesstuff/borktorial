@@ -156,7 +156,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
             }
             Thread.Sleep(5000);
-            if(bktLV.aprtVer != (0, 4, 3, 'a'))
+            if (bktLV.aprtVer != (0, 4, 3, 'a'))
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
@@ -229,7 +229,7 @@ namespace borktorial
                     "actively sweating and probably\r\n" +
                     "needing vocal cord surgery");
                 ballmerMode = true;
-                if(args.Length >= 2 && string.Join(' ', args).Contains("FORCENOBOOT"))
+                if (args.Length >= 2 && string.Join(' ', args).Contains("FORCENOBOOT"))
                 {
                     forceNoBoot = true;
                 }
@@ -324,7 +324,7 @@ namespace borktorial
             {
                 if (!ballmerMode) Console.Clear();
                 Console.Title = $"borktorial: {splashPick()}";
-                if(rand.Next(0, 69) == 0) // 1 in 69
+                if (rand.Next(0, 69) == 0) // 1 in 69
                 {
                     Console.Title = $"broktorial: {splashPick()}";
                 }
@@ -366,7 +366,7 @@ namespace borktorial
                 {
 
                 }
-                    shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
+                shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
@@ -560,7 +560,7 @@ namespace borktorial
                     addNews(newsGen.Generate());
                 }
             }
-            catch(IndexOutOfRangeException) { currNews.Clear(); }
+            catch (IndexOutOfRangeException) { currNews.Clear(); }
             impulse(5002);
 
             // note: Ctrl+C being input somehow makes this break. i dunno how.
@@ -893,7 +893,7 @@ namespace borktorial
                                 "reinsert: Remove and re-add ninovium\r\n" +
                                 $"\r\n{ninovium} ninovium cubes in bank resulting in a stability factor of {sysstab:F2}!" +
                                 "\r\nWARNING: Dingus Solutions. Inc is not responsible for any spontoneus human combustion from ninovium usage");
-                            if(commin.Length >= 2)
+                            if (commin.Length >= 2)
                             {
                                 switch (commin[1])
                                 {
@@ -1284,7 +1284,7 @@ namespace borktorial
                                         mConnected = true;
                                         if (specialDays.marsDay)
                                         {
-                                            mSpeed += (mSpeed/4);
+                                            mSpeed += (mSpeed / 4);
                                         }
                                         mCt = mConnectTypes.dUp;
                                         break;
@@ -1348,7 +1348,7 @@ namespace borktorial
                             while (true)
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
-                                AnsiConsole.Markup($"[rgb({rand.Next(0,256)},{rand.Next(0, 256)},{rand.Next(0, 256)}) on rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)})][blink][bold]?[/][/][/]");
+                                AnsiConsole.Markup($"[rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)}) on rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)})][blink][bold]?[/][/][/]");
                                 //Console.Title += (char)rand.Next(32, 256);
                                 //if(Console.Title.Length > 32)
                                 //{
@@ -1479,7 +1479,7 @@ namespace borktorial
                             {
                                 Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
                             }
-                                sf59("msc_canyon");
+                            sf59("msc_canyon");
                             Thread rLoop = new(() =>
                             {
                                 radioLoop("rd0.wav");
@@ -1518,19 +1518,19 @@ namespace borktorial
                             iMspeed += rand.Next(-500, 501);
                             iMspeed -= rand.Next(-500, 501);
                             string mCtStr = "none";
-                            if(mCt == mConnectTypes.Null)
+                            if (mCt == mConnectTypes.Null)
                             {
                                 mCtStr = "none";
                             }
-                            else if(mCt == mConnectTypes.dUp)
+                            else if (mCt == mConnectTypes.dUp)
                             {
                                 mCtStr = "dialup";
                             }
-                            else if(mCt == mConnectTypes.dupCompressed)
+                            else if (mCt == mConnectTypes.dupCompressed)
                             {
                                 mCtStr = "compressed dialup";
                             }
-                            else if(mCt == mConnectTypes.sat)
+                            else if (mCt == mConnectTypes.sat)
                             {
                                 mCtStr = "satellite";
                             }
@@ -1551,7 +1551,7 @@ namespace borktorial
                                 Console.WriteLine($"connection type: {mCtStr}\r\n" +
                                     $"speed: {bktStf.byteFormat((UInt128)iMspeed)}/s\r\n" +
                                     $"connected: yes\r\n" +
-                                    $"variance range: -{bktStf.byteFormat((UInt128)(iMspeed/4.5))}/s to {bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s"
+                                    $"variance range: -{bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s to {bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s"
                                     );
                             }
                             break;
@@ -1563,9 +1563,9 @@ namespace borktorial
                                     impulse(int.Parse(commin[1]));
                                 }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
-                                if(ex.Message == "NO HOPIUM LEFT!!!")
+                                if (ex.Message == "NO HOPIUM LEFT!!!")
                                 {
                                     infLoop();
                                     void infLoop()
@@ -1584,7 +1584,7 @@ namespace borktorial
                             Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
-                            if(string.IsNullOrWhiteSpace(string.Join(" ", commin)))
+                            if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
                             {
                                 break; // do nothing.
                             }
@@ -1691,46 +1691,6 @@ namespace borktorial
                 }
             }
         }
-        public static string generateFile()
-        {
-            string[] filenames = [
-                "AUTOEXEC", "CONFIG", "COMMAND", "BOOTLOG", "SYSTEM", "HIMEM", "MSCDEX", "SMARTDRV",
-                "GORDON", "FREEMAN", "CROWBAR", "LAMBDA", "COMBINE", "CITADEL", "VORTIG", "HEADCRAB",
-                "KERBAL", "JOOL", "KERBIN", "MINOS", "DUNA", "EVE", "MOHO", "EELOO",
-                "DRES", "GILLY", "IKE", "LAYTHE", "VALL", "TYLO", "BOP", "POL",
-                "ROCKET", "ORBIT", "STAGING", "THRUST", "DELTAV", "APOAPSI", "PERIAPS", "MANEUVER",
-                "TIMEWAST", "BORK", "ZOMBO", "LOADING", "PROCESS", "BIGMATH", "WINNT", "GMOD",
-                "BRITISH", "COLONY", "SEVENHW", "WASTING", "WELCOME", "STEALING", "PLAYING", "IMPORT",
-                "APPLE", "BAILOUT", "MICRO", "IPHONE", "TIMELINE", "ALTERNAT", "COMPETE", "INNOVATE",
-                "BUTTONS", "DESTROY", "EXPLODE", "TERRAFORM", "INVADE", "ALIEN", "COMBINE2", "EARTH",
-                "MARS", "SOLAR", "SYSTEM", "MAGNETS", "ATMOSPH", "OCEANS", "KNOWLEDG", "PRESERV",
-                "MAGENTA", "CYAN", "YELLOW", "BLACK", "RED", "GREEN", "BLUE", "WHITE",
-                "REDDER", "TEAL", "WINDOWS", "PLANET", "UNIVERSE", "FORGET", "MEMORY", "COLLECT",
-                "ECHO", "CONSOLE", "DEBUG", "PATCH", "QUICK", "DIRTY", "LOGIC", "ISSUE",
-                "LOWER", "CASE", "SPLIT", "ARRAY", "STRING", "PROPER", "EFFORT", "COST",
-                "BENEFIT", "JANK", "WORKS", "FINE", "MASTER", "PIECE", "SHORTCT", "PERFECT",
-                "ENOUGH", "THINK", "HANDLE", "ALTERN", "LIBERAT", "SATISF", "POINT", "ACKNOWLE"
-            ];
-            string[] extensions = [
-                "exe", "dll", "sys", "ini", "cfg", "log", "tmp", "bak", "old", "new", "com", "bat", "cmd", "txt", "dat",
-                "cpp", "hpp", "js", "py", "cs", "vb", "php", "sql", "xml", "htm", "css", "jar", "war", "zip", "rar",
-                "jpg", "png", "gif", "bmp", "ico", "svg", "tga", "psd", "raw", "dds", "pcx", "tif", "webp", "jfif", "exr",
-                "wav", "mp3", "ogg", "mid", "mod", "s3m", "xm", "it", "flac", "aac", "wma", "m4a", "opus", "ac3", "dts",
-                "avi", "mov", "mp4", "wmv", "flv", "mkv", "webm", "ogv", "3gp", "asf", "rm", "vob", "ts", "m2v", "divx",
-                "doc", "pdf", "rtf", "odt", "wpd", "xls", "ods", "csv", "ppt", "odp", "ttf", "otf", "fon", "eot", "woff",
-                "hlf", "grd", "cwb", "lmb", "cmb", "ctd", "vtg", "hcr", "alx", "zen", "xen", "vrt", "res", "gma", "npc",
-                "ksp", "orb", "rkt", "sta", "thu", "del", "apo", "per", "man", "sfs", "vab", "sph", "mis", "sci", "rep",
-                "wst", "bor", "zom", "lod", "pro", "big", "win", "gmo", "dos", "ret", "tim", "was", "ste", "par", "sev",
-                "btn", "red", "grn", "blu", "cyn", "mag", "yel", "blk", "wht", "tel", "w95", "dre", "unv", "exp", "ter",
-                "ech", "con", "dbg", "pat", "qck", "drt", "lgc", "isu", "low", "cas", "spl", "arr", "str", "prp", "eff",
-                "cos", "ben", "jnk", "wrk", "fin", "mas", "pce", "sho", "per", "ack", "lib", "sat", "poi"
-            ];
-            string fn = filenames[rand.Next(0, (filenames.Length - 1))];
-            string ext = extensions[rand.Next(0, (extensions.Length - 1))];
-            string fullFn = $"{fn}.{ext}";
-            return fullFn;
-
-        }
         public static bool stopTsr = false;
 
         public static void drdickhead_tsr()
@@ -1828,7 +1788,8 @@ namespace borktorial
         /// </summary>
         /// <param name="num">number</param>
         /// <exception cref="Exception">HOPIUM ADMINISTERED</exception>
-        public static void impulse(int num) {
+        public static void impulse(int num)
+        {
             switch (num)
             {
                 case 0: // i0: standard bkt ticker
@@ -1852,11 +1813,11 @@ namespace borktorial
                             hopium -= 0.005;
                             Console.Write(fjbjB[j]);
                             Thread.Sleep(20);
-                            if(hopium <= 0)
+                            if (hopium <= 0)
                             {
                                 throw new Exception("NO HOPIUM LEFT!!!");
                             }
-                            if(hopium < 3)
+                            if (hopium < 3)
                             {
                                 for (int k = 0; k < fjbjB3.Length; k++)
                                 {
@@ -1905,8 +1866,8 @@ namespace borktorial
                         for (int k = 0; k < f22Raptor.Length; k++)
                         {
                             Console.Write(f22Raptor[k]);
-                            Thread.Sleep(20+(int)(Math.Log10(f22Raptor.Length)));
-                            
+                            Thread.Sleep(20 + (int)(Math.Log10(f22Raptor.Length)));
+
                         }
                         new Thread(annoy1).Start();
                     }
@@ -1991,7 +1952,7 @@ namespace borktorial
                     File.WriteAllBytes("bktfs", fs.ToBinary());
                     break;
                 case 5002:
-                    if (File.Exists("bktfs")) 
+                    if (File.Exists("bktfs"))
                     {
                         // load
                         fs = fileSys.FromBinary(File.ReadAllBytes("bktfs"));
@@ -2008,12 +1969,12 @@ namespace borktorial
                     if (iRnd == 4)
                     {
                         char[] ns = num.ToString().ToCharArray();
-                        if(ns.Length < 4)
+                        if (ns.Length < 4)
                         {
                             return;
                         }
                         int sum = 1;
-                        foreach(var item in ns)
+                        foreach (var item in ns)
                         {
                             sum += item;
                         }
@@ -2119,7 +2080,7 @@ namespace borktorial
                 sysstab = Math.Clamp(sC, 0.01, 50);
                 if (tick % mcl == 0)
                 {
-                    munCycle+=ht0;
+                    munCycle += ht0;
                 }
                 if (tick % 10000 == 0 && !specialDays.bktDay)
                 {
@@ -2133,12 +2094,12 @@ namespace borktorial
                 {
                     entropyAcc -= rand.Next(0, 10);
                 }
-                if(lastSdDlt.Date != DateTime.UtcNow.Date)
+                if (lastSdDlt.Date != DateTime.UtcNow.Date)
                 {
                     specialDays.update();
                     lastSdDlt = DateTime.UtcNow;
                 }
-                if (tick % (tl*60000) == 0)
+                if (tick % (tl * 60000) == 0)
                 {
                     specialDays.update();
                     lastSdDlt = DateTime.UtcNow;
@@ -2168,7 +2129,7 @@ namespace borktorial
                         }
                         else
                         {
-                            schonite -= Math.Clamp(rand.NextSingle()*0.1, 0.001, 100);
+                            schonite -= Math.Clamp(rand.NextSingle() * 0.1, 0.001, 100);
                         }
                     }
                     if (rand.Next(0, 99) == 0)
@@ -2181,12 +2142,12 @@ namespace borktorial
                     }
                     if (tick % 4 == 0)
                     {
-                        if(ht0Idx > ht0Grph.Length - 1)
+                        if (ht0Idx > ht0Grph.Length - 1)
                         {
                             ht0Idx = 0;
                         }
                         ht0Idx++;
-                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble()*0.01);
+                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble() * 0.01);
                     }
                     lastNewsSecond = DateTime.UtcNow.Second;
                 }
@@ -2198,7 +2159,7 @@ namespace borktorial
                 }
                 double effectiveTick = tick * munCycle;
 
-                crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor))*(int)Math.Ceiling(sysstab);
+                crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
                 tick++; // equivelant to i0
             }
         }
@@ -2223,7 +2184,7 @@ namespace borktorial
                         mSpeed -= rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
                     }
                     Thread.Sleep(rand.Next(650, 6000));
-                    if(mSpeed <= 0)
+                    if (mSpeed <= 0)
                     {
                         mSpeed = 1;
                     }
@@ -2266,7 +2227,7 @@ namespace borktorial
         public static void saveCfg()
         {
             string cfgS = "";
-            foreach(var item in cfg)
+            foreach (var item in cfg)
             {
                 cfgS += (";" + item.ToString("D10"));
             }
@@ -2275,7 +2236,7 @@ namespace borktorial
             {
                 File.Delete(cfgFn);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 shitLog.createEntry("SAVECFG", $"Error: {ex.Message} {ex.StackTrace}", logType.Err);
             }
@@ -2463,7 +2424,7 @@ namespace borktorial
         {
             return bktStf.byteFormat(bytes);
         }
-        public static void playAnim(string[] frames, int delay, bool clrCns=true, int bg=0, int fg=15)
+        public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {
 
             Console.BackgroundColor = (ConsoleColor)bg;
@@ -2472,7 +2433,7 @@ namespace borktorial
             {
                 Console.Clear();
             }
-            foreach(var item in frames)
+            foreach (var item in frames)
             {
                 Console.WriteLine(item.Replace("\0", "\r\n"));
                 Thread.Sleep(delay);
@@ -2480,53 +2441,53 @@ namespace borktorial
             }
             return;
         }
-        public static string parseBorkTag(string exp) 
+        public static string parseBorkTag(string exp)
         {
             exp = bktStf.pNrH(exp, rand);
             exp = errGen.genCustomTemplate(exp)[0];
             exp = newsGen.genCustomTemplate(exp);
             return exp;
         }
-    }
-    public static class specialDays
-    {
-        public static bool aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
-        public static bool crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
-        public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
-        public static bool seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
-        public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
-            DateTime.UtcNow.Day == 27 &&
-            DateTime.UtcNow.Month == 9;
-        public static bool marsDay =
-            DateTime.UtcNow.Month == 8 &&        
-            DateTime.UtcNow.Day == 6 &&          
-            DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday && 
-            (DateTime.UtcNow.Hour > 5 ||        
-             (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
-
-        public static void update()
+        public static class specialDays
         {
-            aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
-            crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
-            spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
-            seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
-            bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
+            public static bool aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
+            public static bool crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
+            public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
+            public static bool seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
+            public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
                 DateTime.UtcNow.Month == 9;
-            marsDay = DateTime.UtcNow.Month == 8 &&
-            DateTime.UtcNow.Day == 6 &&
-            DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
-            (DateTime.UtcNow.Hour > 5 ||
-             (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+            public static bool marsDay =
+                DateTime.UtcNow.Month == 8 &&
+                DateTime.UtcNow.Day == 6 &&
+                DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
+                (DateTime.UtcNow.Hour > 5 ||
+                 (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+
+            public static void update()
+            {
+                aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
+                crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
+                spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
+                seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
+                bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
+                    DateTime.UtcNow.Day == 27 &&
+                    DateTime.UtcNow.Month == 9;
+                marsDay = DateTime.UtcNow.Month == 8 &&
+                DateTime.UtcNow.Day == 6 &&
+                DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
+                (DateTime.UtcNow.Hour > 5 ||
+                 (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+            }
         }
-    }
-    public enum mConnectTypes
-    {
-        Null,
-        dUp,
-        dupCompressed,
-        sat,
-        etr,
-        dbg
+        public enum mConnectTypes
+        {
+            Null,
+            dUp,
+            dupCompressed,
+            sat,
+            etr,
+            dbg
+        }
     }
 }
