@@ -233,35 +233,7 @@ namespace borktorial
         {
             string gNe = templates[rand.Next(templates.Length)];
 
-            // Replace all tags
-            gNe = gNe.Replace("<company>", companies[rand.Next(companies.Length)]);
-            gNe = gNe.Replace("<competitor>", competitors[rand.Next(competitors.Length)]);
-            gNe = gNe.Replace("<product>", products[rand.Next(products.Length)]);
-            gNe = gNe.Replace("<competitor_product>", competitor_products[rand.Next(competitor_products.Length)]);
-            gNe = gNe.Replace("<person>", persons[rand.Next(persons.Length)]);
-            gNe = gNe.Replace("<scandal>", scandals[rand.Next(scandals.Length)]);
-            gNe = gNe.Replace("<problem>", problems[rand.Next(problems.Length)]);
-            gNe = gNe.Replace("<feature>", features[rand.Next(features.Length)]);
-            gNe = gNe.Replace("<technology>", technologies[rand.Next(technologies.Length)]);
-            gNe = gNe.Replace("<old_tech>", tech[rand.Next(tech.Length)]);
-            gNe = gNe.Replace("<event>", events[rand.Next(events.Length)]);
-            gNe = gNe.Replace("<industry>", industries[rand.Next(industries.Length)]);
-            gNe = gNe.Replace("<month>", months[rand.Next(months.Length)]);
-            int rc1 = rand.Next(0, 2);
-            if(rc1 == 0)
-            {
-                gNe = gNe.Replace("<bbsname>", bbsnames[rand.Next(bbsnames.Length)]);
-            }
-            else
-            {
-                gNe = gNe.Replace("<bbsname>", bbsNameGen());
-            }
-            gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
-            gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
-            gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
-            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(scpclasses.Length)]);
-            // Process number ranges
-            gNe = bktStf.pNrH(gNe, rand);
+            gNe = genCustomTemplate(gNe);
 
             return gNe;
         }

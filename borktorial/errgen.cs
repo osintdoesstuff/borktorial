@@ -328,32 +328,10 @@ namespace borktorial
         {
             // Choose random template
             string gErrI = templates[rand.Next(templates.Length)];
-            string processName = processNames[rand.Next(processNames.Length)];
-            // Replace tags step-by-step
-            gErrI = gErrI.Replace("<animal>", animals[rand.Next(animals.Length)]);
-            gErrI = gErrI.Replace("<kerbal>", kerbals[rand.Next(kerbals.Length)]);
-            gErrI = gErrI.Replace("<num>", rand.Next(0, 256).ToString());
-            gErrI = gErrI.Replace("<scpnum>", rand.Next(2, 7500).ToString());
-            gErrI = gErrI.Replace("<notem>", notem[rand.Next(notem.Length)]); // Marker to designate "NOt TEMplate". At times.
-            gErrI = gErrI.Replace("<subject>", subjects[rand.Next(subjects.Length)]);
-            gErrI = gErrI.Replace("<object>", objects[rand.Next(objects.Length)]);
-            gErrI = gErrI.Replace("<num16>", rand.Next(65536).ToString());
-            gErrI = gErrI.Replace("<letter>", letters[rand.Next(letters.Length)].ToString());
-            gErrI = gErrI.Replace("<nibble>", nibbles[rand.Next(nibbles.Length)].ToString());
-            gErrI = gErrI.Replace("<hletter>", hexLetters[rand.Next(hexLetters.Length)].ToString());
-            gErrI = gErrI.Replace("<lowerltr>", lowletters[rand.Next(lowletters.Length)].ToString());
-            gErrI = gErrI.Replace("<addr8086>", rand.Next(0, 1048576).ToString());
-            gErrI = gErrI.Replace("<reg8086>", rand.Next(0, 65536).ToString());
-            gErrI = gErrI.Replace("<addr386>", rand.Next(0, int.MaxValue).ToString());
-            gErrI = gErrI.Replace("<reg386>", rand.Next(0, int.MaxValue).ToString());
-            gErrI = gErrI.Replace("<register>", registers[rand.Next(registers.Length)]);
-            gErrI = gErrI.Replace("<verb>", verbs[rand.Next(verbs.Length)]);
-            gErrI = bktStf.pNrH(gErrI, rand);
-            return [gErrI, processName];
+            return genCustomTemplate(gErrI);
         }
         public static string[] genCustomTemplate(string template)
         {
-            // Choose random template
             string gErrI = template;
             string processName = processNames[rand.Next(processNames.Length)];
             // Replace tags step-by-step
