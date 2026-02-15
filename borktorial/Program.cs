@@ -2202,7 +2202,7 @@ namespace borktorial
                     }
                     if (tick % 4 == 0)
                     {
-                        if (ht0Idx > ht0Grph.Length - 1)
+                        if (ht0Idx >= ht0Grph.Length - 1)
                         {
                             ht0Idx = 0;
                         }
