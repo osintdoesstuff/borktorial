@@ -1764,11 +1764,11 @@ namespace borktorial
             writeEmptyLine();
             writeFullLine($"Dumping physical memory to disk...");
 
-            for (int pct = 0; pct <= 100; pct += rand.Next(1, 8))
+            for (int pct = 0; pct <= 100;)
             {
-                if (pct > 100) pct = 100;
-                Console.Write($"\rPhysical memory dump: {pct}% complete    ");
+                Console.Write($"\rPhysical memory dump: {Math.Min(pct, 100)}% complete    ");
                 Thread.Sleep(rand.Next(50, 300));
+                pct += rand.Next(1, 8);
             }
 
             writeEmptyLine();
