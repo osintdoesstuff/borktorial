@@ -1733,36 +1733,36 @@ namespace borktorial
             {
                 Debug.WriteLine("immortal tiger");
             }
-            Console.WriteLine($"*** STOP: 0x{errCode:X8} ({errName})");
-            Console.WriteLine();
-            Console.WriteLine($"A problem has been detected and NT-DOS has been shut down to prevent damage to your computer");
-            Console.WriteLine();
-            Console.WriteLine($"The problem seems to be caused by the following process: {pName}");
-            Console.WriteLine();
-            Console.WriteLine($"If this is the first time you've seen this Stop error screen, restart your computer. If this screen appears again, follow these steps: ");
-            Console.WriteLine();
-            Console.WriteLine($"Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your hardware or software manufacturer for any NT-DOS updates you might need.");
-            Console.WriteLine();
-            Console.WriteLine(
+            writeFullLine($"*** STOP: 0x{errCode:X8} ({errName})");
+            writeEmptyLine();
+            writeFullLine($"A problem has been detected and NT-DOS has been shut down to prevent damage to your computer");
+            writeEmptyLine();
+            writeFullLine($"The problem seems to be caused by the following process: {pName}");
+            writeEmptyLine();
+            writeFullLine($"If this is the first time you've seen this Stop error screen, restart your computer. If this screen appears again, follow these steps: ");
+            writeEmptyLine();
+            writeFullLine($"Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your hardware or software manufacturer for any NT-DOS updates you might need.");
+            writeEmptyLine();
+            writeFullLine(
                 $"If problems continue, disable or remove any newly installed hardware or software. Disable BIOS memory options such as caching or shadowing. If you need to use Safe Mode to remove or disable components, restart your computer, press F8 to select Advanced Startup Options, and then select Safe Mode.");
-            Console.WriteLine();
-            Console.WriteLine($"Technical information:");
-            Console.WriteLine();
-            Console.WriteLine($"*** STOP: 0x{errCode:X8} (0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8})");
-            Console.WriteLine();
-            Console.WriteLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
-            Console.WriteLine();
-            Console.WriteLine($"Beginning dump of physical memory...");
-            Console.WriteLine($"Physical memory dump initializing: {pName} at fault");
-            Console.WriteLine();
+            writeEmptyLine();
+            writeFullLine($"Technical information:");
+            writeEmptyLine();
+            writeFullLine($"*** STOP: 0x{errCode:X8} (0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8})");
+            writeEmptyLine();
+            writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+            writeEmptyLine();
+            writeFullLine($"Beginning dump of physical memory...");
+            writeFullLine($"Physical memory dump initializing: {pName} at fault");
+            writeEmptyLine();
 
             for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine($"  0x{rand.Next(int.MaxValue):X8}  {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')}");
+                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')}");
             }
 
-            Console.WriteLine();
-            Console.WriteLine($"Dumping physical memory to disk...");
+            writeEmptyLine();
+            writeFullLine($"Dumping physical memory to disk...");
 
             for (int pct = 0; pct <= 100; pct += rand.Next(1, 8))
             {
@@ -1771,24 +1771,39 @@ namespace borktorial
                 Thread.Sleep(rand.Next(50, 300));
             }
 
-            Console.WriteLine();
-            Console.WriteLine($"Physical memory dump complete.");
-            Console.WriteLine();
-            Console.WriteLine($"Contact your system administrator or technical support group for further assistance.");
-            Console.WriteLine();
-            Console.WriteLine($"Memory dumped: {rand.Next(128, 524288)} KB");
-            Console.WriteLine($"Dump file: \\ntdos\\MEMORY.DMP");
-            Console.WriteLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
-            Console.WriteLine();
-            Console.WriteLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
-            Console.WriteLine($"*** Process: {pName} (PID: {rand.Next(1, 65536)})");
-            Console.WriteLine();
-            Console.WriteLine($"The system has been halted.");
+            writeEmptyLine();
+            writeFullLine($"Physical memory dump complete.");
+            writeEmptyLine();
+            writeFullLine($"Contact your system administrator or technical support group for further assistance.");
+            writeEmptyLine();
+            writeFullLine($"Memory dumped: {rand.Next(128, 524288)} KB");
+            writeFullLine($"Dump file: \\ntdos\\MEMORY.DMP");
+            writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
+            writeEmptyLine();
+            writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
+            writeFullLine($"*** Process: {pName} (PID: {rand.Next(1, 65536)})");
+            writeEmptyLine();
+            writeFullLine($"The system has been halted.");
             rbt0 = true;
             while (true)
             {
                 Thread.Sleep(int.MaxValue);
             }
+        }
+        /// <summary>
+        /// Helper for the crash screen
+        /// </summary>
+        /// <param name="text">What to say</param>
+        public static void writeFullLine(string text)
+        {
+            Console.WriteLine(text.PadRight(Console.WindowWidth));
+        }
+        /// <summary>
+        /// Another helper
+        /// </summary>
+        public static void writeEmptyLine()
+        {
+            Console.WriteLine(new string(' ', Console.WindowWidth));
         }
         public static int strSum(string inp)
         {
