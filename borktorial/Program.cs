@@ -1702,50 +1702,103 @@ namespace borktorial
 
             Console.WriteLine("Dr. Dickhead TSR shutting down...");
         }
+        [Obsolete("Ok listen man if it works it works")]
         public static void ftlCrash(uint errCode, string errName, string processName, bool recoverable)
         {
-
+            int nErrCode = (int)errCode;
+            nErrCode += strSum(errName);
+            nErrCode += strSum(processName);
+            nErrCode += recoverable ? 0 : 1;
+            keBugCheck(nErrCode);
+        }
+        /// <summary>
+        /// Modernization of ftlCrash()
+        /// </summary>
+        /// <param name="errCode"></param>
+        public static void keBugCheck(int errCode)
+        {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Clear();
-            Console.WriteLine("Fatal error has occurred. Technical details:\r\n");
-            Console.WriteLine($"{errCode} - {errName} - {processName}");
-            Console.WriteLine("Technical-er details:\r\n");
-            for (int i = 0; i < 8; i++)
+            string errName = errGen.genCustomTemplate(
+                errGen.templates[
+                    new Random(errCode + strSum(DateTime.UtcNow.ToString("R") + rand.Next(0, 5))).Next(
+                        errGen.templates.Length)])[0];
+            string pName = errGen.genCustomTemplate(
+                errGen.templates[
+                    new Random(errCode + strSum(DateTime.UtcNow.ToString("R") + rand.Next(0, 5))).Next(
+                        errGen.templates.Length)])[1];
+            if(rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
             {
-                Console.WriteLine($"FAIL AT: ADDR={rand.Next(1048576, 8388608):D8}:DATA={rand.Next(0, 255):D3}");
+                Debug.WriteLine("immortal tiger");
             }
-            if (rand.Next(0, 1000000) == 420)
+            Console.WriteLine($"*** STOP: 0x{errCode:X8} ({errName})");
+            Console.WriteLine();
+            Console.WriteLine($"A problem has been detected and NT-DOS has been shut down to prevent damage to your computer");
+            Console.WriteLine();
+            Console.WriteLine($"The problem seems to be caused by the following process: {pName}");
+            Console.WriteLine();
+            Console.WriteLine($"If this is the first time you've seen this Stop error screen, restart your computer. If this screen appears again, follow these steps: ");
+            Console.WriteLine();
+            Console.WriteLine($"Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your hardware or software manufacturer for any NT-DOS updates you might need.");
+            Console.WriteLine();
+            Console.WriteLine(
+                $"If problems continue, disable or remove any newly installed hardware or software. Disable BIOS memory options such as caching or shadowing. If you need to use Safe Mode to remove or disable components, restart your computer, press F8 to select Advanced Startup Options, and then select Safe Mode.");
+            Console.WriteLine();
+            Console.WriteLine($"Technical information:");
+            Console.WriteLine();
+            Console.WriteLine($"*** STOP: 0x{errCode:X8} (0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8})");
+            Console.WriteLine();
+            Console.WriteLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+            Console.WriteLine();
+            Console.WriteLine($"Beginning dump of physical memory...");
+            Console.WriteLine($"Physical memory dump initializing: {pName} at fault");
+            Console.WriteLine();
+
+            for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine("FATAL: IMMORTAL TIGER broke containment");
-            }
-            if (!recoverable)
-            {
-                Console.WriteLine("Restart your system. If this happens again, contact system administrator");
-            }
-            else
-            {
-                Console.WriteLine("This error is potentially recoverable. Press any key to attempt to recover.");
-                Console.ReadKey(false);
-                int rcvrable2 = rand.Next(0, 2);
-                // Russian Rolutte. With a if-else statement
-                if (rcvrable2 == 0)
-                {
-                    publicMain(["vs", "49"]);
-                }
-                else
-                {
-                    // Cave Johnson built this self-referential crash function in a cave! With a copy of Visual Studio 2022!
-                    ftlCrash((uint)rand.Next(), "UNKNOWN_ERROR", "ERRHNDLR.SYS", false);
-                    // But sir, i am not Cave Johnson
-                }
+                Console.WriteLine($"  0x{rand.Next(int.MaxValue):X8}  {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')}");
             }
 
+            Console.WriteLine();
+            Console.WriteLine($"Dumping physical memory to disk...");
+
+            for (int pct = 0; pct <= 100; pct += rand.Next(1, 8))
+            {
+                if (pct > 100) pct = 100;
+                Console.Write($"\rPhysical memory dump: {pct}% complete    ");
+                Thread.Sleep(rand.Next(50, 300));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine($"Physical memory dump complete.");
+            Console.WriteLine();
+            Console.WriteLine($"Contact your system administrator or technical support group for further assistance.");
+            Console.WriteLine();
+            Console.WriteLine($"Memory dumped: {rand.Next(128, 524288)} KB");
+            Console.WriteLine($"Dump file: \\ntdos\\MEMORY.DMP");
+            Console.WriteLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
+            Console.WriteLine();
+            Console.WriteLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
+            Console.WriteLine($"*** Process: {pName} (PID: {rand.Next(1, 65536)})");
+            Console.WriteLine();
+            Console.WriteLine($"The system has been halted.");
+            rbt0 = true;
             while (true)
             {
                 Thread.Sleep(int.MaxValue);
             }
+        }
+        public static int strSum(string inp)
+        {
+            char[] inp2 = inp.ToCharArray();
+            int accu = 0;
+            foreach (var item in inp2)
+            {
+                accu += item;
+            }
+            return accu;
         }
         public static void sf59(string code)
         {
