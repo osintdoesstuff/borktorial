@@ -2332,14 +2332,15 @@ namespace borktorial
             accu += bktLV.aprtVer.rv;
             accu += bktLV.puD[7] / bktLV.puC[7];
             accu /= 4;
-            if (specialDays.seecretFriday)
-            {
-                accu += 1;
-            }
-            if (specialDays.marsDay)
-            {
-                accu -= 1;
-            }
+            // what the fuck?
+            //if (specialDays.seecretFriday)
+            //{
+            //    accu += 1;
+            //}
+            //if (specialDays.marsDay)
+            //{
+            //    accu -= 1;
+            //}
             return (int)accu;
         }
         static void catGoBrr(int delay = 100)
