@@ -188,7 +188,7 @@ namespace borktorial
                         iteration++;
                     }
                     cfg = cfgP;
-                    if (cfg[3] != 2)
+                    if (cfg[3] != getBuildNum())
                     {
                         shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
                     }
@@ -197,21 +197,13 @@ namespace borktorial
                 else
                 {
                     shitLog.createEntry("CFGLDR", "No config found! Using default!", logType.Warn);
-                    cfg = new int[256];
-                    cfg[0] = 15; // Tick length in ms
-                    cfg[1] = 10000; // Mun cycle length in ticks
-                    cfg[2] = 15; // Unused (this used to be autosave interval but we don't have saves anymore)
-                    cfg[3] = 2; // Version
-                    cfg[4] = 0; // Fail NTGINA find
-                    cfg[5] = 0; // No fun pre-logon boot text
-                    cfg[6] = 0; // No asking for username and password
-                    saveCfg();
+                    forceDefaultCfg();
                 }
             }
             catch (Exception ex)
             {
                 shitLog.createEntry("CFGLDR", $"Config error: {ex.Message} {ex.StackTrace}", logType.Err);
-                File.AppendAllText(cfgFn, "5;100000;15;2");
+                forceDefaultCfg();
             }
 
             if (args.Length >= 1 && args[0] == "/waluigi")
@@ -2447,6 +2439,18 @@ namespace borktorial
             exp = errGen.genCustomTemplate(exp)[0];
             exp = newsGen.genCustomTemplate(exp);
             return exp;
+        }
+        public static void forceDefaultCfg()
+        {
+            cfg = new int[256];
+            cfg[0] = 15; // Tick length in ms
+            cfg[1] = 10000; // Mun cycle length in ticks
+            cfg[2] = 15; // Unused (this used to be autosave interval but we don't have saves anymore)
+            cfg[3] = getBuildNum(); // Version
+            cfg[4] = 0; // Fail NTGINA find
+            cfg[5] = 0; // No fun pre-logon boot text
+            cfg[6] = 0; // No asking for username and password
+            saveCfg();
         }
         public static class specialDays
         {
