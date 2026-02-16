@@ -16,13 +16,13 @@
             lock (_lock)
             {
                 const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
-                FileInfo logFile = new("bktLog.txt");
+                FileInfo logFile = new(filename);
 
                 if (logFile.Exists && logFile.Length > maxSize)
                 {
                     string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
-                    string archive = $"bktLog-{timestamp}.txt";
-                    File.Move("bktLog.txt", archive);
+                    string archive = $"{filename}-{timestamp}.txt";
+                    File.Move(filename, archive);
                     createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
                 }
                 string typeStr = lt switch
