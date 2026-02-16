@@ -442,7 +442,7 @@ namespace borktorial
                 {
                     Console.WriteLine("[WARN] 128 byte memory hole detected at 0x8086!");
                     Thread.Sleep(500);
-                    ftlCrash(0x12345678, "MEM_DETECT_FAIL", "ntxmem", false);
+                    keBugCheck(0xBD31052, new(1995, 12, 31, 12, 59, 59, 999, 999));
                 }
                 Thread.Sleep(1250);
                 if (cfg[3] == 1)
@@ -581,7 +581,7 @@ namespace borktorial
                             {
                                 if (rand.Next(1, 1000) == 500)
                                 {
-                                    ftlCrash(0xDEADDEAD, "THE_PART_WHERE_HE_KILLS_YOU", "PORTAL2", false);
+                                    keBugCheck(0x391AB32, new(2009, 5, 15));
                                 }
                             }
                             break;
@@ -1039,7 +1039,7 @@ namespace borktorial
                                     case "csrss":
                                     case "smss":
                                     case "ntoskrnl":
-                                        ftlCrash(0xE000002c, "FATAL_PROCESS_CRASHED", "P32KRNL", false);
+                                        keBugCheck(0xE00002c, new(1999, 12, 31));
                                         break;
                                     case "cmdshell":
                                         while (true)
@@ -1061,7 +1061,7 @@ namespace borktorial
                                     default:
                                         if (rand.Next(0, 255) == 0)
                                         {
-                                            ftlCrash(0xE000002c, "FATAL_PROCESS_CRASHED", commin[1], true);
+                                            keBugCheck(0xE000002, new(5, 5, 5));
                                         }
                                         if (rand.Next(0, 255) == 127)
                                         {
@@ -1334,7 +1334,7 @@ namespace borktorial
                             break;
                         case "This_command_is_not_actually_accessible_under_NORMAL_Cir**CUM**stances_**LOL**":
                             File.Create("GORDON").Dispose();
-                            ftlCrash(0xCAFEBABE, "Woah, how did you access that?", "surprised-pikachu.jpg", false);
+                            keBugCheck(0xCAFEBAB, new(2022, 2, 22));
                             break;
                         case "drinkfood":
                             Console.TreatControlCAsInput = true;
@@ -1683,8 +1683,8 @@ namespace borktorial
                 if (rand.Next(0, crshChance) == 0)
                 {
                     string[] errG = errGen.Generate();
-                    uint errCode = (uint)rand.Next(); // DONTFIXME: The values this shit returns are probably gonna be pretty fuckin' funny
-                    ftlCrash(errCode, errG[0], errG[1], false);
+                    int errCode = rand.Next(); // DONTFIXME: The values this shit returns are probably gonna be pretty fuckin' funny
+                    keBugCheck((uint)errCode);
                 }
             }
         }
@@ -1708,29 +1708,11 @@ namespace borktorial
             Console.WriteLine("Dr. Dickhead TSR shutting down...");
         }
         /// <summary>
-        /// Legacy crash function. This is simply a wrapper and should not be used.
-        /// 
-        /// It is highly advised to call keBugCheck() instead
-        /// </summary>
-        /// <param name="errCode">error code</param>
-        /// <param name="errName">error name</param>
-        /// <param name="processName">process name</param>
-        /// <param name="recoverable">is recoverable?</param>
-        [Obsolete("Ok listen man if it works it works")]
-        public static void ftlCrash(uint errCode, string errName, string processName, bool recoverable)
-        {
-            int nErrCode = (int)errCode;
-            nErrCode += strSum(errName);
-            nErrCode += strSum(processName);
-            nErrCode += recoverable ? 0 : 1;
-            keBugCheck(nErrCode);
-        }
-        /// <summary>
         /// Modernization of ftlCrash()
         /// </summary>
         /// <param name="errCode">error code</param>
         /// <param name="dt">datetime</param>
-        public static void keBugCheck(int errCode, DateTime dt = new())
+        public static void keBugCheck(uint errCode, DateTime dt = new())
         {
             // this funkiness is because you can't have DateTime as default param so we have to do this
             if(dt == new DateTime())
@@ -1743,11 +1725,11 @@ namespace borktorial
             Console.Clear();
             string errName = errGen.genCustomTemplate(
                 errGen.templates[
-                    new Random(errCode + strSum(dt.ToString("R"))).Next(
+                    new Random((int)errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[0];
             string pName = errGen.genCustomTemplate(
                 errGen.templates[
-                    new Random(errCode + strSum(dt.ToString("R"))).Next(
+                    new Random((int)errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[1];
             if(rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
             {
