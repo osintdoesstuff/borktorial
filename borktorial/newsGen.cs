@@ -228,6 +228,14 @@ namespace borktorial
             "Pending",
             "Explained"
                 ];
+        public static readonly string[] mcmobsH = 
+            [
+            "zombie",
+            "creeper",
+            "skeleton",
+            "spider",
+            "witch"
+            ];
 
         public static string Generate()
         {
@@ -269,6 +277,7 @@ namespace borktorial
             gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
             gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
             gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(scpclasses.Length)]);
+            gNe = gNe.Replace("<hostile>", mcmobsH[rand.Next(mcmobsH.Length)]);
 
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);

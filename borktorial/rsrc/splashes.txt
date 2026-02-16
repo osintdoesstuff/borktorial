@@ -1,5 +1,5 @@
 (e) (c) means common. (u) means uncommon. (r) means rare. (e) means weight=0. (m) means only on specialDays.marsDay
-(e) Buncha other tags as well, <{tag}> represents those
+(e) Buncha other tags as well, <tag> represents those
 (e) No tag means weight=0 too
 
 (c) Beta than Ever!
@@ -18,6 +18,12 @@
 (c) Ingelish iz aa veri normal langooaj
 (c) <company> is better than <competitor>!
 (c) <competitor> is better than <company>!
+(c) The ticker's complicated!
+(c) Deja vu!
+(c) Map, map, where is the map? We need to make a BONFIRE
+(c) #
+(c) Something wonderful has happened.
+(c) In case it isn't obvious, foxes aren't players
 (u) NTISBTR.
 (u) "Infdev 20100630" is a beautiful name for a girl
 (u) R.I.P Sun Microsystems
@@ -32,6 +38,9 @@
 (u) <nr1000000-5000000> copies sold!
 (u) I...AM STEVE!
 (u) R.I.P <kerbal> Kerman!
+(u) Look, mom, i'm in the title bar!
+(u) OIIA
+(u) idiotsandwich
 (r) I like turtles
 (r) The sun may or may not presumably be a deadly laser
 (r) I hate myself(TM)
@@ -44,10 +53,15 @@
 (r) GoRdON gEt aWaY fRom THe BeAm!!!
 (r) [insert rare splash text here]
 (r) Xenimal Crossing: New Headcrab
+(r) Where the fuck is THAT THING I HAD IN MY HAND 5 SECONDS AGO???
+(r) When there is not light, there can <hostile>
+(r) adio
 (m) WE'RE SAFE ON MARS!!!
 (m) Bill Kerman made it there first.
 (m) Aw fuck i missed the transfer window :(
 (m) Are we sure we didn't accidentally land on Bounty?
 (m) [insert mars-related joke here]
 (m) 100% Dragon-free!
+(m) oonsharp
+(m) BEES! BEES! BEES!
 (e) This splash won't appear. Ever.
