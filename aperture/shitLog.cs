@@ -5,28 +5,37 @@
     /// </summary>
     public static class shitLog
     {
-        public static void createEntry(string proc, string descr, logType lt)
-        {
-            const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
-            var logFile = new FileInfo("bktLog.txt");
+        private static readonly object _lock = new();
 
-            if (logFile.Exists && logFile.Length > maxSize)
+        public static void createEntry(string proc, 
+            string descr, 
+            logType lt, 
+            string dateFormat = "R", 
+            string filename = "bktLog.txt")
+        {
+            lock (_lock)
             {
-                var timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
-                var archive = $"bktLog-{timestamp}.txt";
-                File.Move("bktLog.txt", archive);
-                createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
+                const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
+                FileInfo logFile = new("bktLog.txt");
+
+                if (logFile.Exists && logFile.Length > maxSize)
+                {
+                    string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+                    string archive = $"bktLog-{timestamp}.txt";
+                    File.Move("bktLog.txt", archive);
+                    createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
+                }
+                string typeStr = lt switch
+                {
+                    logType.Null => "null",
+                    logType.Warn => "warn",
+                    logType.Info => "info",
+                    logType.Err => "err",
+                    _ => "unk"
+                };
+                File.AppendAllText("bktLog.txt",
+                    $"[{DateTime.UtcNow.ToString(dateFormat)}] {typeStr}: [{proc}]: {descr}\r\n");
             }
-            string typeStr = lt switch
-            {
-                logType.Null => "null",
-                logType.Warn => "warn",
-                logType.Info => "info",
-                logType.Err => "err",
-                _ => "unk"
-            };
-            File.AppendAllText("bktLog.txt",
-                $"[{DateTime.UtcNow.ToString("R")}] {typeStr}: [{proc}]: {descr}\r\n");
         }
     }
     public enum logType
