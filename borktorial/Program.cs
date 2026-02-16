@@ -1034,6 +1034,11 @@ namespace borktorial
                                 switch (commin[1])
                                 {
                                     case "p32krnl":
+                                    case "wininit":
+                                    case "winlogon":
+                                    case "csrss":
+                                    case "smss":
+                                    case "ntoskrnl":
                                         ftlCrash(0xE000002c, "FATAL_PROCESS_CRASHED", "P32KRNL", false);
                                         break;
                                     case "cmdshell":
@@ -1702,6 +1707,15 @@ namespace borktorial
 
             Console.WriteLine("Dr. Dickhead TSR shutting down...");
         }
+        /// <summary>
+        /// Legacy crash function. This is simply a wrapper and should not be used.
+        /// 
+        /// It is highly advised to call keBugCheck() instead
+        /// </summary>
+        /// <param name="errCode">error code</param>
+        /// <param name="errName">error name</param>
+        /// <param name="processName">process name</param>
+        /// <param name="recoverable">is recoverable?</param>
         [Obsolete("Ok listen man if it works it works")]
         public static void ftlCrash(uint errCode, string errName, string processName, bool recoverable)
         {
@@ -1714,20 +1728,26 @@ namespace borktorial
         /// <summary>
         /// Modernization of ftlCrash()
         /// </summary>
-        /// <param name="errCode"></param>
-        public static void keBugCheck(int errCode)
+        /// <param name="errCode">error code</param>
+        /// <param name="dt">datetime</param>
+        public static void keBugCheck(int errCode, DateTime dt = new())
         {
+            // this funkiness is because you can't have DateTime as default param so we have to do this
+            if(dt == new DateTime())
+            {
+                dt = DateTime.UtcNow;
+            }
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Clear();
             string errName = errGen.genCustomTemplate(
                 errGen.templates[
-                    new Random(errCode + strSum(DateTime.UtcNow.ToString("R") + rand.Next(0, 5))).Next(
+                    new Random(errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[0];
             string pName = errGen.genCustomTemplate(
                 errGen.templates[
-                    new Random(errCode + strSum(DateTime.UtcNow.ToString("R") + rand.Next(0, 5))).Next(
+                    new Random(errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[1];
             if(rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
             {
