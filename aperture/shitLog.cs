@@ -33,7 +33,7 @@
                     logType.Err => "err",
                     _ => "unk"
                 };
-                File.AppendAllText("bktLog.txt",
+                File.AppendAllText(filename,
                     $"[{DateTime.UtcNow.ToString(dateFormat)}] {typeStr}: [{proc}]: {descr}\r\n");
             }
         }
