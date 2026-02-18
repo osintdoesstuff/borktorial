@@ -3,6 +3,7 @@ using Microsoft.VisualBasic.Devices;
 using Microsoft.Win32;
 using NAudio.Wave;
 using Spectre.Console;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;
 using System.Net;
@@ -64,6 +65,7 @@ namespace borktorial
         public static string password { get; set; } = "";
 
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
+        public static byte cmdFErrCount { get; set; } = 0;
 
         public static List<string> currNews { get; set; } = new(4096);
 
@@ -185,7 +187,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (bktLV.aprtVer != (0, 4, 3, 'a'))
+            if (bktLV.aprtVer != (0, 4, 3, 'b'))
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
@@ -616,10 +618,21 @@ namespace borktorial
                 Console.Write($"C:{fs.workingPath}>");
                 string rawCommin = Console.ReadLine() ?? "";
                 string[] commin = rawCommin.ToLower().Split(' ');
+                if(strSum(rawCommin) % 7 == 0)
+                {
+                    if(rand.Next(0, 6+cmdFErrCount) == 0)
+                    {
+                        Console.WriteLine("Error: failed to execute command");
+                        commin = ["_bktignorecmd::0"];
+                        cmdFErrCount++;
+                    }
+                }
                 try
                 {
                     switch (commin[0])
                     {
+                        case "_bktignorecmd::0":
+                            break;
                         case "echo":
                             if (commin.Length > 1)
                                 Console.WriteLine(string.Join(" ", rawCommin.Split(' ').Skip(1)));
@@ -2181,7 +2194,6 @@ namespace borktorial
             int ht0Idx = 0;
             int lastNewsSecond = -1;
             int lastFsSaveSecond = -1;
-
             while (true)
             {
                 Thread.Sleep(tl);
