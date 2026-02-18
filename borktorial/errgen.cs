@@ -5,8 +5,8 @@ namespace borktorial
 {
     internal class errGen
     {
-        static readonly Random rand = new();
-        static readonly string[] templates = [
+        public static readonly Random rand = new();
+        public static readonly string[] templates = [
             "<animal>_BROKE_CONTAINMENT<notem>",
             "CRITICAL_PROCESS_FAILED<notem>",
             "SCP-<scpnum>_BROKE_CONTAINMENT<notem>",
@@ -35,7 +35,7 @@ namespace borktorial
             "<object>_<verb>_<subject><notem>",
             "<object>_<verb>_<object><notem>"
             ];
-        static readonly string[] subjects =
+        public static readonly string[] subjects =
         [
             "GLaDOS",
             "JEBEDIAH_KERMAN",
@@ -72,7 +72,7 @@ namespace borktorial
             "COFFEE_MAKER",
             "INTERNET_ARCHIVIST"
         ];
-        static readonly string[] objects =
+        public static readonly string[] objects =
         [
             "MEMORY_BANK",
             "GRAVITY_CORE",
@@ -110,7 +110,7 @@ namespace borktorial
             "SHRIMP_POOL",
             "CAPYBARA_DEN"
         ];
-        static readonly string[] kerbals = [
+        public static readonly string[] kerbals = [
             "JEBEDIAH",
             "BILL",
             "BOB",
@@ -131,7 +131,7 @@ namespace borktorial
             "KIRRIM",
             "KURT"
             ];
-        static readonly string[] verbs = [
+        public static readonly string[] verbs = [
             "ATE",
             "ENDED",
             "CREATED",
@@ -155,7 +155,7 @@ namespace borktorial
             "REANIMATED",
             "UNINSTALLED"
             ];
-        static readonly string[] animals = [
+        public static readonly string[] animals = [
             "TIGER",
             "DOLPHIN",
             "CAPYBARA",
@@ -187,7 +187,7 @@ namespace borktorial
             "OTTER",
             "MEGALODON"
             ];
-        static readonly string[] processNames = [
+        public static readonly string[] processNames = [
             "NTOSKRNL",
             "SVCHOST",
             "CMDSHELL",
@@ -286,7 +286,7 @@ namespace borktorial
             "NTVDM",
             "HL3"
             ];
-        static readonly string[] notem = [
+        public static readonly string[] notem = [
             // filler to make it more unlikely
             "",
             "",
@@ -317,43 +317,21 @@ namespace borktorial
             "_IRQT", // IRQ triggered error
             "_XSW" // External software caused error
             ];
-        static readonly char[] letters = "QWERTYUIOPASDFGHJKLZXCVBNM".ToCharArray();
-        static readonly char[] lowletters = "qwertyuiopasdfghjklzxcvbnm".ToCharArray();
-        static readonly string[] registers = ["EAX", "EBX", "ECX", "EDX", "ESP", "SS", "ES", "DS", "CS"];
-        static readonly char[] nibbles = "1234567890".ToCharArray();
-        static readonly char[] hexLetters = "ABCDEF".ToCharArray();
-        static readonly char[] hexDigits = "1234567890ABCDEF".ToCharArray();
+        public static readonly char[] letters = "QWERTYUIOPASDFGHJKLZXCVBNM".ToCharArray();
+        public static readonly char[] lowletters = "qwertyuiopasdfghjklzxcvbnm".ToCharArray();
+        public static readonly string[] registers = ["EAX", "EBX", "ECX", "EDX", "ESP", "SS", "ES", "DS", "CS"];
+        public static readonly char[] nibbles = "1234567890".ToCharArray();
+        public static readonly char[] hexLetters = "ABCDEF".ToCharArray();
+        public static readonly char[] hexDigits = "1234567890ABCDEF".ToCharArray();
         // we codenamed this one the Aperture Science Templated System Potential Failure Detection and Generation System(TM)
         public static string[] Generate()
         {
             // Choose random template
             string gErrI = templates[rand.Next(templates.Length)];
-            string processName = processNames[rand.Next(processNames.Length)];
-            // Replace tags step-by-step
-            gErrI = gErrI.Replace("<animal>", animals[rand.Next(animals.Length)]);
-            gErrI = gErrI.Replace("<kerbal>", kerbals[rand.Next(kerbals.Length)]);
-            gErrI = gErrI.Replace("<num>", rand.Next(0, 256).ToString());
-            gErrI = gErrI.Replace("<scpnum>", rand.Next(2, 7500).ToString());
-            gErrI = gErrI.Replace("<notem>", notem[rand.Next(notem.Length)]); // Marker to designate "NOt TEMplate". At times.
-            gErrI = gErrI.Replace("<subject>", subjects[rand.Next(subjects.Length)]);
-            gErrI = gErrI.Replace("<object>", objects[rand.Next(objects.Length)]);
-            gErrI = gErrI.Replace("<num16>", rand.Next(65536).ToString());
-            gErrI = gErrI.Replace("<letter>", letters[rand.Next(letters.Length)].ToString());
-            gErrI = gErrI.Replace("<nibble>", nibbles[rand.Next(nibbles.Length)].ToString());
-            gErrI = gErrI.Replace("<hletter>", hexLetters[rand.Next(hexLetters.Length)].ToString());
-            gErrI = gErrI.Replace("<lowerltr>", lowletters[rand.Next(lowletters.Length)].ToString());
-            gErrI = gErrI.Replace("<addr8086>", rand.Next(0, 1048576).ToString());
-            gErrI = gErrI.Replace("<reg8086>", rand.Next(0, 65536).ToString());
-            gErrI = gErrI.Replace("<addr386>", rand.Next(0, int.MaxValue).ToString());
-            gErrI = gErrI.Replace("<reg386>", rand.Next(0, int.MaxValue).ToString());
-            gErrI = gErrI.Replace("<register>", registers[rand.Next(registers.Length)]);
-            gErrI = gErrI.Replace("<verb>", verbs[rand.Next(verbs.Length)]);
-            gErrI = bktStf.pNrH(gErrI, rand);
-            return [gErrI, processName];
+            return genCustomTemplate(gErrI);
         }
         public static string[] genCustomTemplate(string template)
         {
-            // Choose random template
             string gErrI = template;
             string processName = processNames[rand.Next(processNames.Length)];
             // Replace tags step-by-step

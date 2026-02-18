@@ -6,7 +6,7 @@
 
     public static class bktLV
     {
-        public static (int maj, int min, int pch, char rv) aprtVer = (0, 4, 3, 'a');
+        public static (int maj, int min, int pch, char rv) aprtVer = (0, 4, 3, 'b');
         public static int[] puC { get; } = [255, 127, 63, 31, 15, 7, 3, 2];
         public static int[] puD { get; } = [1, 3, 7, 15, 31, 63, 127, 254];
         public static int[] dallf() {
@@ -71,6 +71,16 @@
             else if (bytes < (UInt128)Math.Pow(1024, 11))
                 return $"{bytes / (UInt128)Math.Pow(1024, 10)}QB";
             else return $"Yes.";
+        }
+        public static byte[] mkRndByteArray(int length)
+        {
+            List<byte> tempBytes = new();
+            Random rand = new();
+            for (int i = 0; i < length; i++)
+            {
+                tempBytes.Add((byte)rand.Next(0, 256));
+            }
+            return tempBytes.ToArray();
         }
     }
 }

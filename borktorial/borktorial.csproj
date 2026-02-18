@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Remove="modem.mp3" />
+    <None Remove="rsrc\sttw.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,11 +34,13 @@
     <EmbeddedResource Include="rsrc\splashes.txt" />
     <EmbeddedResource Include="rsrc\eula.txt" />
     <EmbeddedResource Include="rsrc\screenshot16.png" />
+    <EmbeddedResource Include="rsrc\sttw.txt" />
     <EmbeddedResource Include="rsrc\thisisabucket.7z" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="NLua" Version="1.7.8" />
     <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.7" />
     <PackageReference Include="System.Windows.Extensions" Version="10.0.0-rc.2.25502.107" />
   </ItemGroup>

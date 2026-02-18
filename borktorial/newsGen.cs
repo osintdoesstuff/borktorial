@@ -4,8 +4,8 @@ namespace borktorial
 {
     internal class newsGen
     {
-        static readonly Random rand = new();
-        static readonly string[] templates = [
+        public static readonly Random rand = new();
+        public static readonly string[] templates = [
             "<company> announced <product> today, expected to ship Q<nr1-4> <nr1995-1999>.",
             "<company> stock fell <nr5-40>% following <scandal>.",
             "<product> version <nr1-9>.<nr0-99> released with <feature> support.",
@@ -35,7 +35,7 @@ namespace borktorial
             "Pet <wpet>. Dangerous fad or juicy new market?"
                 ];
 
-        static readonly string[] companies = [
+        public static readonly string[] companies = [
             "3DFX",
             "Creative Labs",
             "Microsoft",
@@ -55,7 +55,7 @@ namespace borktorial
             "Netscape"
                 ];
 
-        static readonly string[] products = [
+        public static readonly string[] products = [
             "Voodoo 3",
             "SoundBlaster AWE64",
             "Windows 98",
@@ -72,7 +72,7 @@ namespace borktorial
             "RedHat Linux 6.0"
                 ];
 
-        static readonly string[] competitors = [
+        public static readonly string[] competitors = [
             "S3",
             "Cyrix",
             "VIA",
@@ -81,7 +81,7 @@ namespace borktorial
             "Number Nine"
                 ];
 
-        static readonly string[] competitor_products = [
+        public static readonly string[] competitor_products = [
             "Savage 4",
             "Rage 128",
             "TNT",
@@ -90,7 +90,7 @@ namespace borktorial
             "K6-2"
                 ];
 
-        static readonly string[] persons = [
+        public static readonly string[] persons = [
             "John Carmack",
             "Bill Gates",
             "Steve Jobs",
@@ -101,7 +101,7 @@ namespace borktorial
             "Brian Hook"
                 ];
 
-        static readonly string[] scandals = [
+        public static readonly string[] scandals = [
             "driver stability issues",
             "Y2K compliance failures",
             "monopoly allegations",
@@ -110,7 +110,7 @@ namespace borktorial
             "patent infringement claims"
                 ];
 
-        static readonly string[] problems = [
+        public static readonly string[] problems = [
             "IRQ conflicts",
             "driver crashes",
             "overheating under load",
@@ -119,7 +119,7 @@ namespace borktorial
             "blue screens on NT 4.0"
                 ];
 
-        static readonly string[] features = [
+        public static readonly string[] features = [
             "hardware T&L",
             "32-bit color",
             "AGP 4X",
@@ -131,7 +131,7 @@ namespace borktorial
             "USB"
                 ];
 
-        static readonly string[] technologies = [
+        public static readonly string[] technologies = [
             "AGP",
             "USB",
             "FireWire",
@@ -140,7 +140,7 @@ namespace borktorial
             "UDMA/66"
                 ];
 
-        static readonly string[] tech = [
+        public static readonly string[] tech = [
             "PCI",
             "ISA",
             "EDO RAM",
@@ -148,7 +148,7 @@ namespace borktorial
             "IDE"
                 ];
 
-        static readonly string[] events = [
+        public static readonly string[] events = [
             "COMDEX",
             "E3",
             "CES",
@@ -156,7 +156,7 @@ namespace borktorial
             "LinuxWorld"
                 ];
 
-        static readonly string[] industries = [
+        public static readonly string[] industries = [
             "gaming",
             "3D graphics",
             "professional workstations",
@@ -164,7 +164,7 @@ namespace borktorial
             "multimedia"
                 ];
 
-        static readonly string[] months = [
+        public static readonly string[] months = [
             "January",
             "February",
             "March",
@@ -179,7 +179,7 @@ namespace borktorial
             "December"
                 ];
 
-        static readonly string[] bbsnames = [
+        public static readonly string[] bbsnames = [
             "Silicon Dreams",
             "Digital Dungeon",
             "The Neon Nights",
@@ -189,12 +189,12 @@ namespace borktorial
             "Electric Cafe",
             "Data Haven"
                 ];
-        static readonly string[] mw = [
+        public static readonly string[] mw = [
             "man",
             "woman",
             "unearthly anomaly"
                 ];
-        static readonly string[] v102 = [
+        public static readonly string[] v102 = [
             "Wendy's",
             "Enrichment Center",
             "Cookie mines",
@@ -207,7 +207,7 @@ namespace borktorial
             "Baldi's Schoolhouse",
             "The Nether"
                 ];
-        static readonly string[] wpets = [
+        public static readonly string[] wpets = [
             "rocks",
             "stickbugs", // (side note: you got stickbugged. 6 or so years after that became completely irrelevant)
             "LSTMs",
@@ -218,7 +218,7 @@ namespace borktorial
             "humans",
             "morons"
                 ];
-        static readonly string[] scpclasses = [
+        public static readonly string[] scpclasses = [
             "Safe",
             "Euclid",
             "Keter",
@@ -228,40 +228,20 @@ namespace borktorial
             "Pending",
             "Explained"
                 ];
+        public static readonly string[] mcmobsH = 
+            [
+            "zombie",
+            "creeper",
+            "skeleton",
+            "spider",
+            "witch"
+            ];
 
         public static string Generate()
         {
             string gNe = templates[rand.Next(templates.Length)];
 
-            // Replace all tags
-            gNe = gNe.Replace("<company>", companies[rand.Next(companies.Length)]);
-            gNe = gNe.Replace("<competitor>", competitors[rand.Next(competitors.Length)]);
-            gNe = gNe.Replace("<product>", products[rand.Next(products.Length)]);
-            gNe = gNe.Replace("<competitor_product>", competitor_products[rand.Next(competitor_products.Length)]);
-            gNe = gNe.Replace("<person>", persons[rand.Next(persons.Length)]);
-            gNe = gNe.Replace("<scandal>", scandals[rand.Next(scandals.Length)]);
-            gNe = gNe.Replace("<problem>", problems[rand.Next(problems.Length)]);
-            gNe = gNe.Replace("<feature>", features[rand.Next(features.Length)]);
-            gNe = gNe.Replace("<technology>", technologies[rand.Next(technologies.Length)]);
-            gNe = gNe.Replace("<old_tech>", tech[rand.Next(tech.Length)]);
-            gNe = gNe.Replace("<event>", events[rand.Next(events.Length)]);
-            gNe = gNe.Replace("<industry>", industries[rand.Next(industries.Length)]);
-            gNe = gNe.Replace("<month>", months[rand.Next(months.Length)]);
-            int rc1 = rand.Next(0, 2);
-            if(rc1 == 0)
-            {
-                gNe = gNe.Replace("<bbsname>", bbsnames[rand.Next(bbsnames.Length)]);
-            }
-            else
-            {
-                gNe = gNe.Replace("<bbsname>", bbsNameGen());
-            }
-            gNe = gNe.Replace("<mw>", mw[rand.Next(mw.Length)]);
-            gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
-            gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
-            gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(wpets.Length)]);
-            // Process number ranges
-            gNe = bktStf.pNrH(gNe, rand);
+            gNe = genCustomTemplate(gNe);
 
             return gNe;
         }
@@ -297,6 +277,7 @@ namespace borktorial
             gNe = gNe.Replace("<v_102>", v102[rand.Next(v102.Length)]);
             gNe = gNe.Replace("<wpet>", wpets[rand.Next(wpets.Length)]);
             gNe = gNe.Replace("<scpclass>", scpclasses[rand.Next(scpclasses.Length)]);
+            gNe = gNe.Replace("<hostile>", mcmobsH[rand.Next(mcmobsH.Length)]);
 
             // Process number ranges
             gNe = bktStf.pNrH(gNe, rand);

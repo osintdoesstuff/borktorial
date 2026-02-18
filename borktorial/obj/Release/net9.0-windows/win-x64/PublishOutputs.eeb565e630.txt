@@ -1,1 +1,0 @@
-C:\Users\osint2\source\repos\borktorial\borktorial\bin\Release\net9.0-windows\win-x64\publish\borktorial.exe

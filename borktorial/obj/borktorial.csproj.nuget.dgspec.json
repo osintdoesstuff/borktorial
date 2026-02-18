@@ -53,7 +53,7 @@
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.11, )",
+              "version": "[9.0.13, )",
               "autoReferenced": true
             }
           },
@@ -73,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -130,18 +130,22 @@
             "Microsoft.DotNet.ILCompiler": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.11, )",
+              "version": "[9.0.13, )",
               "autoReferenced": true
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.11, )",
+              "version": "[9.0.13, )",
               "autoReferenced": true
             },
             "NAudio": {
               "target": "Package",
               "version": "[2.2.1, )"
+            },
+            "NLua": {
+              "target": "Package",
+              "version": "[1.7.8, )"
             },
             "Spectre.Console": {
               "target": "Package",
@@ -166,7 +170,7 @@
           "downloadDependencies": [
             {
               "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
-              "version": "[9.0.11, 9.0.11]"
+              "version": "[9.0.13, 9.0.13]"
             }
           ],
           "frameworkReferences": {
@@ -174,7 +178,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

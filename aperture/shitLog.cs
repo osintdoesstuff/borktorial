@@ -5,18 +5,37 @@
     /// </summary>
     public static class shitLog
     {
-        public static void createEntry(string proc, string descr, logType lt)
+        private static readonly object _lock = new();
+
+        public static void createEntry(string proc, 
+            string descr, 
+            logType lt, 
+            string dateFormat = "R", 
+            string filename = "bktLog.txt")
         {
-            string typeStr = lt switch
+            lock (_lock)
             {
-                logType.Null => "null",
-                logType.Warn => "warn",
-                logType.Info => "info",
-                logType.Err => "err",
-                _ => "unk"
-            };
-            File.AppendAllText("bktLog.txt",
-                $"[{DateTime.UtcNow.ToString("R")}] {typeStr}: [{proc}]: {descr}\r\n");
+                const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
+                FileInfo logFile = new(filename);
+
+                if (logFile.Exists && logFile.Length > maxSize)
+                {
+                    string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+                    string archive = $"{filename}-{timestamp}.txt";
+                    File.Move(filename, archive);
+                    createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
+                }
+                string typeStr = lt switch
+                {
+                    logType.Null => "null",
+                    logType.Warn => "warn",
+                    logType.Info => "info",
+                    logType.Err => "err",
+                    _ => "unk"
+                };
+                File.AppendAllText(filename,
+                    $"[{DateTime.UtcNow.ToString(dateFormat)}] {typeStr}: [{proc}]: {descr}\r\n");
+            }
         }
     }
     public enum logType
