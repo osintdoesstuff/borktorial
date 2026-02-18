@@ -131,6 +131,23 @@ namespace borktorial
             Network: {mConnected}. Use NETINFO for futher info
             Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
             """;
+        public static string luaReadme => """
+            Borktorial mods folder.
+
+            You can put normal Lua in here, run the name of the file as a command (e.g "test.lua" would mean the command "test" would correspond to that), and it'll run it as if it was a command!
+
+            The important variables:
+
+            Sys: table describing everything in the Program class
+            Args: what args said command was run with
+            ArgsRaw: The raw args
+            ArgsNoSkip: The args with commin[0] not skipped
+            ArgsRawNoSkip: The raw args with commin[0] not skipped
+
+            initmods.lua runs at boot time to initialize mods.
+
+            That's basically it. Read the fucking source code
+            """;
         public static void publicMain(string[] mArgs)
         {
             resetState();
@@ -154,6 +171,7 @@ namespace borktorial
             {
                 Directory.CreateDirectory("mods");
                 File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
+                File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
             if (bktLV.aprtVer != (0, 4, 3, 'a'))
@@ -489,8 +507,27 @@ namespace borktorial
                     "Breathing oxygen...",
                     "Segmentation fault.",
                     "Insulting Dr. Breen...",
-                    "Re-entering atmosphere..."
+                    "Re-entering atmosphere...",
+                    "Fine-tuning universal constants...",
+                    "Stabilizing Higgs Field...",
+                    "Running away from true vacuum...",
+                    "Adding more hydrogen...",
+                    "Tuning matter-antimatter ratio..."
                     ];
+                if(File.Exists(Path.Combine("mods", "cldmsg.txt")))
+                {
+                    List<string> moreLines = File.ReadAllLines(Path.Combine("mods", "cldmsg.txt")).ToList();
+                    List<string> fullLines = loadMsgs.ToList();
+                    if (moreLines[0] == "[NOSTOCKLDMSG]")
+                    {
+                        fullLines = [];
+                    }
+                    foreach(var item in moreLines)
+                    {
+                        fullLines.Add(item);
+                    }
+                    loadMsgs = fullLines.ToArray();
+                }
                 if (cfg[5] == 0)
                 {
                     for (int i = 0; i < rand.Next(5, 16); i++)
