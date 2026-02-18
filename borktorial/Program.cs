@@ -232,6 +232,11 @@ namespace borktorial
             {
                 sf59("igiulaw");
             }
+            if (args.Length >= 1 && args[0] == "/version")
+            {
+                Console.WriteLine($"Borktorial verison {getBuildNum()}");
+                return;
+            }
             if (args.Length >= 1 && args[0] == "/dev")
             {
                 Console.WriteLine("DEVELOPERS DEVELOPERS DEVELOPERS\r\n" +
