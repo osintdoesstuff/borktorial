@@ -25,8 +25,8 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static (int maj, int min, int pch, char rv) bktver { get; set; } = (0, 5, 7, 'b');
-        public static (int maj, int min, int pch, char rv) pubver { get; set; } = (1, 2, 1, 'a');
+        public static (int maj, int min, int pch, char rv) bktver { get; set; } = (0, 5, 8, 'a');
+        public static (int maj, int min, int pch, char rv) pubver { get; set; } = (1, 2, 1, 'b');
 
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
@@ -159,6 +159,17 @@ namespace borktorial
             {
                 Thread.Sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
+            }
+            if(args.Length >= 1 && args[0] == "/dvforceshowversioninstant") 
+            {
+                Console.WriteLine($"Borktorial version {getBuildNum()}");
+                Console.WriteLine("Internal:");
+                Console.WriteLine($"bktver: {bktver.maj}.{bktver.min}.{bktver.pch}{bktver.rv}");
+                Console.WriteLine($"pubver: {pubver.maj}.{pubver.min}.{pubver.pch}{pubver.rv}");
+                Console.WriteLine($"aprtver: {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}");
+                Console.WriteLine($"inta0: {bktLV.puC[7]}");
+                Console.WriteLine($"inta1: {bktLV.puD[7]}");
+                return;
             }
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
