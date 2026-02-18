@@ -1,2 +1,0 @@
-C:\Users\osint2\source\repos\borktorial\aperture\bin\Release\net9.0-windows\publish\aperture.dll
-C:\Users\osint2\source\repos\borktorial\aperture\bin\Release\net9.0-windows\publish\aperture.deps.json

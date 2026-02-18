@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "uumfEsB6jz4=",
+  "dgSpecHash": "INAl6tEcTkQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\osint2\\.nuget\\packages\\keralua\\1.4.9\\keralua.1.4.9.nupkg.sha512",
-    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.11\\microsoft.dotnet.ilcompiler.9.0.11.nupkg.sha512",
+    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.13\\microsoft.dotnet.ilcompiler.9.0.13.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.13\\microsoft.net.illink.tasks.9.0.13.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
@@ -21,7 +21,7 @@
     "C:\\Users\\osint2\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\system.windows.extensions\\10.0.0-rc.2.25502.107\\system.windows.extensions.10.0.0-rc.2.25502.107.nupkg.sha512",
-    "C:\\Users\\osint2\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\9.0.11\\runtime.win-x64.microsoft.dotnet.ilcompiler.9.0.11.nupkg.sha512"
+    "C:\\Users\\osint2\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\9.0.13\\runtime.win-x64.microsoft.dotnet.ilcompiler.9.0.13.nupkg.sha512"
   ],
   "logs": []
 }

@@ -85,7 +85,7 @@
           }
         }
       },
-      "Microsoft.DotNet.ILCompiler/9.0.11": {
+      "Microsoft.DotNet.ILCompiler/9.0.13": {
         "type": "package",
         "build": {
           "build/Microsoft.DotNet.ILCompiler.props": {}
@@ -433,10 +433,10 @@
         "runtimes/win10-x86/nativeassets/uap10.0/lua54.dll"
       ]
     },
-    "Microsoft.DotNet.ILCompiler/9.0.11": {
-      "sha512": "Odqp3vop0UYRcnhDSl+vLbKMqmR3S83UTGDtEonJ9I0NWMXijdhsD6rCC+IRodPIUZ7zXIFLzrT1gtJkAkOEIg==",
+    "Microsoft.DotNet.ILCompiler/9.0.13": {
+      "sha512": "HjOJCDy5GcOzkOeQuBLgbu8nUBvoZIZ+yA8SkDbb00PLAtYlRyZyfjjyNuhj3C0k+aliAV1oUCzVXqRQFxeI8g==",
       "type": "package",
-      "path": "microsoft.dotnet.ilcompiler/9.0.11",
+      "path": "microsoft.dotnet.ilcompiler/9.0.13",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -455,7 +455,7 @@
         "build/NativeAOT.natvis",
         "build/WindowsAPIs.txt",
         "build/findvcvarsall.bat",
-        "microsoft.dotnet.ilcompiler.9.0.11.nupkg.sha512",
+        "microsoft.dotnet.ilcompiler.9.0.13.nupkg.sha512",
         "microsoft.dotnet.ilcompiler.nuspec",
         "runtime.json",
         "tools/netstandard/ILCompiler.Build.Tasks.deps.json",
@@ -882,7 +882,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0-windows7.0": [
-      "Microsoft.DotNet.ILCompiler >= 9.0.11",
+      "Microsoft.DotNet.ILCompiler >= 9.0.13",
       "Microsoft.NET.ILLink.Tasks >= 9.0.13",
       "NAudio >= 2.2.1",
       "NLua >= 1.7.8",
@@ -948,7 +948,7 @@
           "Microsoft.DotNet.ILCompiler": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.11, )",
+            "version": "[9.0.13, )",
             "autoReferenced": true
           },
           "Microsoft.NET.ILLink.Tasks": {
@@ -988,7 +988,7 @@
         "downloadDependencies": [
           {
             "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
-            "version": "[9.0.11, 9.0.11]"
+            "version": "[9.0.13, 9.0.13]"
           }
         ],
         "frameworkReferences": {
