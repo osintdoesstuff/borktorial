@@ -365,7 +365,7 @@ namespace borktorial
         /// <returns>A random hex string with the params</returns>
         public static string sf15(int length, int gs, char sep = '-')
         {
-            var sb = new StringBuilder(length + (gs > 0 ? length / gs : 0));
+            StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
 
             for (int i = 0; i < length; i++)
             {

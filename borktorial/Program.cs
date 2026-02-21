@@ -192,7 +192,7 @@ namespace borktorial
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
             impulse(5000);
-            Stopwatch bootSw = new Stopwatch();
+            Stopwatch bootSw = new();
             bootSw.Start();
             Debug.WriteLine("tada!");
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
@@ -212,7 +212,7 @@ namespace borktorial
                     string[] cfgR = configC.Split(";");
                     int[] cfgP = new int[256];
                     int iteration = 0;
-                    foreach (var item in cfgR)
+                    foreach (string item in cfgR)
                     {
                         int itemI = int.Parse(item);
                         cfgP[iteration] = itemI;
@@ -359,35 +359,33 @@ namespace borktorial
                 bootSw.Stop();
                 if (File.Exists(Path.Combine("mods", "initmods.lua")))
                 {
-                    using (var lua = new NLua.Lua())
+                    using NLua.Lua lua = new();
+                    lua.LoadCLRPackage();
+
+                    try
                     {
-                        lua.LoadCLRPackage();
+                        string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
 
-                        try
-                        {
-                            var luAsm = Assembly.GetExecutingAssembly().GetName().Name;
+                        string? lut = typeof(Program).FullName;
 
-                            var lut = typeof(Program).FullName;
-
-                            lua.DoString($@"
+                        lua.DoString($@"
                                             luanet.load_assembly('{luAsm}')
                                             Sys = luanet.import_type('{lut}')
                                         ");
 
-                            if (lua["Sys"] == null)
-                            {
-                                shitLog.createEntry("LUALDR", "Failed to load ASM.", logType.Err);
-                            }
-                            else
-                            {
-                                lua.DoFile(Path.Combine("mods", "initmods.lua"));
-                            }
-                        }
-                        catch (Exception ex)
+                        if (lua["Sys"] == null)
                         {
-                            shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
-                            throw;
+                            shitLog.createEntry("LUALDR", "Failed to load ASM.", logType.Err);
                         }
+                        else
+                        {
+                            lua.DoFile(Path.Combine("mods", "initmods.lua"));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                        throw;
                     }
                 }
                 else
@@ -534,17 +532,17 @@ namespace borktorial
                     ];
                 if(File.Exists(Path.Combine("mods", "cldmsg.txt")))
                 {
-                    List<string> moreLines = File.ReadAllLines(Path.Combine("mods", "cldmsg.txt")).ToList();
-                    List<string> fullLines = loadMsgs.ToList();
+                    List<string> moreLines = [.. File.ReadAllLines(Path.Combine("mods", "cldmsg.txt"))];
+                    List<string> fullLines = [.. loadMsgs];
                     if (moreLines[0] == "[NOSTOCKLDMSG]")
                     {
                         fullLines = [];
                     }
-                    foreach(var item in moreLines)
+                    foreach(string item in moreLines)
                     {
                         fullLines.Add(item);
                     }
-                    loadMsgs = fullLines.ToArray();
+                    loadMsgs = [.. fullLines];
                 }
                 if (cfg[5] == 0)
                 {
@@ -668,19 +666,19 @@ namespace borktorial
                             Console.WriteLine($"Directory listing of {fs.workingPath}");
                             Console.WriteLine();
 
-                            var dirContents = fs.GetDirContents(fs.workingPath);
+                            (List<vFile> files, List<vDir> dirs)? dirContents = fs.GetDirContents(fs.workingPath);
                             if (dirContents == null)
                             {
                                 Console.WriteLine("Invalid path");
                                 break;
                             }
 
-                            foreach (var dir in dirContents.Value.dirs)
+                            foreach (vDir dir in dirContents.Value.dirs)
                             {
                                 Console.WriteLine($"    <DIR>  {dir.name}");
                             }
 
-                            foreach (var file in dirContents.Value.files)
+                            foreach (vFile file in dirContents.Value.files)
                             {
                                 Console.WriteLine($"    {file.name} - {file.contents.Length} bytes");
                             }
@@ -905,7 +903,7 @@ namespace borktorial
                             AnsiConsole.Progress()
                                 .Start(ctx =>
                                 {
-                                    var task = ctx.AddTask("[rgb(63,127,255)]Doing the thing...[/]");
+                                    ProgressTask task = ctx.AddTask("[rgb(63,127,255)]Doing the thing...[/]");
 
                                     while (!task.IsFinished)
                                     {
@@ -960,8 +958,8 @@ namespace borktorial
                                         .Start(ctx =>
                                         {
                                             // Define tasks
-                                            var task1 = ctx.AddTask("[green]Mining...[/]");
-                                            var task2 = ctx.AddTask("[green]Inserting...[/]");
+                                            ProgressTask task1 = ctx.AddTask("[green]Mining...[/]");
+                                            ProgressTask task2 = ctx.AddTask("[green]Inserting...[/]");
 
                                             while (!ctx.IsFinished)
                                             {
@@ -978,7 +976,7 @@ namespace borktorial
                                         .Start(ctx =>
                                         {
                                             // Define tasks
-                                            var task1 = ctx.AddTask("[green]Disposing...[/]");
+                                            ProgressTask task1 = ctx.AddTask("[green]Disposing...[/]");
 
                                             while (!ctx.IsFinished)
                                             {
@@ -991,7 +989,7 @@ namespace borktorial
                                         .Start(ctx =>
                                         {
                                             // Define tasks
-                                            var task1 = ctx.AddTask("[green]Resting to recover stability...[/]");
+                                            ProgressTask task1 = ctx.AddTask("[green]Resting to recover stability...[/]");
 
                                             while (!ctx.IsFinished)
                                             {
@@ -1005,7 +1003,7 @@ namespace borktorial
                                         .Start(ctx =>
                                         {
                                             // Define tasks
-                                            var task1 = ctx.AddTask("[green]Reinserting...[/]");
+                                            ProgressTask task1 = ctx.AddTask("[green]Reinserting...[/]");
 
                                             while (!ctx.IsFinished)
                                             {
@@ -1251,7 +1249,7 @@ namespace borktorial
                                         Console.WriteLine();
                                         for (int i = 0; i < 1440; i++)
                                         {
-                                            Console.Write($"Sector {i.ToString("D4")}/1440...");
+                                            Console.Write($"Sector {i:D4}/1440...");
                                             Thread.Sleep(rand.Next(500, 1000));
                                             Console.Write("Done\r\n");
                                             Thread.Sleep(rand.Next(15, 50));
@@ -1268,7 +1266,7 @@ namespace borktorial
                                         Console.WriteLine();
                                         for (int i = 0; i < 1440; i++)
                                         {
-                                            Console.Write($"Sector {i.ToString("D4")}/1440...");
+                                            Console.Write($"Sector {i:D4}/1440...");
                                             Thread.Sleep(rand.Next(500, 1000));
                                             Console.Write("Done\r\n");
                                             Thread.Sleep(rand.Next(15, 50));
@@ -1285,7 +1283,7 @@ namespace borktorial
                                                 Console.WriteLine();
                                                 for (int i = 0; i < 1228800; i++)
                                                 {
-                                                    Console.Write($"Sector {i.ToString("D7")}/1228800...");
+                                                    Console.Write($"Sector {i:D7}/1228800...");
                                                     Thread.Sleep(rand.Next(10, 50));
                                                     Console.Write("Done\r\n");
                                                     Thread.Sleep(rand.Next(5, 15));
@@ -1341,7 +1339,7 @@ namespace borktorial
                                 {
                                     case "1-800-intnet":
                                         Console.WriteLine("Dialing...");
-                                        PlayModemSound();
+                                        playModemSound();
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
@@ -1353,7 +1351,7 @@ namespace borktorial
                                         break;
                                     case "1-800-fastnet":
                                         Console.WriteLine("Dialing...");
-                                        PlayModemSound();
+                                        playModemSound();
                                         Console.WriteLine("Connected to Aperture V.32bis-compressed");
                                         mSpeed = 2000; // 16000bps
                                         mConnected = true;
@@ -1506,7 +1504,7 @@ namespace borktorial
                             try
                             {
                                 int newsSizeSum = 1;
-                                foreach (var item in currNews)
+                                foreach (string item in currNews)
                                 {
                                     newsSizeSum += item.Length;
                                 }
@@ -1517,7 +1515,7 @@ namespace borktorial
                                     break;
                                 }
                                 Thread.Sleep(newsSizeSum / mSpeed);
-                                foreach (var item in currNews)
+                                foreach (string item in currNews)
                                 {
                                     if (!item.StartsWith("::p_"))
                                     {
@@ -1549,6 +1547,9 @@ namespace borktorial
                             });
                             rLoop.Start();
                             radioStopped = !radioStopped;
+                            break;
+                        case "dumpsysstate":
+                            bktStf.dumpState<Program>();
                             break;
                         case "the_most_useless_command_ever":
                             using (WebClient client = new())
@@ -1631,7 +1632,7 @@ namespace borktorial
                                 if (ex.Message == "NO HOPIUM LEFT!!!")
                                 {
                                     infLoop();
-                                    void infLoop()
+                                    static void infLoop()
                                     {
                                         infLoop(); // try to nuke the stack
                                     }
@@ -1644,7 +1645,7 @@ namespace borktorial
                             // The BIC is synced with **UTC TIME**
                             // This will not be correct for a lot of people
                             // And i don't fucking care.
-                            Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
+                            Console.WriteLine($"{DateTime.UtcNow:R} BT:{tick}-BMC:{munCycle}");
                             break;
                         default:
                             if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
@@ -1652,43 +1653,45 @@ namespace borktorial
                                 break; // do nothing.
                             }
                             string scriptName = Path.Combine("mods", commin[0] + ".lua");
+                            if (commin[0].StartsWith("dbg::"))
+                            {
+                                scriptName = Path.Combine("mods", "debug", commin[0] + ".lua");
+                            }
                             if (File.Exists(scriptName))
                             {
-                                using (var lua = new NLua.Lua())
+                                using NLua.Lua lua = new();
+                                lua.LoadCLRPackage();
+
+                                try
                                 {
-                                    lua.LoadCLRPackage();
+                                    string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
 
-                                    try
-                                    {
-                                        var luAsm = Assembly.GetExecutingAssembly().GetName().Name;
+                                    string? lut = typeof(Program).FullName;
 
-                                        var lut = typeof(Program).FullName;
-
-                                        lua.DoString($@"
+                                    lua.DoString($@"
                                             luanet.load_assembly('{luAsm}')
                                             Sys = luanet.import_type('{lut}')
                                         ");
 
-                                        if (lua["Sys"] == null)
-                                        {
-                                            shitLog.createEntry("LUALDR", "Failed to load ASM. Sys was null.", logType.Err);
-                                            Console.WriteLine("Error: Sys was equal to null");
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            lua["Args"] = string.Join(" ", commin.Skip(1));
-                                            lua["ArgsRaw"] = string.Join(" ", rawCommin.Split(" ").Skip(1)); // listen man if it works.
-                                            lua["ArgsNoSkip"] = string.Join(" ", commin);
-                                            lua["ArgsRawNoSkip"] = rawCommin;
-                                            lua.DoFile(scriptName);
-                                        }
-                                    }
-                                    catch (Exception ex)
+                                    if (lua["Sys"] == null)
                                     {
-                                        shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
-                                        throw;
+                                        shitLog.createEntry("LUALDR", "Failed to load ASM. Sys was null.", logType.Err);
+                                        Console.WriteLine("Error: Sys was equal to null");
+                                        break;
                                     }
+                                    else
+                                    {
+                                        lua["Args"] = string.Join(" ", commin.Skip(1));
+                                        lua["ArgsRaw"] = string.Join(" ", rawCommin.Split(" ").Skip(1)); // listen man if it works.
+                                        lua["ArgsNoSkip"] = string.Join(" ", commin);
+                                        lua["ArgsRawNoSkip"] = rawCommin;
+                                        lua.DoFile(scriptName);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                                    throw;
                                 }
                                 break;
                             }
@@ -1877,7 +1880,7 @@ namespace borktorial
         {
             char[] inp2 = inp.ToCharArray();
             int accu = 0;
-            foreach (var item in inp2)
+            foreach (char item in inp2)
             {
                 accu += item;
             }
@@ -1885,7 +1888,7 @@ namespace borktorial
         }
         public static void sf59(string code)
         {
-            var secrets = new Dictionary<string, (string resource, string filename)>
+            Dictionary<string, (string resource, string filename)> secrets = new()
             {
                 ["waluigi"] = ("borktorial.rsrc.screenshot16.png", "the mun awaits.png"),
                 ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
@@ -1894,12 +1897,12 @@ namespace borktorial
                 ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
             };
 
-            if (!secrets.TryGetValue(code, out var secret))
+            if (!secrets.TryGetValue(code, out (string resource, string filename) secret))
                 return;
 
-            using var stream = Assembly.GetExecutingAssembly()
+            using Stream? stream = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream(secret.resource);
-            using var ms = new MemoryStream();
+            using MemoryStream ms = new();
             stream.CopyTo(ms);
             File.WriteAllBytes(secret.filename, ms.ToArray());
             if (!code.StartsWith("msc_"))
@@ -2102,7 +2105,7 @@ namespace borktorial
                             return;
                         }
                         int sum = 1;
-                        foreach (var item in ns)
+                        foreach (char item in ns)
                         {
                             sum += item;
                         }
@@ -2143,21 +2146,19 @@ namespace borktorial
                 {
                     return;
                 }
-                using (var mp3Reader = new Mp3FileReader(path))
-                using (var waveOut = new WaveOutEvent())
+                using Mp3FileReader mp3Reader = new(path);
+                using WaveOutEvent waveOut = new();
+                waveOut.Init(mp3Reader);
+                waveOut.Play();
+                while (waveOut.PlaybackState == PlaybackState.Playing)
                 {
-                    waveOut.Init(mp3Reader);
-                    waveOut.Play();
-                    while (waveOut.PlaybackState == PlaybackState.Playing)
-                    {
-                        Thread.Sleep(100);
-                    }
+                    Thread.Sleep(100);
                 }
             }
         }
         public static void radioLoop(string fn)
         {
-            SoundPlayer radio1 = new SoundPlayer(fn);
+            SoundPlayer radio1 = new(fn);
             while (!radioStopped)
             {
                 if (rbt0)
@@ -2354,7 +2355,7 @@ namespace borktorial
         public static void saveCfg()
         {
             string cfgS = "";
-            foreach (var item in cfg)
+            foreach (int item in cfg)
             {
                 cfgS += (";" + item.ToString("D10"));
             }
@@ -2369,9 +2370,9 @@ namespace borktorial
             }
             File.AppendAllText(cfgFn, cfgS);
         }
-        public static void PlayModemSound()
+        public static void playModemSound()
         {
-            using var stream = Assembly.GetExecutingAssembly()
+            using Stream? stream = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream("borktorial.rsrc.modem.wav");
             new System.Media.SoundPlayer(stream).PlaySync();
         }
@@ -2394,18 +2395,18 @@ namespace borktorial
             {
                 return "Your car is on fire.";
             }
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using Stream? stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
 
             if (stream is null)
                 return "missingno";
 
-            using var reader = new StreamReader(stream);
-            var lines = reader.ReadToEnd()
+            using StreamReader reader = new(stream);
+            string[] lines = reader.ReadToEnd()
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             // Parse lines with rarity weights
-            var splashes = lines
+            List<(string Text, int Weight)> splashes = [.. lines
                 .Select(line => line switch
                 {
                     _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 4),
@@ -2414,8 +2415,7 @@ namespace borktorial
                     _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
                     _ when line.StartsWith("(m) ") => (Text: line[4..], Weight: mdWeight),
                     _ => (Text: line, Weight: 0)
-                })
-                .ToList();
+                })];
 
             if (splashes.Count == 0)
                 return "Beta than ever!";
@@ -2425,7 +2425,7 @@ namespace borktorial
             int roll = rand.Next(totalWeight);
 
             int cumulative = 0;
-            foreach (var splash in splashes)
+            foreach ((string Text, int Weight) splash in splashes)
             {
                 cumulative += splash.Weight;
                 if (roll < cumulative)
@@ -2437,17 +2437,17 @@ namespace borktorial
         public static void sttw()
         {
             Console.WriteLine("Now loading STTW...");
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt");
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using Stream? stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt");
 
             if (stream is null)
                 throw new Exception("Error: Could not start STTW");
 
-            using var reader = new StreamReader(stream);
-            var lines = reader.ReadToEnd()
+            using StreamReader reader = new(stream);
+            string[] lines = reader.ReadToEnd()
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             Console.Clear();
-            foreach (var ln in lines)
+            foreach (string ln in lines)
             {
                 Console.WriteLine(ln);
                 Thread.Sleep(150);
@@ -2484,7 +2484,7 @@ namespace borktorial
             string[] catLines = cat.Split("\r\n");
 
             int catWidth = 0;
-            foreach (var line in catLines)
+            foreach (string line in catLines)
                 if (line.Length > catWidth)
                     catWidth = line.Length;
 
@@ -2561,7 +2561,7 @@ namespace borktorial
             {
                 Console.Clear();
             }
-            foreach (var item in frames)
+            foreach (string item in frames)
             {
                 Console.WriteLine(item.Replace("\0", "\r\n"));
                 Thread.Sleep(delay);

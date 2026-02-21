@@ -17,8 +17,8 @@ namespace aperture
         /// </summary>
         public byte[] ToBinary()
         {
-            using var ms = new MemoryStream();
-            using var bw = new BinaryWriter(ms);
+            using MemoryStream ms = new();
+            using BinaryWriter bw = new(ms);
 
             bw.Write(workingPath);
             WriteFileList(bw, rootFiles);
@@ -32,10 +32,10 @@ namespace aperture
         /// </summary>
         public static fileSys FromBinary(byte[] data)
         {
-            using var ms = new MemoryStream(data);
-            using var br = new BinaryReader(ms);
+            using MemoryStream ms = new(data);
+            using BinaryReader br = new(ms);
 
-            var fs = new fileSys();
+            fileSys fs = new();
             fs.workingPath = br.ReadString();
             fs.rootFiles = ReadFileList(br);
             fs.rootDirs = ReadDirList(br);
@@ -48,13 +48,13 @@ namespace aperture
         private static void WriteFileList(BinaryWriter bw, List<vFile> files)
         {
             bw.Write(files.Count);
-            foreach (var f in files)
+            foreach (vFile f in files)
             {
                 bw.Write(f.name);
                 bw.Write(f.contents.Length);
                 bw.Write(f.contents);
                 bw.Write(f.attribs.Length);
-                foreach (var a in f.attribs)
+                foreach (attrib a in f.attribs)
                     bw.Write((int)a);
             }
         }
@@ -62,11 +62,11 @@ namespace aperture
         private static void WriteDirList(BinaryWriter bw, List<vDir> dirs)
         {
             bw.Write(dirs.Count);
-            foreach (var d in dirs)
+            foreach (vDir d in dirs)
             {
                 bw.Write(d.name);
                 bw.Write(d.attribs.Length);
-                foreach (var a in d.attribs)
+                foreach (attrib a in d.attribs)
                     bw.Write((int)a);
                 WriteFileList(bw, d.files);
                 WriteDirList(bw, d.subDirs);  // recursive
@@ -76,14 +76,14 @@ namespace aperture
         private static List<vFile> ReadFileList(BinaryReader br)
         {
             int count = br.ReadInt32();
-            var files = new List<vFile>(count);
+            List<vFile> files = new(count);
             for (int i = 0; i < count; i++)
             {
                 string name = br.ReadString();
                 int contentLen = br.ReadInt32();
                 byte[] contents = br.ReadBytes(contentLen);
                 int attrLen = br.ReadInt32();
-                var attribs = new attrib[attrLen];
+                attrib[] attribs = new attrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
                     attribs[j] = (attrib)br.ReadInt32();
                 files.Add(new vFile(name, contents, attribs));
@@ -94,16 +94,16 @@ namespace aperture
         private static List<vDir> ReadDirList(BinaryReader br)
         {
             int count = br.ReadInt32();
-            var dirs = new List<vDir>(count);
+            List<vDir> dirs = new(count);
             for (int i = 0; i < count; i++)
             {
                 string name = br.ReadString();
                 int attrLen = br.ReadInt32();
-                var attribs = new attrib[attrLen];
+                attrib[] attribs = new attrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
                     attribs[j] = (attrib)br.ReadInt32();
-                var files = ReadFileList(br);
-                var subDirs = ReadDirList(br);  // recursive
+                List<vFile> files = ReadFileList(br);
+                List<vDir> subDirs = ReadDirList(br);  // recursive
                 dirs.Add(new vDir(name, files, subDirs, attribs));
             }
             return dirs;
@@ -171,7 +171,7 @@ namespace aperture
             Array.Copy(parts, parentParts, parts.Length - 1);
             string parentPath = "\\" + string.Join("\\", parentParts);
 
-            var parent = GetDirContents(parentPath);
+            (List<vFile> files, List<vDir> dirs)? parent = GetDirContents(parentPath);
             if (parent == null) return null;
 
             return (parent.Value.files, parent.Value.dirs, targetName);
@@ -219,10 +219,10 @@ namespace aperture
         /// </summary>
         public bool mkDir(string path, attrib[] attribs = null)
         {
-            var result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
             if (result == null) return false;
 
-            var (_, dirs, name) = result.Value;
+            (List<vFile> _, List<vDir> dirs, string name) = result.Value;
 
             for (int i = 0; i < dirs.Count; i++)
                 if (dirs[i].name == name) return false;
@@ -236,10 +236,10 @@ namespace aperture
         /// </summary>
         public bool mkFile(string path, byte[] contents = null, attrib[] attribs = null)
         {
-            var result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
             if (result == null) return false;
 
-            var (files, _, name) = result.Value;
+            (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
                 if (files[i].name == name) return false;
@@ -250,15 +250,15 @@ namespace aperture
         public bool mkFileChr(string path, char[] contents = null, attrib[] attribs = null)
         {
             List<byte> tempBytes = new();
-            foreach(var item in contents)
+            foreach(char item in contents)
             {
                 tempBytes.Add((byte)item);
             }
-            byte[] ctBytes = tempBytes.ToArray();
-            var result = GetParent(path);
+            byte[] ctBytes = [.. tempBytes];
+            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
             if (result == null) return false;
 
-            var (files, _, name) = result.Value;
+            (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
                 if (files[i].name == name) return false;
@@ -272,10 +272,10 @@ namespace aperture
         /// </summary>
         public bool delFile(string path)
         {
-            var result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
             if (result == null) return false;
 
-            var (files, _, name) = result.Value;
+            (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
             {
@@ -293,10 +293,10 @@ namespace aperture
         /// </summary>
         public bool delDir(string path)
         {
-            var result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
             if (result == null) return false;
 
-            var (_, dirs, name) = result.Value;
+            (List<vFile> _, List<vDir> dirs, string name) = result.Value;
 
             for (int i = 0; i < dirs.Count; i++)
             {

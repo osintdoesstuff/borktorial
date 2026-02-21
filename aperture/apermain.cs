@@ -1,4 +1,6 @@
-﻿namespace aperture
+﻿using System.Reflection;
+
+namespace aperture
 {
     /// <summary>
     /// lib testing dingus
@@ -80,7 +82,42 @@
             {
                 tempBytes.Add((byte)rand.Next(0, 256));
             }
-            return tempBytes.ToArray();
+            return [.. tempBytes];
+        }
+        public static double mapValue(double input, List<(double from, double to)> points)
+        {
+            List<(double from, double to)> sorted = points.OrderBy(p => p.from).ToList();
+
+            if (input <= sorted.First().from) return sorted.First().to;
+            if (input >= sorted.Last().from) return sorted.Last().to;
+
+            for (int i = 0; i < sorted.Count - 1; i++)
+            {
+                double fromA = sorted[i].from;
+                double toA = sorted[i].to;
+                double fromB = sorted[i + 1].from;
+                double toB = sorted[i + 1].to;
+
+                if (input >= fromA && input <= fromB)
+                {
+                    double t = (input - fromA) / (fromB - fromA);
+                    return toA + t * (toB - toA);
+                }
+            }
+
+            return 0;
+        }
+        public static void dumpState<T>()
+        {
+            Type type = typeof(T);
+            Console.WriteLine($"--- {type.Name} State ---");
+
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            foreach (PropertyInfo property in properties)
+            {
+                object value = property.GetValue(null);
+                Console.WriteLine($"{property.Name} = {value}");
+            }
         }
     }
 }
