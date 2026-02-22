@@ -11,11 +11,11 @@
             string descr, 
             logType lt, 
             string dateFormat = "R", 
-            string filename = "bktLog.txt")
+            string filename = "bktLog.txt",
+            long maxSize = 1048576)
         {
             lock (_lock)
             {
-                const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
                 FileInfo logFile = new(filename);
 
                 if (logFile.Exists && logFile.Length > maxSize)
