@@ -1,11 +1,12 @@
-﻿namespace aperture
+﻿
+namespace aperture
 {
     /// <summary>
     /// Shitlog: A shitty log
     /// </summary>
     public static class shitLog
     {
-        private static readonly object _lock = new();
+        private static readonly Lock _lock = new();
 
         public static void createEntry(string proc, 
             string descr, 

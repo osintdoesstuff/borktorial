@@ -86,7 +86,7 @@ namespace aperture
         }
         public static double mapValue(double input, List<(double from, double to)> points)
         {
-            List<(double from, double to)> sorted = points.OrderBy(p => p.from).ToList();
+            List<(double from, double to)> sorted = [.. points.OrderBy(p => p.from)];
 
             if (input <= sorted.First().from) return sorted.First().to;
             if (input >= sorted.Last().from) return sorted.Last().to;

@@ -657,7 +657,7 @@ namespace borktorial
                             Console.WriteLine($"Directory listing of {fs.workingPath}");
                             Console.WriteLine();
 
-                            (List<vFile> files, List<vDir> dirs)? dirContents = fs.GetDirContents(fs.workingPath);
+                            (List<vFile> files, List<vDir> dirs)? dirContents = fs.getDirContents(fs.workingPath);
                             if (dirContents == null)
                             {
                                 Console.WriteLine("Invalid path");
@@ -1984,13 +1984,13 @@ namespace borktorial
                     fs.mkFile("WINNT\\System32\\drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
                     break;
                 case 5001:
-                    File.WriteAllBytes("bktfs", fs.ToBinary());
+                    File.WriteAllBytes("bktfs", fs.toBinary());
                     break;
                 case 5002:
                     if (File.Exists("bktfs"))
                     {
                         // load
-                        fs = fileSys.FromBinary(File.ReadAllBytes("bktfs"));
+                        fs = fileSys.fromBinary(File.ReadAllBytes("bktfs"));
                     }
                     else
                     {

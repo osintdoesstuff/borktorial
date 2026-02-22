@@ -15,14 +15,14 @@ namespace aperture
         /// <summary>
         /// Serialize to binary blob
         /// </summary>
-        public byte[] ToBinary()
+        public byte[] toBinary()
         {
             using MemoryStream ms = new();
             using BinaryWriter bw = new(ms);
 
             bw.Write(workingPath);
-            WriteFileList(bw, rootFiles);
-            WriteDirList(bw, rootDirs);
+            writeFileList(bw, rootFiles);
+            writeDirList(bw, rootDirs);
 
             return ms.ToArray();
         }
@@ -30,22 +30,22 @@ namespace aperture
         /// <summary>
         /// Load from binary blob
         /// </summary>
-        public static fileSys FromBinary(byte[] data)
+        public static fileSys fromBinary(byte[] data)
         {
             using MemoryStream ms = new(data);
             using BinaryReader br = new(ms);
 
             fileSys fs = new();
             fs.workingPath = br.ReadString();
-            fs.rootFiles = ReadFileList(br);
-            fs.rootDirs = ReadDirList(br);
+            fs.rootFiles = readFileList(br);
+            fs.rootDirs = readDirList(br);
 
             return fs;
         }
 
         //=== BINARY HELPERS ===
 
-        private static void WriteFileList(BinaryWriter bw, List<vFile> files)
+        private static void writeFileList(BinaryWriter bw, List<vFile> files)
         {
             bw.Write(files.Count);
             foreach (vFile f in files)
@@ -59,7 +59,7 @@ namespace aperture
             }
         }
 
-        private static void WriteDirList(BinaryWriter bw, List<vDir> dirs)
+        private static void writeDirList(BinaryWriter bw, List<vDir> dirs)
         {
             bw.Write(dirs.Count);
             foreach (vDir d in dirs)
@@ -68,12 +68,12 @@ namespace aperture
                 bw.Write(d.attribs.Length);
                 foreach (attrib a in d.attribs)
                     bw.Write((int)a);
-                WriteFileList(bw, d.files);
-                WriteDirList(bw, d.subDirs);  // recursive
+                writeFileList(bw, d.files);
+                writeDirList(bw, d.subDirs);  // recursive
             }
         }
 
-        private static List<vFile> ReadFileList(BinaryReader br)
+        private static List<vFile> readFileList(BinaryReader br)
         {
             int count = br.ReadInt32();
             List<vFile> files = new(count);
@@ -91,7 +91,7 @@ namespace aperture
             return files;
         }
 
-        private static List<vDir> ReadDirList(BinaryReader br)
+        private static List<vDir> readDirList(BinaryReader br)
         {
             int count = br.ReadInt32();
             List<vDir> dirs = new(count);
@@ -102,8 +102,8 @@ namespace aperture
                 attrib[] attribs = new attrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
                     attribs[j] = (attrib)br.ReadInt32();
-                List<vFile> files = ReadFileList(br);
-                List<vDir> subDirs = ReadDirList(br);  // recursive
+                List<vFile> files = readFileList(br);
+                List<vDir> subDirs = readDirList(br);  // recursive
                 dirs.Add(new vDir(name, files, subDirs, attribs));
             }
             return dirs;
@@ -112,7 +112,7 @@ namespace aperture
         //=== PRIVATE HELPERS ===
 
         // Converts relative path to absolute
-        private string ResolvePath(string path)
+        private string resolvePath(string path)
         {
             if (string.IsNullOrEmpty(path)) return workingPath;
             if (path.StartsWith("\\")) return path;
@@ -121,15 +121,15 @@ namespace aperture
         }
 
         // Splits path into parts
-        private string[] ParsePath(string path)
+        private string[] parsePath(string path)
         {
-            return path.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            return path.Split(['\\'], StringSplitOptions.RemoveEmptyEntries);
         }
 
         // Gets contents of a directory by path (null if not found)
-        public (List<vFile> files, List<vDir> dirs)? GetDirContents(string path)
+        public (List<vFile> files, List<vDir> dirs)? getDirContents(string path)
         {
-            string[] parts = ParsePath(ResolvePath(path));
+            string[] parts = parsePath(resolvePath(path));
 
             if (parts.Length == 0)
                 return (rootFiles, rootDirs);
@@ -157,9 +157,9 @@ namespace aperture
         }
 
         // Gets parent directory contents + target name
-        private (List<vFile> files, List<vDir> dirs, string name)? GetParent(string path)
+        private (List<vFile> files, List<vDir> dirs, string name)? getParent(string path)
         {
-            string[] parts = ParsePath(ResolvePath(path));
+            string[] parts = parsePath(resolvePath(path));
             if (parts.Length == 0) return null;
 
             string targetName = parts[parts.Length - 1];
@@ -171,7 +171,7 @@ namespace aperture
             Array.Copy(parts, parentParts, parts.Length - 1);
             string parentPath = "\\" + string.Join("\\", parentParts);
 
-            (List<vFile> files, List<vDir> dirs)? parent = GetDirContents(parentPath);
+            (List<vFile> files, List<vDir> dirs)? parent = getDirContents(parentPath);
             if (parent == null) return null;
 
             return (parent.Value.files, parent.Value.dirs, targetName);
@@ -192,7 +192,7 @@ namespace aperture
 
             if (path == "..")
             {
-                string[] parts = ParsePath(workingPath);
+                string[] parts = parsePath(workingPath);
                 if (parts.Length == 0) return false;
 
                 if (parts.Length == 1)
@@ -206,9 +206,9 @@ namespace aperture
                 return true;
             }
 
-            if (GetDirContents(path) != null)
+            if (getDirContents(path) != null)
             {
-                workingPath = ResolvePath(path);
+                workingPath = resolvePath(path);
                 return true;
             }
             return false;
@@ -219,7 +219,7 @@ namespace aperture
         /// </summary>
         public bool mkDir(string path, attrib[] attribs = null)
         {
-            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
             if (result == null) return false;
 
             (List<vFile> _, List<vDir> dirs, string name) = result.Value;
@@ -227,7 +227,7 @@ namespace aperture
             for (int i = 0; i < dirs.Count; i++)
                 if (dirs[i].name == name) return false;
 
-            dirs.Add(new vDir(name, new List<vFile>(), new List<vDir>(), attribs ?? Array.Empty<attrib>()));
+            dirs.Add(new vDir(name, [], [], attribs ?? []));
             return true;
         }
 
@@ -236,7 +236,7 @@ namespace aperture
         /// </summary>
         public bool mkFile(string path, byte[] contents = null, attrib[] attribs = null)
         {
-            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
             if (result == null) return false;
 
             (List<vFile> files, List<vDir> _, string name) = result.Value;
@@ -244,18 +244,18 @@ namespace aperture
             for (int i = 0; i < files.Count; i++)
                 if (files[i].name == name) return false;
 
-            files.Add(new vFile(name, contents ?? Array.Empty<byte>(), attribs ?? Array.Empty<attrib>()));
+            files.Add(new vFile(name, contents ?? [], attribs ?? []));
             return true;
         }
         public bool mkFileChr(string path, char[] contents = null, attrib[] attribs = null)
         {
-            List<byte> tempBytes = new();
+            List<byte> tempBytes = [];
             foreach(char item in contents)
             {
                 tempBytes.Add((byte)item);
             }
             byte[] ctBytes = [.. tempBytes];
-            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
             if (result == null) return false;
 
             (List<vFile> files, List<vDir> _, string name) = result.Value;
@@ -263,7 +263,7 @@ namespace aperture
             for (int i = 0; i < files.Count; i++)
                 if (files[i].name == name) return false;
 
-            files.Add(new vFile(name, ctBytes ?? Array.Empty<byte>(), attribs ?? Array.Empty<attrib>()));
+            files.Add(new vFile(name, ctBytes ?? [], attribs ?? []));
             return true;
         }
 
@@ -272,7 +272,7 @@ namespace aperture
         /// </summary>
         public bool delFile(string path)
         {
-            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
             if (result == null) return false;
 
             (List<vFile> files, List<vDir> _, string name) = result.Value;
@@ -293,7 +293,7 @@ namespace aperture
         /// </summary>
         public bool delDir(string path)
         {
-            (List<vFile> files, List<vDir> dirs, string name)? result = GetParent(path);
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
             if (result == null) return false;
 
             (List<vFile> _, List<vDir> dirs, string name) = result.Value;
@@ -310,32 +310,19 @@ namespace aperture
         }
     }
 
-    public struct vFile
+    public struct vFile(string nm, byte[] ct, attrib[] at)
     {
-        public vFile(string nm, byte[] ct, attrib[] at)
-        {
-            name = nm;
-            contents = ct;
-            attribs = at;
-        }
-        public string name;
-        public byte[] contents;
-        public attrib[] attribs;
+        public string name = nm;
+        public byte[] contents = ct;
+        public attrib[] attribs = at;
     }
 
-    public struct vDir
+    public struct vDir(string nm, List<vFile> fls, List<vDir> subdirs, attrib[] attr)
     {
-        public vDir(string nm, List<vFile> fls, List<vDir> subdirs, attrib[] attr)
-        {
-            name = nm;
-            files = fls;
-            subDirs = subdirs;
-            attribs = attr;
-        }
-        public string name;
-        public List<vFile> files;
-        public List<vDir> subDirs;  // this shit is needed
-        public attrib[] attribs;
+        public string name = nm;
+        public List<vFile> files = fls;
+        public List<vDir> subDirs = subdirs;  // this shit is needed
+        public attrib[] attribs = attr;
     }
 
     public enum attrib
