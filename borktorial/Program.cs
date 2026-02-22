@@ -652,15 +652,6 @@ namespace borktorial
                         case "hl3":
                             Console.WriteLine("HALF-LIFE 3 CONFIRMED");
                             break;
-                        //case "dir":
-                        //    Console.WriteLine("Volume Serial Number is 4655-434B");
-                        //    Console.WriteLine("Directory listing of C:");
-                        //    for (int i = 0; i < rand.Next(4, 21); i++)
-                        //    {
-                        //        Console.WriteLine($"    {generateFile()} - {rand.Next(512, 65536)}");
-                        //    }
-                        //    Console.WriteLine();
-                        //    break;
                         case "dir":
                             Console.WriteLine("Volume Serial Number is 4655-434B");
                             Console.WriteLine($"Directory listing of {fs.workingPath}");
@@ -703,34 +694,6 @@ namespace borktorial
                                 }
                             }
                             break;
-
-                        case "dbg::fs_save":
-                            string savePath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.bin";
-                            try
-                            {
-                                File.WriteAllBytes(savePath, fs.ToBinary());
-                                Console.WriteLine($"Filesystem saved to {savePath}");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Failed to save: {ex.Message}");
-                            }
-                            break;
-
-                        case "dbg::fs_load":
-                            string loadPath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.bin";
-                            try
-                            {
-                                byte[] data = File.ReadAllBytes(loadPath);
-                                fs = fileSys.FromBinary(data);
-                                Console.WriteLine($"Filesystem loaded from {loadPath}");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Failed to load: {ex.Message}");
-                            }
-                            break;
-
                         case "create":
                             if (rawCommin.Split(' ').Length < 2)
                             {
@@ -897,43 +860,6 @@ namespace borktorial
                             break;
                         case "win":
                             Console.WriteLine("Failed to load VMM32.VXD. You must reinstall Windows");
-                            break;
-                        case "dbg::spectre::console":
-                            AnsiConsole.MarkupLine("[blue][bold]Test![/][/]");
-                            AnsiConsole.Progress()
-                                .Start(ctx =>
-                                {
-                                    ProgressTask task = ctx.AddTask("[rgb(63,127,255)]Doing the thing...[/]");
-
-                                    while (!task.IsFinished)
-                                    {
-                                        task.Increment(5);
-                                        Thread.Sleep(100);
-                                    }
-                                });
-                            AnsiConsole.MarkupLine("[rgb(255,255,255) on rgb(0,0,255)]Dingus[/]");
-                            AnsiConsole.Live(new Panel("Starting..."))
-                                .Start(ctx =>
-                                {
-                                    for (int i = 0; i < 10; i++)
-                                    {
-                                        ctx.UpdateTarget(new Panel($"[cyan]Tick: {i}[/]\n\nRandom: {rand.Next()}"));
-                                        Thread.Sleep(500);
-                                    }
-
-                                    ctx.UpdateTarget(new Panel("[green]Done![/]"));
-                                    Thread.Sleep(1000);
-                                });
-                            break;
-                        case "dbg::perftest::errgen_sf15":
-                            Stopwatch sow = new();
-                            sow.Start();
-                            for (int i = 0; i < 1024; i++)
-                            {
-                                string bigLoadOfString = errGen.sf15(1048576, 16, '-');
-                            }
-                            sow.Stop();
-                            Console.WriteLine($"Operation took {sow.ElapsedMilliseconds}ms!");
                             break;
                         case "flush":
                             crshChance = 5000;
@@ -1410,19 +1336,7 @@ namespace borktorial
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
                                 AnsiConsole.Markup($"[rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)}) on rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)})][blink][bold]?[/][/][/]");
-                                //Console.Title += (char)rand.Next(32, 256);
-                                //if(Console.Title.Length > 32)
-                                //{
-                                //    Console.Title = "";
-                                //}
-                                //if (rand.Next(0, 65536) == 0)
-                                //{
-                                //    Console.Clear();
-                                //}
                             }
-                        case "logtesto":
-                            Exception iex = new("DOHASHIDOSHAI");
-                            throw new Exception("BORKYBORK", iex);
                         case "lambda":
                             DateTime rightFuckingNow = DateTime.UtcNow;
                             bool hlDay = false;
@@ -1456,16 +1370,6 @@ namespace borktorial
                             {
                                 Console.WriteLine($"cannot find: {commin[0]}");
                             }
-                            break;
-                        case "lplay_dbg":
-                            mp3PlayLoop(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3");
-                            break;
-                        case "dbg::exhndlr":
-                            for (int i = 10 - 1; i >= 0; i--)
-                            {
-                                Console.WriteLine(69 / i);
-                            }
-                            Console.WriteLine(cfg[593]);
                             break;
                         case "lgr":
                             Console.ForegroundColor = ConsoleColor.Green;
