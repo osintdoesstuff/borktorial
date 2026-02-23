@@ -1,5 +1,4 @@
-﻿
-namespace aperture
+﻿namespace aperture
 {
     /// <summary>
     /// Shitlog: A shitty log
