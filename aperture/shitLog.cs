@@ -12,13 +12,14 @@
             logType lt, 
             string dateFormat = "R", 
             string filename = "bktLog.txt",
-            long maxSize = 1048576)
+            long maxSize = 1048576,
+            bool doRotate = true)
         {
             lock (_lock)
             {
                 FileInfo logFile = new(filename);
 
-                if (logFile.Exists && logFile.Length > maxSize)
+                if (logFile.Exists && logFile.Length > maxSize && doRotate == true)
                 {
                     string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
                     string archive = $"{filename}-{timestamp}.txt";
