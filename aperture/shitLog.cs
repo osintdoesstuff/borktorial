@@ -24,7 +24,8 @@
                     string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
                     string archive = $"{filename}-{timestamp}.txt";
                     File.Move(filename, archive);
-                    createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
+                    File.AppendAllText(filename,
+                        $"[{DateTime.UtcNow.ToString(dateFormat)}] info: [SHITLOG]: Get rotated idiot (into {archive}).\r\n");
                 }
                 string typeStr = lt switch
                 {
