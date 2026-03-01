@@ -152,6 +152,10 @@ namespace borktorial
             """;
         public static void publicMain(string[] mArgs)
         {
+            if (virused)
+            {
+                mArgs = mArgs.ToList().Append("__virused").ToArray();
+            }
             resetState();
             Main(mArgs);
         }
@@ -437,6 +441,24 @@ namespace borktorial
                 Thread.Sleep(rand.Next(500, 750));
                 Console.Write("Booting from HDD...");
                 Thread.Sleep(rand.Next(250, 750));
+                if (args.Contains("__virused"))
+                {
+                    AnsiConsole.Markup("[red]fail[/]\r\n\r\n");
+                    AnsiConsole.Markup("No boot devices found. F1 to reboot.\r\n");
+                    ConsoleKey ck = Console.ReadKey().Key;
+                    if (ck == ConsoleKey.F1)
+                    {
+                        publicMain(args);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Boot fail");
+                        while (true)
+                        {
+                            Thread.Sleep(int.MaxValue);
+                        }
+                    }
+                }
                 AnsiConsole.Markup("[green]ok![/]\r\n");
                 if (File.Exists("temp_fcBA39-FA31.bin"))
                 {
@@ -622,8 +644,12 @@ namespace borktorial
                     {
                         Console.WriteLine("Error: failed to execute command");
                         commin = ["_bktignorecmd::0"];
-                        cmdFErrCount++;
+                        cmdFErrCount++; // gets rarer every time
                     }
+                }
+                if(rawCommin.ToLower() == "sudo make me a sandwich")
+                {
+                    Console.WriteLine("Make error 553: Sandwich not tasty enough");
                 }
                 try
                 {
@@ -711,7 +737,6 @@ namespace borktorial
                                 }
                             }
                             break;
-
                         case "del":
                             if (rawCommin.Split(' ').Length < 2)
                             {
@@ -812,21 +837,9 @@ namespace borktorial
                             }
                             break;
                         case "reboot":
-                            if (virused == false)
-                            {
-                                rbt0 = true;
-                                publicMain(["vs", "49"]);
-                            }
-                            if (virused == true)
-                            {
-                                while (true)
-                                {
-                                    Console.Clear();
-                                    Console.WriteLine("Non-system disk or disk error.");
-                                    Console.WriteLine("Press any key to reboot.");
-                                    Console.ReadKey(true);
-                                }
-                            }
+                            rbt0 = true;
+                            Console.Clear();
+                            publicMain(["vs", "49"]);
                             break;
                         case "drdickhd":
                             Console.WriteLine("Dr. Dickhead is scanning for viruses...");
@@ -1159,6 +1172,9 @@ namespace borktorial
                             {
                                 Console.WriteLine("You're not in sudoers. This incident will be reported to the FBI");
                             }
+                            break;
+                        case "recursion":
+                            Console.WriteLine("Did you mean: recursion");
                             break;
                         case "format":
                             if (commin.Length >= 2)
