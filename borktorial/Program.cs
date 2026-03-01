@@ -637,14 +637,28 @@ namespace borktorial
             {
                 Console.Write($"C:{fs.workingPath}>");
                 string rawCommin = Console.ReadLine() ?? "";
+                try
+                {
+                    rawCommin = parseBorkTag(rawCommin);
+                }
+                catch(Exception ex)
+                {
+                    shitLog.createEntry("cmdhndlr", ex.ToString(), logType.Warn);
+                    Console.WriteLine("Command Parser Error 49 (pbt fail)");
+                    continue;
+                }
                 string[] commin = rawCommin.ToLower().Split(' ');
                 if(strSum(rawCommin) % 7 == 0)
                 {
-                    if(rand.Next(0, 6+cmdFErrCount) == 0)
+                    if(rand.Next(0, 12+cmdFErrCount) == 0)
                     {
                         Console.WriteLine("Error: failed to execute command");
-                        commin = ["_bktignorecmd::0"];
-                        cmdFErrCount++; // gets rarer every time
+                        commin = ["_bktignorecmd::0", "cmdFErr"];
+                        cmdFErrCount+=3; // gets rarer every time
+                        if(cmdFErrCount > 12)
+                        {
+                            cmdFErrCount += (byte)(cmdFErrCount * 0.05);
+                        }
                     }
                 }
                 if(rawCommin.ToLower() == "sudo make me a sandwich")

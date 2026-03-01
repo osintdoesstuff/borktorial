@@ -353,6 +353,7 @@ namespace borktorial
             gErrI = gErrI.Replace("<reg386>", rand.Next(0, int.MaxValue).ToString());
             gErrI = gErrI.Replace("<register>", registers[rand.Next(registers.Length)]);
             gErrI = gErrI.Replace("<verb>", verbs[rand.Next(verbs.Length)]);
+            gErrI = gErrI.Replace("<pname>", processNames[rand.Next(processNames.Length)]);
             gErrI = bktStf.pNrH(gErrI, rand);
             return [gErrI, processName];
         }
