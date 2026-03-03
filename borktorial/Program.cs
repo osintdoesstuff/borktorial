@@ -57,7 +57,6 @@ namespace borktorial
         public static Thread drdhtsr { get; set; }
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
         public static RegistryKey formatkey { get; } = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC"); // RegistryKey itself shouldn't be swapped
-
         public static fileSys fs { get; set; } = new();
         public static bool rbt0 { get; set; } = false;
         public static string cfgFn { get; set; } = "bktcfg.ssc";
@@ -68,7 +67,7 @@ namespace borktorial
         public static byte cmdFErrCount { get; set; } = 0;
 
         public static List<string> currNews { get; set; } = new(4096);
-
+        public static string sid = "";
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
 
         public static string[] lines { get; } = [
@@ -166,6 +165,8 @@ namespace borktorial
                 Thread.Sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
             }
+            sid = sidGen();
+            rand = new((int)(DateTime.UtcNow.Ticks+strSum(sid)));
             if(args.Length >= 1 && args[0] == "/dvforceshowversioninstant") 
             {
                 Console.WriteLine($"Borktorial version {getBuildNum()}");
@@ -1863,6 +1864,9 @@ namespace borktorial
                 case 101:
                     Console.WriteLine("HOPIUM ADMINISTERED");
                     break;
+                case 9593:
+                    Console.WriteLine(sidGen());
+                    break;
                 case 202:
                     string fjbjB = "HALF-LIFE 3 IS COMING SOON! ";
                     string fjbjB2 = "ALERT: OUT OF HOPIUM! ";
@@ -2477,6 +2481,11 @@ namespace borktorial
             root = false;
             jmtrigger = false;
             specialDays.update();
+        }
+
+        public static string sidGen()
+        {
+            return $"{errGen.sf15(8, 0)}-{errGen.sf15(6, 0)}-{errGen.sf15(16, 0)}";
         }
         /// <summary>
         /// Wrapper for byteFormat
