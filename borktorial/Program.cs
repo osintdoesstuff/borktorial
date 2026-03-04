@@ -67,9 +67,9 @@ namespace borktorial
         public static byte cmdFErrCount { get; set; } = 0;
 
         public static List<string> currNews { get; set; } = new(4096);
-        public static string sid = "";
-        public static int[] cfg { get; set; } = [15, 10000, 15, 2];
 
+        public static int[] cfg { get; set; } = [15, 10000, 15, 2];
+        public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(bktStf.nookEnc(username, password)));
         public static string[] lines { get; } = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
@@ -165,8 +165,6 @@ namespace borktorial
                 Thread.Sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
             }
-            sid = sidGen();
-            rand = new((int)(DateTime.UtcNow.Ticks+strSum(sid)));
             if(args.Length >= 1 && args[0] == "/dvforceshowversioninstant") 
             {
                 Console.WriteLine($"Borktorial version {getBuildNum()}");
@@ -196,6 +194,7 @@ namespace borktorial
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
+            shitLog.createEntry("BOOT", $"Random seed is {rSeed:X8}", logType.Info);
             impulse(5000);
             Stopwatch bootSw = new();
             bootSw.Start();
@@ -557,7 +556,7 @@ namespace borktorial
                 {
                     List<string> moreLines = [.. File.ReadAllLines(Path.Combine("mods", "cldmsg.txt"))];
                     List<string> fullLines = [.. loadMsgs];
-                    if (moreLines[0] == "[NOSTOCKLDMSG]")
+                    if (moreLines.Count > 0 && moreLines[0] == "[NOSTOCKLDMSG]")
                     {
                         fullLines = [];
                     }
@@ -630,6 +629,7 @@ namespace borktorial
             }
             catch (IndexOutOfRangeException) { currNews.Clear(); }
             impulse(5002);
+            rand = new(rSeed);
 
             // note: Ctrl+C being input somehow makes this break. i dunno how.
             // i don't wanna KNOW how
@@ -1863,9 +1863,6 @@ namespace borktorial
                     break;
                 case 101:
                     Console.WriteLine("HOPIUM ADMINISTERED");
-                    break;
-                case 9593:
-                    Console.WriteLine(sidGen());
                     break;
                 case 202:
                     string fjbjB = "HALF-LIFE 3 IS COMING SOON! ";

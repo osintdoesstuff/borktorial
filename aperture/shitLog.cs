@@ -13,7 +13,8 @@
             string dateFormat = "R", 
             string filename = "bktLog.txt",
             long maxSize = 1048576,
-            bool doRotate = true)
+            bool doRotate = true,
+            string csLogType = "__bkt::default(0)(correct_horse_battery_staple)")
         {
             lock (_lock)
             {
@@ -35,6 +36,10 @@
                     logType.Err => "err",
                     _ => "unk"
                 };
+                if(csLogType != "__bkt::default(0)(correct_horse_battery_staple)")
+                {
+                    typeStr = csLogType;
+                }
                 File.AppendAllText(filename,
                     $"[{DateTime.UtcNow.ToString(dateFormat)}] {typeStr}: [{proc}]: {descr}\r\n");
             }

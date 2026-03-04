@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Buffers.Text;
+using System.Reflection;
+using System.Text;
 
 namespace aperture
 {
@@ -106,6 +108,33 @@ namespace aperture
             }
 
             return 0;
+        }
+        /// <summary>
+        /// NookEnc. Named after Tom Nook (yes, the animal crossing one) for...reasons that exist i'm sure
+        /// Not sure why. Note: case sensitive
+        /// </summary>
+        /// <param name="un">a</param>
+        /// <param name="pw">b</param>
+        /// <returns></returns>
+        public static string nookEnc(string un, string pw)
+        {
+            string rslt = "";
+            if(un.Length > pw.Length)
+            {
+                int diff = un.Length - pw.Length;
+                pw = pw.PadLeft(diff, '\xFF');
+            }
+            if(pw.Length > un.Length)
+            {
+                int diff = pw.Length - un.Length;
+                un = un.PadLeft(diff, '\xFF');
+            }
+            for (int i = 0; i < pw.Length-1; i++)
+            {
+                rslt += un[i];
+                rslt += pw[i];
+            }
+            return rslt;
         }
         public static void dumpState<T>()
         {
