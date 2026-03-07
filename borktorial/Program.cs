@@ -1156,6 +1156,10 @@ namespace borktorial
                             Console.WriteLine("Available commands:");
                             Console.WriteLine("  echo <text>               - Print text to the screen.");
                             Console.WriteLine("  dir                       - List files in the current directory.");
+                            Console.WriteLine("  cd                        - Change current directory");
+                            Console.WriteLine("  create                    - Make file");
+                            Console.WriteLine("  del                       - Delete file");
+                            Console.WriteLine("  deltree                   - Delete folder");
                             Console.WriteLine("  pkgmngr install <package> - Install a package (try 'hl3', 'totally_not_a_virus_trust_me_im_a_dolphin', or 'tokimla82').");
                             Console.WriteLine("  drdickhd                  - Scan for and remove viruses.");
                             Console.WriteLine("  drdhtsr                   - Start the Dr. Dickhead TSR (background virus monitor).");
@@ -1168,7 +1172,6 @@ namespace borktorial
                             Console.WriteLine("  specs                     - Show system hardware");
                             Console.WriteLine("  atdt <number>             - Dialer");
                             Console.WriteLine("  drinkfood                 - The command line version of psychadelics");
-                            Console.WriteLine("  dohashidoshai             - Print THE CODE");
                             Console.WriteLine("  satconnect                - Connect to satellite internet");
                             Console.WriteLine("  format                    - Format drive");
                             Console.WriteLine();
@@ -1783,7 +1786,7 @@ namespace borktorial
             writeFullLine($"Contact your system administrator or technical support group for further assistance.");
             writeEmptyLine();
             writeFullLine($"Memory dumped: {rand.Next(128, 524288)} KB");
-            writeFullLine($"Dump file: \\ntdos\\MEMORY.DMP");
+            writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");;
             writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
@@ -2005,6 +2008,8 @@ namespace borktorial
                     fs.mkFile("WINNT\\System32\\config\\SOFTWARE", bktStf.mkRndByteArray(32768));
                     fs.mkFile("WINNT\\System32\\config\\SYSTEM", bktStf.mkRndByteArray(32768));
                     fs.mkFile("WINNT\\System32\\config\\DEFAULT", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\LOG", File.ReadAllBytes("bktLog.txt"));
+                    fs.mkFile("WINNT\\System32\\config\\NTDCFG", File.ReadAllBytes("bktcfg.ssc"));
 
                     // Boot files
                     fs.mkFileChr("boot.ini", bootiniContents);
@@ -2314,9 +2319,14 @@ namespace borktorial
         public static string splashPick()
         {
             int mdWeight = 0;
+            int snapWeight = 0;
             if (specialDays.marsDay)
             {
                 mdWeight = 4;
+            }
+            if (specialDays.snapshotDay)
+            {
+                snapWeight = 4;
             }
             if (specialDays.crimbus)
             {
@@ -2349,11 +2359,12 @@ namespace borktorial
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
                     _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
                     _ when line.StartsWith("(m) ") => (Text: line[4..], Weight: mdWeight),
+                    _ when line.StartsWith("(s) ") => (Text: line[4..], Weight: snapWeight),
                     _ => (Text: line, Weight: 0)
                 })];
 
             if (splashes.Count == 0)
-                return "Beta than ever!";
+                return "404 splash not found";
 
             // Weighted random selection
             int totalWeight = splashes.Sum(s => s.Weight);
@@ -2543,6 +2554,7 @@ namespace borktorial
                 DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+            public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
 
             public static void update()
             {
@@ -2558,6 +2570,7 @@ namespace borktorial
                 DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+                snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
             }
         }
         public enum mConnectTypes
