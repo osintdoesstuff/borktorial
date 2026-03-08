@@ -56,7 +56,6 @@ namespace borktorial
         public static Random rand { get; set; } = new();
         public static Thread drdhtsr { get; set; }
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
-        public static RegistryKey formatkey { get; } = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC"); // RegistryKey itself shouldn't be swapped
         public static fileSys fs { get; set; } = new();
         public static bool rbt0 { get; set; } = false;
         public static string cfgFn { get; set; } = "bktcfg.ssc";
@@ -194,7 +193,7 @@ namespace borktorial
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
             }
-            shitLog.createEntry("BOOT", $"Random seed is {rSeed:X8}", logType.Info);
+            shitLog.createEntry("BOOT", $"Random seed is 0x{rSeed:X8}", logType.Info);
             impulse(5000);
             Stopwatch bootSw = new();
             bootSw.Start();
@@ -396,7 +395,7 @@ namespace borktorial
                 {
 
                 }
-                shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
+                shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
@@ -460,28 +459,6 @@ namespace borktorial
                     }
                 }
                 AnsiConsole.Markup("[green]ok![/]\r\n");
-                if (File.Exists("temp_fcBA39-FA31.bin"))
-                {
-                    formatkey.SetValue("algl", "waluigi");
-                    Console.Clear();
-                    Console.WriteLine("\r\nNo boot device found.");
-                    while (true)
-                    {
-                        Thread.Sleep(int.MaxValue);
-                    }
-                }
-                if (formatkey.GetValue("algl") != null)
-                {
-                    if ((string)formatkey.GetValue("algl") == "waluigi")
-                    {
-                        Console.Clear();
-                        Console.WriteLine("\r\nNo boot device found.");
-                        while (true)
-                        {
-                            Thread.Sleep(int.MaxValue);
-                        }
-                    }
-                }
                 Console.WriteLine("\r\nStarting NT-DOS...\r\n");
                 Thread.Sleep(4500);
                 Console.WriteLine("NTXMEM is checking extended memory...\r\n");
@@ -649,12 +626,12 @@ namespace borktorial
                     continue;
                 }
                 string[] commin = rawCommin.ToLower().Split(' ');
-                if(strSum(rawCommin) % 7 == 0)
+                if(strSum(rawCommin) % 8 == 0 && strSum(rawCommin) > 0)
                 {
                     if(rand.Next(0, 12+cmdFErrCount) == 0)
                     {
                         Console.WriteLine("Error: failed to execute command");
-                        commin = ["_bktignorecmd::0", "cmdFErr"];
+                        commin = ["\xDE\xAD\xBA\xBE_bktignorecmd::0", "cmdFErr"];
                         cmdFErrCount+=3; // gets rarer every time
                         if(cmdFErrCount > 12)
                         {
@@ -670,7 +647,18 @@ namespace borktorial
                 {
                     switch (commin[0])
                     {
-                        case "_bktignorecmd::0":
+                        case "\xDE\xAD\xBA\xBE_bktignorecmd::0":
+                            try
+                            {
+                                if (commin.Length > 1)
+                                {
+                                    Thread.Sleep(int.Parse(commin[1]));
+                                }
+                            }
+                            catch
+                            {
+                                break;
+                            }
                             break;
                         case "echo":
                             if (commin.Length > 1)
@@ -1249,8 +1237,7 @@ namespace borktorial
                                                     Thread.Sleep(rand.Next(5, 15));
                                                     if (i > 485824)
                                                     {
-                                                        File.AppendAllText($"temp_fcBA39-FA31.bin", errGen.sf15(8192, 0));
-                                                        publicMain(["BABOON", "LAGOON"]);
+                                                        fs = new fileSys();
                                                     }
                                                 }
                                                 break;
@@ -1358,7 +1345,7 @@ namespace borktorial
                             break;
                         case "This_command_is_not_actually_accessible_under_NORMAL_Cir**CUM**stances_**LOL**":
                             File.Create("GORDON").Dispose();
-                            keBugCheck(0xCAFEBAB, new(2022, 2, 22));
+                            keBugCheck(0xCAFEBABE, new(2022, 2, 22));
                             break;
                         case "drinkfood":
                             Console.TreatControlCAsInput = true;
@@ -1446,7 +1433,15 @@ namespace borktorial
                                 {
                                     newsSizeSum += item.Length;
                                 }
-                                Console.WriteLine($"Fetching news (size: {bktStf.byteFormat((ulong)newsSizeSum)})...");
+                                Thread.Sleep(rand.Next(350, 500));
+                                if (mConnected)
+                                {
+                                    Console.WriteLine($"Fetching news (size: {bktStf.byteFormat((ulong)newsSizeSum)})...");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Fetching news (size: unknown)...");
+                                }
                                 if (!mConnected)
                                 {
                                     Console.WriteLine("Please connect to the Internet.");
@@ -2208,7 +2203,7 @@ namespace borktorial
                             Console.Title = $"broktorial: {splashPick()}";
                         }
                     }
-                    if (tick % 4 == 0)
+                    if (tick % 2 == 0)
                     {
                         if (ht0Idx >= ht0Grph.Length - 1)
                         {
@@ -2494,14 +2489,6 @@ namespace borktorial
         public static string sidGen()
         {
             return $"{errGen.sf15(8, 0)}-{errGen.sf15(6, 0)}-{errGen.sf15(16, 0)}";
-        }
-        /// <summary>
-        /// Wrapper for byteFormat
-        /// </summary>
-        /// <param name="bytes">Bytes</param>
-        public static string bfWrap(UInt128 bytes)
-        {
-            return bktStf.byteFormat(bytes);
         }
         public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {
