@@ -5,7 +5,7 @@
     /// </summary>
     public static class shitLog
     {
-        private static readonly Lock _lock = new();
+        private static readonly Lock logLock = new();
 
         public static void createEntry(string proc, 
             string descr, 
@@ -16,7 +16,7 @@
             bool doRotate = true,
             string csLogType = "__bkt::default(0)(correct_horse_battery_staple)")
         {
-            lock (_lock)
+            lock (logLock)
             {
                 FileInfo logFile = new(filename);
 

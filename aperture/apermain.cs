@@ -157,8 +157,8 @@ namespace aperture
             }
             for (int i = 0; i < pw.Length-1; i++)
             {
-                rslt += un[i];
-                rslt += pw[i];
+                rslt += un[i] ^ pw[i];
+                rslt += pw[i] ^ un[i];
             }
             return rslt;
         }

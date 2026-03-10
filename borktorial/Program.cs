@@ -678,6 +678,7 @@ namespace borktorial
                                 }
                             }
                             break;
+                        case "hl2ep3":
                         case "hl3":
                             Console.WriteLine("HALF-LIFE 3 CONFIRMED");
                             break;
@@ -2132,98 +2133,110 @@ namespace borktorial
             int lastFsSaveSecond = -1;
             while (true)
             {
-                Thread.Sleep(tl);
+                try
+                {
+                    Thread.Sleep(tl);
 
-                if (rbt0)
-                {
-                    return;
-                }
+                    if (rbt0)
+                    {
+                        return;
+                    }
 
-                sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
-                sysstab = Math.Clamp(sC, 0.01, 50);
-                if (tick % mcl == 0)
-                {
-                    munCycle += ht0;
-                }
-                if (tick % 10000 == 0 && !specialDays.bktDay)
-                {
-                    entropyAcc++;
-                }
-                if (tick % 25000 == 0 && specialDays.bktDay)
-                {
-                    entropyAcc++;
-                }
-                if (entropyAcc % 10 == 0 && rand.Next(0, 10) == 0)
-                {
-                    entropyAcc -= rand.Next(0, 10);
-                }
-                if (lastSdDlt.Date != DateTime.UtcNow.Date)
-                {
-                    specialDays.update();
-                    lastSdDlt = DateTime.UtcNow;
-                }
-                if (tick % (tl * 60000) == 0)
-                {
-                    specialDays.update();
-                    lastSdDlt = DateTime.UtcNow;
-                }
-                if (tick == int.MaxValue - 1)
-                {
-                    throw new Exception("[TIMETHRD] Stop bro go touch some fuckin' grass");
-                }
-                if (DateTime.UtcNow.Second % 10 == 0 &&
-                    DateTime.UtcNow.Second != lastFsSaveSecond)
-                {
-                    impulse(5001);
-                    lastFsSaveSecond = DateTime.UtcNow.Second;
-                }
-                if (DateTime.UtcNow.Second % 10 == 0 &&
-                   DateTime.UtcNow.Second != lastNewsSecond &&
-                   rand.Next(0, 5) == 0)
-                {
-                    addNews(newsGen.Generate());
-                    if (rand.Next(0, 98) == 0) // 1 in 99
+                    sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
+                    sysstab = Math.Clamp(sC, 0.01, 50);
+                    if (tick % mcl == 0)
                     {
-                        // Schonite dust collector
-                        schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
-                        if (!specialDays.marsDay)
-                        {
-                            schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
-                        }
-                        else
-                        {
-                            schonite -= Math.Clamp(rand.NextSingle() * 0.1, 0.001, 100);
-                        }
+                        munCycle += ht0;
                     }
-                    if (rand.Next(0, 99) == 0)
+                    if (tick % 10000 == 0 && !specialDays.bktDay)
                     {
-                        Console.Title = $"borktorial: {splashPick()}";
-                        if (rand.Next(0, 69) == 0) // 1 in 69
-                        {
-                            Console.Title = $"broktorial: {splashPick()}";
-                        }
+                        entropyAcc++;
                     }
-                    if (tick % 2 == 0)
+                    if (tick % 25000 == 0 && specialDays.bktDay)
                     {
-                        if (ht0Idx >= ht0Grph.Length - 1)
-                        {
-                            ht0Idx = 0;
-                        }
-                        ht0Idx++;
-                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble() * 0.01);
+                        entropyAcc++;
                     }
-                    lastNewsSecond = DateTime.UtcNow.Second;
-                }
-                int baseValue = 5000;      // Starting risk
-                double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
-                if (specialDays.marsDay)
-                {
-                    scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
-                }
-                double effectiveTick = tick * munCycle;
+                    if (entropyAcc % 10 == 0 && rand.Next(0, 10) == 0)
+                    {
+                        entropyAcc -= rand.Next(0, 10);
+                    }
+                    if (lastSdDlt.Date != DateTime.UtcNow.Date)
+                    {
+                        specialDays.update();
+                        lastSdDlt = DateTime.UtcNow;
+                    }
+                    if (tick % (tl * 60000) == 0)
+                    {
+                        specialDays.update();
+                        lastSdDlt = DateTime.UtcNow;
+                    }
+                    if (tick == int.MaxValue - 1)
+                    {
+                        throw new Exception("[TIMETHRD] Stop bro go touch some fuckin' grass");
+                    }
+                    if (DateTime.UtcNow.Second % 10 == 0 &&
+                        DateTime.UtcNow.Second != lastFsSaveSecond)
+                    {
+                        impulse(5001);
+                        lastFsSaveSecond = DateTime.UtcNow.Second;
+                    }
+                    if (DateTime.UtcNow.Second % 10 == 0 &&
+                        DateTime.UtcNow.Second != lastNewsSecond &&
+                        rand.Next(0, 5) == 0)
+                    {
+                        addNews(newsGen.Generate());
+                        if (rand.Next(0, 98) == 0) // 1 in 99
+                        {
+                            // Schonite dust collector
+                            schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
+                            if (!specialDays.marsDay)
+                            {
+                                schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                            }
+                            else
+                            {
+                                schonite -= Math.Clamp(rand.NextSingle() * 0.1, 0.001, 100);
+                            }
+                        }
+                        if (rand.Next(0, 99) == 0)
+                        {
+                            Console.Title = $"borktorial: {splashPick()}";
+                            if (rand.Next(0, 69) == 0) // 1 in 69
+                            {
+                                Console.Title = $"broktorial: {splashPick()}";
+                            }
+                        }
+                        if (tick % 2 == 0)
+                        {
+                            if (ht0Idx >= ht0Grph.Length - 1)
+                            {
+                                ht0Idx = 0;
+                            }
+                            ht0Idx++;
+                            ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble() * 0.01);
+                        }
+                        lastNewsSecond = DateTime.UtcNow.Second;
+                    }
+                    int baseValue = 5000;      // Starting risk
+                    double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
+                    if (specialDays.marsDay)
+                    {
+                        scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
+                    }
+                    double effectiveTick = tick * munCycle;
 
-                crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
-                tick++; // equivelant to i0
+                    crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
+                    tick++; // equivelant to i0
+                }
+                catch (Exception ex)
+                {
+                    shitLog.createEntry("TICKER", ex.ToString(), logType.Err);
+                    // do a nice message that hides the exception just a lil' bit!
+                    Console.WriteLine($"SERVICES: Service \"bktTs.dll\" crashed. Message: {ex.Message}");
+                    Thread.Sleep(250);
+                    Console.WriteLine("SERVICES: Restarted Borktorial Ticker Service");
+                    timeLoop(tl, mcl);
+                }
             }
         }
         public static void interspeed()

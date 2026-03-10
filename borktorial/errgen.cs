@@ -31,9 +31,7 @@ namespace borktorial
             "<subject>_<verb>_<animal><notem>",
             "<kerbal>_KERMAN_<verb>_<object><notem>",
             "<kerbal>_KERMAN_<verb>_<subject><notem>",
-            "<subject>_<verb>_<subject><notem>",
             "<object>_<verb>_<subject><notem>",
-            "<object>_<verb>_<object><notem>"
             ];
         public static readonly string[] subjects =
         [
@@ -334,7 +332,6 @@ namespace borktorial
         {
             string gErrI = template;
             string processName = processNames[rand.Next(processNames.Length)];
-            // Replace tags step-by-step
             gErrI = gErrI.Replace("<animal>", animals[rand.Next(animals.Length)]);
             gErrI = gErrI.Replace("<kerbal>", kerbals[rand.Next(kerbals.Length)]);
             gErrI = gErrI.Replace("<num>", rand.Next(0, 256).ToString());
