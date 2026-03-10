@@ -40,7 +40,7 @@ namespace borktorial
         public static bool jmtrigger { get; set; } = false;
         public static bool root { get; set; } = false;
 
-        public static bool __5a85 { get; } = OperatingSystem.IsWindows();
+        public static bool s5a85 { get; } = OperatingSystem.IsWindows();
 
         public static int mSpeed { get; set; } = 1800;
         public static int crshChance { get; set; } = 10000;
@@ -54,7 +54,7 @@ namespace borktorial
         public static mConnectTypes mCt { get; set; } = mConnectTypes.Null;
 
         public static Random rand { get; set; } = new();
-        public static Thread drdhtsr { get; set; }
+        public static Thread? drdhtsr { get; set; }
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
         public static fileSys fs { get; set; } = new();
         public static bool rbt0 { get; set; } = false;
@@ -111,7 +111,7 @@ namespace borktorial
             "How to blame Aperture Science for issues you've had"
         ];
 
-        public static string JEBMSG { get; } = """
+        public static string jebMsg { get; } = """
             Jebediah Kerman did not die
             He survived the Shitfuck 15 mission.
             Press K to celebrate.
@@ -152,7 +152,7 @@ namespace borktorial
         {
             if (virused)
             {
-                mArgs = mArgs.ToList().Append("__virused").ToArray();
+                mArgs = [.. mArgs, "__virused"];
             }
             resetState();
             Main(mArgs);
@@ -164,7 +164,7 @@ namespace borktorial
                 Thread.Sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
             }
-            if(args.Length >= 1 && args[0] == "/dvforceshowversioninstant") 
+            if (args.Length >= 1 && args[0] == "/dvforceshowversioninstant")
             {
                 Console.WriteLine($"Borktorial version {getBuildNum()}");
                 Console.WriteLine("Internal:");
@@ -202,7 +202,7 @@ namespace borktorial
             {
                 Thread.Sleep(int.Parse(args[1]));
             }
-            if (!__5a85)
+            if (!s5a85)
             {
                 rand = new Random(0x4E54);
             }
@@ -297,7 +297,7 @@ namespace borktorial
                 {
                     Console.WriteLine("Please enter the code you obtained from DOHASHIDOSHAI\r\n");
                     Console.Write(">");
-                    string theCode = Console.ReadLine();
+                    string theCode = Console.ReadLine() ?? "";
                     if (theCode == "HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF")
                     {
                         sf59("luigi");
@@ -471,7 +471,7 @@ namespace borktorial
                     }
                 }
                 Thread.Sleep(1250);
-                if (gordonSummoned || (!__5a85 && rand.Next(1, 5) == 0))
+                if (gordonSummoned || (!s5a85 && rand.Next(1, 5) == 0))
                 {
                     Console.WriteLine("[WARN] 128 byte memory hole detected at 0x8086!");
                     Thread.Sleep(500);
@@ -529,7 +529,7 @@ namespace borktorial
                     "Adding more hydrogen...",
                     "Tuning matter-antimatter ratio..."
                     ];
-                if(File.Exists(Path.Combine("mods", "cldmsg.txt")))
+                if (File.Exists(Path.Combine("mods", "cldmsg.txt")))
                 {
                     List<string> moreLines = [.. File.ReadAllLines(Path.Combine("mods", "cldmsg.txt"))];
                     List<string> fullLines = [.. loadMsgs];
@@ -537,7 +537,7 @@ namespace borktorial
                     {
                         fullLines = [];
                     }
-                    foreach(string item in moreLines)
+                    foreach (string item in moreLines)
                     {
                         fullLines.Add(item);
                     }
@@ -581,10 +581,10 @@ namespace borktorial
                     timeLoop(cfg[0], cfg[1]);
                 });
                 timeThread.Start();
-                if (!__5a85 || specialDays.aprilfool)
+                if (!s5a85 || specialDays.aprilfool)
                 {
-                    Thread __58858g = new(__49291);
-                    __58858g.Start();
+                    Thread s58858g = new(s49291);
+                    s58858g.Start();
                 }
                 Thread msVarier = new(interspeed);
                 msVarier.Start();
@@ -601,7 +601,7 @@ namespace borktorial
             {
                 for (int i = 0; i < 15; i++)
                 {
-                    addNews(newsGen.Generate());
+                    addNews(newsGen.generateNws());
                 }
             }
             catch (IndexOutOfRangeException) { currNews.Clear(); }
@@ -619,27 +619,27 @@ namespace borktorial
                 {
                     rawCommin = parseBorkTag(rawCommin);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     shitLog.createEntry("cmdhndlr", ex.ToString(), logType.Warn);
                     Console.WriteLine("Command Parser Error 49 (pbt fail)");
                     continue;
                 }
                 string[] commin = rawCommin.ToLower().Split(' ');
-                if(strSum(rawCommin) % 8 == 0 && strSum(rawCommin) > 0)
+                if (strSum(rawCommin) % 8 == 0 && strSum(rawCommin) > 0)
                 {
-                    if(rand.Next(0, 12+cmdFErrCount) == 0)
+                    if (rand.Next(0, 12 + cmdFErrCount) == 0)
                     {
                         Console.WriteLine("Error: failed to execute command");
                         commin = ["\xDE\xAD\xBA\xBE_bktignorecmd::0", "cmdFErr"];
-                        cmdFErrCount+=3; // gets rarer every time
-                        if(cmdFErrCount > 12)
+                        cmdFErrCount += 3; // gets rarer every time
+                        if (cmdFErrCount > 12)
                         {
                             cmdFErrCount += (byte)(cmdFErrCount * 0.05);
                         }
                     }
                 }
-                if(rawCommin.ToLower() == "sudo make me a sandwich")
+                if (rawCommin.ToLower() == "sudo make me a sandwich")
                 {
                     Console.WriteLine("Make error 553: Sandwich not tasty enough");
                 }
@@ -973,7 +973,9 @@ namespace borktorial
                             break;
                         case "lotto":
                             Console.Write("Enter lotto numbers: ");
-                            string userNums = Console.ReadLine().Replace("-", "").ToUpper() ?? "";
+                            string userNums = Console.ReadLine() ?? ""
+                                                     .Replace("-", "")
+                                                     .ToUpper();
                             string actual;
                             do
                             {
@@ -1029,7 +1031,7 @@ namespace borktorial
                             }
                             if (jebcounter == 16)
                             {
-                                Console.WriteLine(JEBMSG);
+                                Console.WriteLine(jebMsg);
                                 jebcounter = 0;
                                 jmtrigger = true;
                                 break;
@@ -1089,7 +1091,7 @@ namespace borktorial
                         case "modernai":
                             while (true)
                             {
-                                throw new Exception("fuck image gen ai and all the ones intended to replace writers or programmers or some shit", new Exception($"{errGen.Generate()[0]} -- {errGen.Generate()[1]}"));
+                                throw new Exception("fuck image gen ai and all the ones intended to replace writers or programmers or some shit", new Exception($"{errGen.generateErr()[0]} -- {errGen.generateErr()[1]}"));
                             }
                         case "baconflavoredshapez":
                             Console.Clear();
@@ -1685,7 +1687,7 @@ namespace borktorial
 
                 if (rand.Next(0, crshChance) == 0)
                 {
-                    string[] errG = errGen.Generate();
+                    string[] errG = errGen.generateErr();
                     int errCode = rand.Next(); // DONTFIXME: The values this shit returns are probably gonna be pretty fuckin' funny
                     keBugCheck((uint)errCode);
                 }
@@ -1718,7 +1720,7 @@ namespace borktorial
         public static void keBugCheck(uint errCode, DateTime dt = new())
         {
             // this funkiness is because you can't have DateTime as default param so we have to do this
-            if(dt == new DateTime())
+            if (dt == new DateTime())
             {
                 dt = DateTime.UtcNow;
             }
@@ -1734,7 +1736,7 @@ namespace borktorial
                 errGen.templates[
                     new Random((int)errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[1];
-            if(rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
+            if (rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
             {
                 Debug.WriteLine("immortal tiger");
             }
@@ -1782,7 +1784,7 @@ namespace borktorial
             writeFullLine($"Contact your system administrator or technical support group for further assistance.");
             writeEmptyLine();
             writeFullLine($"Memory dumped: {rand.Next(128, 524288)} KB");
-            writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");;
+            writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP"); ;
             writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
@@ -1835,7 +1837,7 @@ namespace borktorial
                 return;
 
             using Stream? stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream(secret.resource);
+                .GetManifestResourceStream(secret.resource) ?? throw new Exception("Err in sf15: Stream was null");
             using MemoryStream ms = new();
             stream.CopyTo(ms);
             File.WriteAllBytes(secret.filename, ms.ToArray());
@@ -2184,7 +2186,7 @@ namespace borktorial
                         DateTime.UtcNow.Second != lastNewsSecond &&
                         rand.Next(0, 5) == 0)
                     {
-                        addNews(newsGen.Generate());
+                        addNews(newsGen.generateNws());
                         if (rand.Next(0, 98) == 0) // 1 in 99
                         {
                             // Schonite dust collector
@@ -2271,7 +2273,7 @@ namespace borktorial
                 }
             }
         }
-        public static void __49291()
+        public static void s49291()
         {
             while (true)
             {
@@ -2307,7 +2309,7 @@ namespace borktorial
             {
                 cfgS += (";" + item.ToString("D10"));
             }
-            cfgS = cfgS.Remove(0, 1);
+            cfgS = cfgS[1..];
             try
             {
                 File.Delete(cfgFn);
@@ -2392,11 +2394,7 @@ namespace borktorial
         {
             Console.WriteLine("Now loading STTW...");
             Assembly assembly = Assembly.GetExecutingAssembly();
-            using Stream? stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt");
-
-            if (stream is null)
-                throw new Exception("Error: Could not start STTW");
-
+            using Stream? stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt") ?? throw new Exception("Error: Could not start STTW");
             using StreamReader reader = new(stream);
             string[] lines = reader.ReadToEnd()
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -2454,7 +2452,7 @@ namespace borktorial
 
                     if (pos < 0)
                     {
-                        lineToPrint = lineToPrint.Substring(-pos);
+                        lineToPrint = lineToPrint[-pos..];
                     }
 
                     Console.Write(lineToPrint);

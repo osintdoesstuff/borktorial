@@ -10,7 +10,7 @@
 	  <!-- Optional, trims unused code -->
 	  <InvariantGlobalization>true</InvariantGlobalization>
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	  <ApplicationIcon>bktico.ico</ApplicationIcon>
+	  <ApplicationIcon>bktico-hi.ico</ApplicationIcon>
 	  <!-- Optional, smaller binary -->
   </PropertyGroup>
 
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bktico.ico" />
+    <Content Include="bktico-hi.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -239,7 +239,7 @@ namespace borktorial
             "Pending",
             "Explained"
                 ];
-        public static readonly string[] mcmobsH = 
+        public static readonly string[] mcmobsH =
             [
             "zombie",
             "creeper",
@@ -248,7 +248,7 @@ namespace borktorial
             "witch"
             ];
 
-        public static string Generate()
+        public static string generateNws()
         {
             string gNe = templates[rand.Next(templates.Length)];
 

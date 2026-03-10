@@ -13,7 +13,8 @@ namespace aperture
         public static (int maj, int min, int pch, char rv) aprtVer = (0, 4, 3, 'b');
         public static int[] puC { get; } = [255, 127, 63, 31, 15, 7, 3, 2];
         public static int[] puD { get; } = [1, 3, 7, 15, 31, 63, 127, 254];
-        public static int[] dallf() {
+        public static int[] dallf()
+        {
 
             int[] puE = new int[8];
             for (int i = 0; i < puC.Length; i++)
@@ -43,14 +44,14 @@ namespace aperture
                 string tag = input.Substring(start, end - start + 1);
                 // tag = "<nr0-255>"
 
-                int[] range = nrHndlr(tag.Substring(3)); // removes "<nr"
+                int[] range = nrHndlr(tag[3..]); // removes "<nr"
                 int result = rand.Next(range[0], range[1] + 1);
 
                 input = input.Replace(tag, result.ToString());
             }
             return input;
         }
-        public static string byteFormat(UInt128 bytes) 
+        public static string byteFormat(UInt128 bytes)
         {
             if (bytes < (UInt128)Math.Pow(1024, 1))
                 return $"{bytes}B";
@@ -145,17 +146,17 @@ namespace aperture
         public static string nookEnc(string un, string pw)
         {
             string rslt = "";
-            if(un.Length > pw.Length)
+            if (un.Length > pw.Length)
             {
                 int diff = un.Length - pw.Length;
                 pw = pw.PadLeft(diff, '\xFF');
             }
-            if(pw.Length > un.Length)
+            if (pw.Length > un.Length)
             {
                 int diff = pw.Length - un.Length;
                 un = un.PadLeft(diff, '\xFF');
             }
-            for (int i = 0; i < pw.Length-1; i++)
+            for (int i = 0; i < pw.Length - 1; i++)
             {
                 rslt += un[i] ^ pw[i];
                 rslt += pw[i] ^ un[i];
@@ -170,7 +171,7 @@ namespace aperture
             PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
             foreach (PropertyInfo property in properties)
             {
-                object value = property.GetValue(null);
+                object? value = property.GetValue(null);
                 Console.WriteLine($"{property.Name} = {value}");
             }
         }

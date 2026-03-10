@@ -7,10 +7,10 @@
     {
         private static readonly Lock logLock = new();
 
-        public static void createEntry(string proc, 
-            string descr, 
-            logType lt, 
-            string dateFormat = "R", 
+        public static void createEntry(string proc,
+            string descr,
+            logType lt,
+            string dateFormat = "R",
             string filename = "bktLog.txt",
             long maxSize = 1048576,
             bool doRotate = true,
@@ -36,7 +36,7 @@
                     logType.Err => "err",
                     _ => "unk"
                 };
-                if(csLogType != "__bkt::default(0)(correct_horse_battery_staple)")
+                if (csLogType != "__bkt::default(0)(correct_horse_battery_staple)")
                 {
                     typeStr = csLogType;
                 }

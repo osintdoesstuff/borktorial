@@ -322,7 +322,7 @@ namespace borktorial
         public static readonly char[] hexLetters = "ABCDEF".ToCharArray();
         public static readonly char[] hexDigits = "1234567890ABCDEF".ToCharArray();
         // we codenamed this one the Aperture Science Templated System Potential Failure Detection and Generation System(TM)
-        public static string[] Generate()
+        public static string[] generateErr()
         {
             // Choose random template
             string gErrI = templates[rand.Next(templates.Length)];
