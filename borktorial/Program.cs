@@ -207,6 +207,9 @@ namespace borktorial
             {
                 rand = new Random(0x4E54);
             }
+            impulse(5000);
+            impulse(5001);
+            impulse(5002);
             try
             {
                 if (File.Exists(cfgFn)) // Semicolon Separated Config
@@ -394,13 +397,13 @@ namespace borktorial
                 }
                 else
                 {
-
+                    File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
                 }
                 shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
                 Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
-                AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
-                AnsiConsole.MarkupLine("Original BIOS (C) [rgb(31,63,127)]IBM[/] 1981-1994");
+                AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division 1987-1994");
+                AnsiConsole.MarkupLine("Original BIOS (C) [rgb(63,127,255)]IBM[/] 1981-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
@@ -441,24 +444,20 @@ namespace borktorial
                 Thread.Sleep(rand.Next(500, 750));
                 Console.Write("Booting from HDD...");
                 Thread.Sleep(rand.Next(250, 750));
-                if (args.Contains("__virused") || args.Contains("frmt") || fs.rootFiles.Contains(new("format.dat", [50], [fileAttrib.System])))
+                if (args.Contains("__virused") || args.Contains("frmt"))
                 {
                     fs = new fileSys();
                     fs.mkFile("\\format.dat", [50], [fileAttrib.System]);
                     impulse(5001);
+                    impulse(5002);
                     AnsiConsole.Markup("[red]fail[/]\r\n\r\n");
                     AnsiConsole.Markup("No boot devices found. F1 to reboot.\r\n");
-                    ConsoleKey ck = Console.ReadKey().Key;
-                    if (ck == ConsoleKey.F1)
+                    while (true)
                     {
-                        publicMain(args);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Boot fail");
-                        while (true)
+                        ConsoleKey ck = Console.ReadKey().Key;
+                        if (ck == ConsoleKey.F1)
                         {
-                            Thread.Sleep(int.MaxValue);
+                            publicMain(args);
                         }
                     }
                 }
@@ -710,7 +709,7 @@ namespace borktorial
                             break;
                         case "dir":
                             Console.WriteLine($"Volume Serial Number is 4594-8435");
-                            Console.WriteLine($"Directory listing of {fs.workingPath}");
+                            Console.WriteLine($"Directory listing of C:{fs.workingPath}");
                             Console.WriteLine();
 
                             (List<vFile> files, List<vDir> dirs)? dirContents = fs.getDirContents(fs.workingPath);
@@ -962,14 +961,19 @@ namespace borktorial
                                 break;
                             }
                             break;
-                        case "win":
-                            Console.WriteLine("Failed to load VMM32.VXD. You must reinstall Windows");
-                            break;
                         case "flush":
                             crshChance = 5000;
                             munCycle = 0;
                             tick = 0;
                             Console.WriteLine("System flush successful.");
+                            break;
+                        case "win":
+                        case "ntdetect":
+                            Console.WriteLine("NTVDM not found. Cannot run 16-bit app");
+                            break;
+                        case "smss":
+                        case "csrss":
+                            Console.WriteLine("Cannot run native binaries in NT-DOS subsystem");
                             break;
                         case "ninov":
                             Console.WriteLine("Ninovium is a resource used for system stabilization and minor performance gains\r\n" +
@@ -1329,9 +1333,9 @@ namespace borktorial
                                                     if (i > 2880)
                                                     {
                                                         fs = new fileSys();
-                                                        Console.WriteLine("[NTDOS] System error (NT_SMSS_EXITED)");
+                                                        Console.WriteLine("[NTDOS] System error (NT_SUBSYS_EXITED)");
+                                                        Console.WriteLine("Warning: OS is pretty much on life support");
                                                         Thread.Sleep(5000);
-                                                        publicMain(["frmt"]);
                                                     }
                                                 }
                                                 break;
