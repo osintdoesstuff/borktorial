@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;
 using System.Net;
+using System.Numerics;
 using System.Reflection;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
@@ -440,8 +441,11 @@ namespace borktorial
                 Thread.Sleep(rand.Next(500, 750));
                 Console.Write("Booting from HDD...");
                 Thread.Sleep(rand.Next(250, 750));
-                if (args.Contains("__virused"))
+                if (args.Contains("__virused") || args.Contains("frmt") || fs.rootFiles.Contains(new("format.dat", [50], [fileAttrib.System])))
                 {
+                    fs = new fileSys();
+                    fs.mkFile("\\format.dat", [50], [fileAttrib.System]);
+                    impulse(5001);
                     AnsiConsole.Markup("[red]fail[/]\r\n\r\n");
                     AnsiConsole.Markup("No boot devices found. F1 to reboot.\r\n");
                     ConsoleKey ck = Console.ReadKey().Key;
@@ -593,7 +597,7 @@ namespace borktorial
                 Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
                 if (specialDays.bktDay)
                 {
-                    Console.Write(" Happy Borktorial Day!\r\n");
+                    Console.WriteLine("Happy Borktorial Day!");
                 }
             }
             // initialize news feed
@@ -682,8 +686,30 @@ namespace borktorial
                         case "hl3":
                             Console.WriteLine("HALF-LIFE 3 CONFIRMED");
                             break;
+                        case "type":
+                            if(commin.Length >= 2)
+                            {
+                                (List<vFile> files, List<vDir> dirs)? wpCons = fs.getDirContents(fs.workingPath);
+                                if (wpCons == null)
+                                {
+                                    Console.WriteLine("Invalid path");
+                                    break;
+                                }
+                                foreach(vFile f in wpCons.Value.files)
+                                {
+                                    if(f.name == rawCommin.Split(' ')[1])
+                                    {
+                                        Console.WriteLine(bktStf.ba2Str(f.contents));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Parameter error");
+                            }
+                            break;
                         case "dir":
-                            Console.WriteLine("Volume Serial Number is 4655-434B");
+                            Console.WriteLine($"Volume Serial Number is 4594-8435");
                             Console.WriteLine($"Directory listing of {fs.workingPath}");
                             Console.WriteLine();
 
@@ -696,12 +722,20 @@ namespace borktorial
 
                             foreach (vDir dir in dirContents.Value.dirs)
                             {
-                                Console.WriteLine($"    <DIR>  {dir.name}");
+                                bool isntHidden = dir.attribs.Contains(fileAttrib.System) || dir.attribs.Contains(fileAttrib.Hidden);
+                                if (!isntHidden)
+                                {
+                                    Console.WriteLine($"    <DIR>  {dir.name}");
+                                }
                             }
 
                             foreach (vFile file in dirContents.Value.files)
                             {
-                                Console.WriteLine($"    {file.name} - {file.contents.Length} bytes");
+                                bool isntHidden = file.attribs.Contains(fileAttrib.System) || file.attribs.Contains(fileAttrib.Hidden);
+                                if (!isntHidden)
+                                {
+                                    Console.WriteLine($"    {file.name} - {file.contents.Length} bytes");
+                                }
                             }
 
                             Console.WriteLine();
@@ -773,6 +807,59 @@ namespace borktorial
                                 else
                                 {
                                     Console.WriteLine("Directory not found");
+                                }
+                            }
+                            break;
+                        case "cpp":
+                            Console.WriteLine("Welcome to the Cookies++ interpreter!");
+                            Console.WriteLine("+ to increment cookies\r\n" +
+                                "- to decrement cookies\r\n" +
+                                "g to print cookies val\r\n" +
+                                "x to exit\r\n" +
+                                "s to save\r\n" +
+                                "l to load\r\n");
+                            double cookies = 0;
+                            bool stop = false;
+                            while (!stop)
+                            {
+                                Console.Write("> ");
+                                string cppI = Console.ReadLine() ?? ""
+                                    .ToLowerInvariant()
+                                    .Trim();
+                                switch (cppI)
+                                {
+                                    case "+":
+                                        cookies++;
+                                        break;
+                                    case "-":
+                                        if(cookies < 0)
+                                        {
+                                            AnsiConsole.WriteLine("[red]Error[/]: CKI001: Cookies cannot be negative");
+                                            break;
+                                        }
+                                        cookies--;
+                                        break;
+                                    case "g":
+                                        Console.WriteLine(cookies);
+                                        break;
+                                    case "x":
+                                        stop = true;
+                                        break;
+                                    case "s":
+                                        fs.mkFileChr("\\ck.dat", cookies.ToString().ToCharArray(), [fileAttrib.Hidden]);
+                                        break;
+                                    case "l":
+                                        foreach(vFile item in fs.rootFiles)
+                                        {
+                                            if(item.name == "ck.dat")
+                                            {
+                                                cookies = double.Parse(item.contents);
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        AnsiConsole.WriteLine("[red]Error[/]: CKI002: Invalid statement");
+                                        break;
                                 }
                             }
                             break;
@@ -1147,10 +1234,11 @@ namespace borktorial
                             Console.WriteLine("Available commands:");
                             Console.WriteLine("  echo <text>               - Print text to the screen.");
                             Console.WriteLine("  dir                       - List files in the current directory.");
-                            Console.WriteLine("  cd                        - Change current directory");
-                            Console.WriteLine("  create                    - Make file");
-                            Console.WriteLine("  del                       - Delete file");
-                            Console.WriteLine("  deltree                   - Delete folder");
+                            Console.WriteLine("  cd <dirname>              - Change current directory");
+                            Console.WriteLine("  create <filename>         - Make file");
+                            Console.WriteLine("  del <filename>            - Delete file");
+                            Console.WriteLine("  deltree <dirname>         - Delete folder");
+                            Console.WriteLine("  type <filename>           - Type file contents");
                             Console.WriteLine("  pkgmngr install <package> - Install a package (try 'hl3', 'totally_not_a_virus_trust_me_im_a_dolphin', or 'tokimla82').");
                             Console.WriteLine("  drdickhd                  - Scan for and remove viruses.");
                             Console.WriteLine("  drdhtsr                   - Start the Dr. Dickhead TSR (background virus monitor).");
@@ -1235,12 +1323,15 @@ namespace borktorial
                                                 for (int i = 0; i < 1228800; i++)
                                                 {
                                                     Console.Write($"Sector {i:D7}/1228800...");
-                                                    Thread.Sleep(rand.Next(10, 50));
+                                                    Thread.Sleep(rand.Next(10, 20));
                                                     Console.Write("Done\r\n");
                                                     Thread.Sleep(rand.Next(5, 15));
-                                                    if (i > 485824)
+                                                    if (i > 2880)
                                                     {
                                                         fs = new fileSys();
+                                                        Console.WriteLine("[NTDOS] System error (NT_SMSS_EXITED)");
+                                                        Thread.Sleep(5000);
+                                                        publicMain(["frmt"]);
                                                     }
                                                 }
                                                 break;
@@ -2006,8 +2097,6 @@ namespace borktorial
                     fs.mkFile("WINNT\\System32\\config\\SOFTWARE", bktStf.mkRndByteArray(32768));
                     fs.mkFile("WINNT\\System32\\config\\SYSTEM", bktStf.mkRndByteArray(32768));
                     fs.mkFile("WINNT\\System32\\config\\DEFAULT", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\LOG", File.ReadAllBytes("bktLog.txt"));
-                    fs.mkFile("WINNT\\System32\\config\\NTDCFG", File.ReadAllBytes("bktcfg.ssc"));
 
                     // Boot files
                     fs.mkFileChr("boot.ini", bootiniContents);
@@ -2015,7 +2104,7 @@ namespace borktorial
                     fs.mkFile("ntdetect.com", bktStf.mkRndByteArray(2585));
 
                     // EGG
-                    fs.mkFile("WINNT\\System32\\drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
+                    fs.mkFileChr("WINNT\\System32\\drivers\\README.TXT", "You just lost the game.".ToCharArray());
                     break;
                 case 5001:
                     File.WriteAllBytes("bktfs", fs.toBinary());
@@ -2495,11 +2584,6 @@ namespace borktorial
             root = false;
             jmtrigger = false;
             specialDays.update();
-        }
-
-        public static string sidGen()
-        {
-            return $"{errGen.sf15(8, 0)}-{errGen.sf15(6, 0)}-{errGen.sf15(16, 0)}";
         }
         public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {

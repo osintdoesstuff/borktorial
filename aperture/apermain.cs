@@ -40,7 +40,7 @@ namespace aperture
             while (input.Contains("<nr"))
             {
                 int start = input.IndexOf("<nr");
-                int end = input.IndexOf(">", start);
+                int end = input.IndexOf('>', start);
                 string tag = input.Substring(start, end - start + 1);
                 // tag = "<nr0-255>"
 
@@ -105,7 +105,7 @@ namespace aperture
         }
         public static byte[] mkRndByteArray(int length)
         {
-            List<byte> tempBytes = new();
+            List<byte> tempBytes = [];
             Random rand = new();
             for (int i = 0; i < length; i++)
             {
@@ -162,6 +162,22 @@ namespace aperture
                 rslt += pw[i] ^ un[i];
             }
             return rslt;
+        }
+
+        public static string ba2Str(byte[] ba)
+        {
+            List<char> inter = [];
+            foreach(byte item in ba)
+            {
+                inter.Add((char)item);
+            }
+            char[] inter2 = [.. inter];
+            StringBuilder sb = new(inter2.Length);
+            for (int i = 0; i < inter2.Length; i++)
+            {
+                sb.Append(inter2[i]);
+            }
+            return sb.ToString();
         }
         public static void dumpState<T>()
         {
