@@ -971,6 +971,7 @@ namespace borktorial
                         case "ntdetect":
                             Console.WriteLine("NTVDM not found. Cannot run 16-bit app");
                             break;
+                        case "ntoskrnl":
                         case "smss":
                         case "csrss":
                             Console.WriteLine("Cannot run native binaries in NT-DOS subsystem");
@@ -1738,6 +1739,7 @@ namespace borktorial
                                         "Are you proud of yourself?");
                                 }
                             }
+                            shitLog.createEntry("CMDHNDLR", $"cannot find: {commin[0]}", logType.Err);
                             Console.WriteLine($"cannot find: {commin[0]}");
                             break;
                     }
@@ -1852,7 +1854,19 @@ namespace borktorial
             writeEmptyLine();
             writeFullLine($"*** STOP: 0x{errCode:X8} (0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8})");
             writeEmptyLine();
-            writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+            for (int i = 0; i < rand.Next(8, 12); i++)
+            {
+                string pName2 = errGen.genCustomTemplate(
+                errGen.templates[
+                    new Random((int)errCode + strSum(dt.ToString("R"))).Next(
+                        errGen.templates.Length)])[1];
+                if(i == 0)
+                {
+                    writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+                }
+                Thread.Sleep(250);
+                writeFullLine($"***       {pName2}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+            }
             writeEmptyLine();
             writeFullLine($"Beginning dump of physical memory...");
             writeFullLine($"Physical memory dump initializing: {pName} at fault");
@@ -1869,8 +1883,16 @@ namespace borktorial
             for (int pct = 0; pct <= 100;)
             {
                 Console.Write($"\rPhysical memory dump: {Math.Min(pct, 100)}% complete    ");
+                if(pct > 90)
+                {
+                    Thread.Sleep(rand.Next(150, 200));
+                }
                 Thread.Sleep(rand.Next(50, 300));
                 pct += rand.Next(1, 8);
+                if(pct > 95 && pct < 100)
+                {
+                    pct = 100;
+                }
             }
 
             writeEmptyLine();
@@ -1878,8 +1900,10 @@ namespace borktorial
             writeEmptyLine();
             writeFullLine($"Contact your system administrator or technical support group for further assistance.");
             writeEmptyLine();
-            writeFullLine($"Memory dumped: {rand.Next(128, 524288)} KB");
-            writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP"); ;
+            int rdSize = rand.Next(128, 524288);
+            writeFullLine($"Memory dumped: {rdSize} KB");
+            writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
+            fs.mkFile("\\WINNT\\MEMORY.DMP", bktStf.mkRndByteArray(rdSize/8));
             writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
@@ -2199,14 +2223,6 @@ namespace borktorial
                 radio1.PlaySync();
             }
         }
-        /// <summary>
-        /// The Borktorial Server Thread.
-        /// This along with a whole bunch of other shit constitues the Borktorial Server (or "master")
-        /// The "client" or "slave" uses all this shit to do stuff
-        /// </summary>
-        /// <param name="tl">Tick Length</param>
-        /// <param name="mcl">Mun Cycle Length</param>
-        /// <exception cref="Exception">General shit went wrong</exception>
         public static void timeLoop(int tl, int mcl)
         {
             DateTime lastSdDlt = DateTime.UtcNow;
@@ -2326,7 +2342,7 @@ namespace borktorial
                 catch (Exception ex)
                 {
                     shitLog.createEntry("TICKER", ex.ToString(), logType.Err);
-                    // do a nice message that hides the exception just a lil' bit!
+                    // do a nice message that hides the exception just a lil' bit! make it seem in-universe!!!
                     Console.WriteLine($"SERVICES: Service \"bktTs.dll\" crashed. Message: {ex.Message}");
                     Thread.Sleep(250);
                     Console.WriteLine("SERVICES: Restarted Borktorial Ticker Service");

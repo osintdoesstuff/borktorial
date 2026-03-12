@@ -9,6 +9,11 @@
 (c) Send all complaints to \Devices\Null! (because we're not POSIX-based savages)
 (c) Missingno!
 (c) IntelliSense!
+(c) As seen on TV!
+(c) Awesome!
+(c) 99.8% Pure!
+(c) Uses the console subsystem!
+(c) Open-source!
 (c) Rated D for Dwarf!
 (c) Losing is fun!
 (c) The DF string dump is a good one
@@ -21,6 +26,7 @@
 (c) <competitor> is better than <company>!
 (c) The ticker's complicated!
 (c) Deja vu!
+(c) Deja vu!
 (c) Map, map, where is the map? We need to make a BONFIRE
 (c) #
 (c) Something wonderful has happened.
@@ -31,7 +37,19 @@
 (u) Why are you playing this? Play Dwarf Fortress!
 (u) DON'T STOP INTERRUPTING PEOPLE!
 (u) Hullo, Scott Manley here
-(u) Made in Java-but-Objectively-Better!
+(u) Made in C#!
+(u) 100% legal in Norway!
+(u) Keyboard compatible!
+(u) Indie!
+(u) NP is not in P!
+(u) Math.Sqrt(-1) love you!
+(u) Seecret Friday update!
+(u) If you aren't listening to CANYON, there's a good chance you aren't listening to a radio!
+(u) Cogito Ergo Sum!
+(u) umop-apisdn!
+(u) Give us Gordon!
+(u) Matt Daemon!
+(u) MAP11 has two names!
 (u) RTFM
 (u) Thread >>> Task. There is 0 advantage to using tasks and i will die on this hill
 (u) To unlock this splash text, simply solve P=NP!
@@ -50,6 +68,21 @@
 (r) Normalization!
 (r) How 'bout i do A N Y W A Y ?
 (r) Oh, my pkcell
+(r) idspispopd!
+(r) Hampsterdance!
+(r) This parrot is no more! It has ceased to be!
+(r) Probably Turing Complete!
+(r) Pumpkinhead!
+(r) Indev!
+(r) Ghoughpteighbteau tchoghs!
+(r) en-US!
+(r) .NET 4 + 5 = 9!
+(r) STOP BEING REASONABLE!!! THIS IS THE INTERNET!!!
+(r) Anything is edible if you're brave enough!
+(r) GIANTS STILL ALIVE! Source: /summon minecraft:giant
+(r) FUCK POSIX!
+(r) Uses Spectre.Console!
+(r) Technoblade never dies!
 (r) Git can stand for "Giant Idiotic Truckload of shit" when it breaks
 (r) GoRdON gEt aWaY fRom THe BeAm!!!
 (r) [insert rare splash text here]
@@ -64,6 +97,8 @@
 (m) [insert mars-related joke here]
 (m) 100% Dragon-free!
 (m) oonsharp
+(m) bktx?????????
+(m) Now you're thinking with commands!
 (m) BEES! BEES! BEES!
 (s) It is snapshot day my dudes
 (s) Changes: Removed Herobrine
@@ -75,4 +110,5 @@
 (s) Watch Top Gear, Play Borktorial, G E T P I G !
 (s) Philza had a good run!
 (s) You died! Score: &e0
+(s) It has music!
 (e) This splash won't appear. Ever.

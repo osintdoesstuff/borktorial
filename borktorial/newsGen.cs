@@ -35,6 +35,7 @@ namespace borktorial
             "Pet <wpet>. Dangerous fad or juicy new market?",
             "\"We are approaching <product>...\" - <company> in a NET SEND message",
             "\"We are approaching <competitor_product>...\" - <competitor> in a NET SEND message",
+            "Strange fad has parents naming children things such as \"emma.cs\" and \"john.cs\". At least one \"babyAbstract.cs\" has been reported"
                 ];
 
         public static readonly string[] companies = [
