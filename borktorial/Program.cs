@@ -149,6 +149,7 @@ namespace borktorial
 
             That's basically it. Read the fucking source code
             """;
+        public static List<(string cmd1, string[] cmd2)> aliases { get; set; } = [];
         public static void publicMain(string[] mArgs)
         {
             if (virused)
@@ -629,6 +630,17 @@ namespace borktorial
                     continue;
                 }
                 string[] commin = rawCommin.ToLower().Split(' ');
+                if(commin.Length > 0)
+                {
+                    foreach ((string cmd1, string[] cmd2) item in aliases)
+                    {
+                        if (commin[0] == item.cmd1)
+                        {
+                            commin = item.cmd2;
+                            rawCommin = string.Join(' ', item.cmd2);
+                        }
+                    }
+                }
                 if (strSum(rawCommin) % 8 == 0 && strSum(rawCommin) > 0)
                 {
                     if (rand.Next(0, 12 + cmdFErrCount) == 0)
@@ -861,6 +873,25 @@ namespace borktorial
                                         break;
                                 }
                             }
+                            break;
+                        case "alias":
+                            Console.WriteLine();
+                            Console.Write("Enter alias name: ");
+                            string aliasName = Console.ReadLine() ?? "";
+                            if(aliasName.Contains(' '))
+                            {
+                                Console.WriteLine("Invalid alias name");
+                                break;
+                            }
+                            Console.Write("Enter command for alias to refer to: ");
+                            string tempCommand = Console.ReadLine() ?? "__bktignorenull";
+                            string[] command = tempCommand.Split(' ');
+                            if (command.Contains("__bktignorenull"))
+                            {
+                                Console.WriteLine("Null error.");
+                                break;
+                            }
+                            aliases.Add((aliasName, command));
                             break;
                         case "pkgmngr":
                             if (commin.Length >= 3)
