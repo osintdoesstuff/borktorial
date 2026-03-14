@@ -1134,8 +1134,7 @@ namespace borktorial
                             {
                                 switch (commin[1])
                                 {
-                                    case "p32krnl":
-                                    case "wininit":
+                                    case "ntuinit":
                                     case "winlogon":
                                     case "csrss":
                                     case "smss":
@@ -1504,7 +1503,7 @@ namespace borktorial
                             Console.WriteLine("did you mean: vi");
                             break;
                         case "nano":
-                            Console.WriteLine("nano-penis");
+                            Console.WriteLine("NOPE NOPE NOPE NOPE NOPE");
                             break;
                         case "atat":
                             Console.WriteLine("CAAAASHIES!!!");
@@ -1597,13 +1596,6 @@ namespace borktorial
                                     UseShellExecute = true
                                 });
                             }
-                            break;
-                        case "msgbox":
-                            MessageBox.Show("THE MAGIC OF WINDOWS FORMS!", "bkt",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information,
-                                MessageBoxDefaultButton.Button1,
-                                MessageBoxOptions.DefaultDesktopOnly,
-                                false);
                             break;
                         case "netinfo":
                             Console.WriteLine("nUtils Utility Pack 1.4 - NETINFO");
