@@ -1,13 +1,10 @@
 ﻿using aperture;
 using Microsoft.VisualBasic.Devices;
-using Microsoft.Win32;
 using NAudio.Wave;
 using Spectre.Console;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;
 using System.Net;
-using System.Numerics;
 using System.Reflection;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
@@ -447,10 +444,6 @@ namespace borktorial
                 Thread.Sleep(rand.Next(250, 750));
                 if (args.Contains("__virused") || args.Contains("frmt"))
                 {
-                    fs = new fileSys();
-                    fs.mkFile("\\format.dat", [50], [fileAttrib.System]);
-                    impulse(5001);
-                    impulse(5002);
                     AnsiConsole.Markup("[red]fail[/]\r\n\r\n");
                     AnsiConsole.Markup("No boot devices found. F1 to reboot.\r\n");
                     while (true)
