@@ -474,6 +474,14 @@ namespace borktorial
                     Thread.Sleep(500);
                     keBugCheck(0xBD31052, new(1995, 12, 31, 12, 59, 59, 999, 999));
                 }
+                int[] wrongCfg =
+                                ['K', 'E', 'R', 'B', 'A', 'L',
+                                'S', 'P', 'A', 'C', 'E',
+                                'C', 'E', 'N', 'T', 'E', 'R'];
+                if (cfg == wrongCfg)
+                {
+                    keBugCheck(0xDEADBABE, new DateTime(1956, 10, 4));
+                }
                 Thread.Sleep(1250);
                 if (cfg[3] == 1)
                 {
@@ -2167,7 +2175,8 @@ namespace borktorial
                     break;
                 default:
                     // note: iRnd is a value decided at start-time
-                    // that equals to a random value from 0 to 11
+                    // that equals to a random value from 0 to 12
+                    // or something i forgor
                     if (iRnd == 4)
                     {
                         char[] ns = num.ToString().ToCharArray();
@@ -2182,7 +2191,21 @@ namespace borktorial
                         }
                         if (sum % 7 == 0)
                         {
-                            // i dunno what should happen when this condition is met yet.
+                            Console.WriteLine("CONGO RATS!!! You found The Secret!");
+                            Console.WriteLine("Now processing the reward...");
+                            Thread.Sleep(500);
+                            Console.WriteLine("Contacting bkt://do_not_look_very_hidden/secret...");
+                            Thread.Sleep(1500);
+                            Console.WriteLine("Success. Your reward is...");
+                            File.Create("GORDON").Dispose();
+                            cfg = 
+                                ['K', 'E', 'R', 'B', 'A', 'L', 
+                                'S', 'P', 'A', 'C', 'E', 
+                                'C', 'E', 'N', 'T', 'E', 'R'];
+                            saveCfg();
+                            Console.Write("ERRORS!\r\n");
+                            Console.WriteLine("Get pranked dingus.");
+                            Thread.Sleep(1500);
                         }
                     }
                     int d4 = rand.Next(0, 3);
