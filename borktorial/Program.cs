@@ -532,7 +532,8 @@ namespace borktorial
                     "Stabilizing Higgs Field...",
                     "Running away from true vacuum...",
                     "Adding more hydrogen...",
-                    "Tuning matter-antimatter ratio..."
+                    "Tuning matter-antimatter ratio...",
+                    ""
                     ];
                 if (File.Exists(Path.Combine("mods", "cldmsg.txt")))
                 {
@@ -932,7 +933,7 @@ namespace borktorial
                                                     int pkgSize = rand.Next(16384, 1048576);
                                                     Console.WriteLine($"Installing {pkgSize}B package...");
                                                     Thread.Sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
-                                                    if (rand.Next(1, 256) == 255 && (!specialDays.marsDay))
+                                                    if (rand.Next(1, 256) == 255 && (!specialDays.spaceDay))
                                                     {
                                                         virused = true;
                                                     }
@@ -1420,7 +1421,7 @@ namespace borktorial
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
-                                        if (specialDays.marsDay)
+                                        if (specialDays.spaceDay)
                                         {
                                             mSpeed += (mSpeed / 4);
                                         }
@@ -1432,7 +1433,7 @@ namespace borktorial
                                         Console.WriteLine("Connected to Aperture V.32bis-compressed");
                                         mSpeed = 2000; // 16000bps
                                         mConnected = true;
-                                        if (specialDays.marsDay)
+                                        if (specialDays.spaceDay)
                                         {
                                             mSpeed += (mSpeed / 4);
                                         }
@@ -1451,7 +1452,7 @@ namespace borktorial
                             Thread.Sleep(rand.Next(2000, 3000));
                             mSpeed = 524288;
                             mConnected = true;
-                            if (specialDays.marsDay)
+                            if (specialDays.spaceDay)
                             {
                                 mSpeed += (mSpeed / 4);
                             }
@@ -1466,7 +1467,7 @@ namespace borktorial
                             Thread.Sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
-                            if (specialDays.marsDay)
+                            if (specialDays.spaceDay)
                             {
                                 mSpeed += (mSpeed / 4);
                             }
@@ -1595,7 +1596,7 @@ namespace borktorial
                                 break;
                             }
                         case "radio":
-                            if (!specialDays.marsDay)
+                            if (!specialDays.spaceDay)
                             {
                                 Console.WriteLine("Now listening: 89.25MHz. The Human Music");
                             }
@@ -2339,7 +2340,7 @@ namespace borktorial
                         {
                             // Schonite dust collector
                             schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
-                            if (!specialDays.marsDay)
+                            if (!specialDays.spaceDay)
                             {
                                 schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
                             }
@@ -2369,7 +2370,7 @@ namespace borktorial
                     }
                     int baseValue = 5000;      // Starting risk
                     double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
-                    if (specialDays.marsDay)
+                    if (specialDays.spaceDay)
                     {
                         scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
                     }
@@ -2399,7 +2400,7 @@ namespace borktorial
                 }
                 if (mConnected == true)
                 {
-                    if (!specialDays.marsDay)
+                    if (!specialDays.spaceDay)
                     {
                         mSpeed += rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
                         mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
@@ -2478,7 +2479,7 @@ namespace borktorial
         {
             int mdWeight = 0;
             int snapWeight = 0;
-            if (specialDays.marsDay)
+            if (specialDays.spaceDay)
             {
                 mdWeight = 4;
             }
@@ -2572,7 +2573,7 @@ namespace borktorial
             //{
             //    accu += 1;
             //}
-            //if (specialDays.marsDay)
+            //if (specialDays.spaceDay)
             //{
             //    accu -= 1;
             //}
@@ -2696,6 +2697,11 @@ namespace borktorial
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
             public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
+            public static bool sputnikDay = DateTime.UtcNow.Day == 4
+                && DateTime.UtcNow.Month == 10
+                && (DateTime.UtcNow.Year - 1957) % 10 == 0;
+            public static bool spaceDay = marsDay || sputnikDay;
+            
 
             public static void update()
             {
@@ -2712,6 +2718,9 @@ namespace borktorial
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
                 snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
+                sputnikDay = DateTime.UtcNow.Day == 4
+                && DateTime.UtcNow.Month == 10
+                && (DateTime.UtcNow.Year - 1957) % 10 == 0;
             }
         }
         public enum mConnectTypes
