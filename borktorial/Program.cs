@@ -43,7 +43,7 @@ namespace borktorial
         public static int mSpeed { get; set; } = 1800;
         public static int crshChance { get; set; } = 10000;
         public static int jebcounter { get; set; } = 0;
-        public static int tick { get; set; } = 0;
+        public static double tick { get; set; } = 0;
         public static double munCycle { get; set; } = 0;
         public static double ninovium { get; set; } = 1;
         public static double schonite { get; set; } = 1;
@@ -2207,6 +2207,7 @@ namespace borktorial
                             Console.Write("ERRORS!\r\n");
                             Console.WriteLine("Get pranked dingus.");
                             Thread.Sleep(1500);
+                            publicMain(["baboons!"]);
                         }
                     }
                     int d4 = rand.Next(0, 3);
@@ -2321,9 +2322,20 @@ namespace borktorial
                         specialDays.update();
                         lastSdDlt = DateTime.UtcNow;
                     }
-                    if (tick == int.MaxValue - 1)
+                    if (tick > 6746518849) // note: each tick is usually 15ms
                     {
-                        throw new Exception("[TIMETHRD] Stop bro go touch some fuckin' grass");
+                        // meaning this would take roughly
+                        // 3 years to reach.
+                        // that's a long fucking time.
+                        if(rand.Next(0, 8) == 0) // 1 in 9 chance 
+                        {
+                            Console.WriteLine("Howdy! Just checking in to see if you're mentally sane " +
+                                "Judging by the fact that you've played a dumbass DOS sim for " +
+                                $"roughly {(tick * tl) / 1000 / 60 / 60 / 24 / 7} weeks!");
+                            addNews("Local person types commands in a terminal over and over for 3 years in a futile attempt to escape boredom!");
+                            Console.WriteLine("Look, you're even on the news!. Check the news command.");
+                            Console.WriteLine("P.S. I feel like the sim should've crashed before this message ever pops up due to a bunch of thread safety bugs");
+                        }
                     }
                     if (DateTime.UtcNow.Second % 10 == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
@@ -2376,6 +2388,8 @@ namespace borktorial
                     }
                     double effectiveTick = tick * munCycle;
 
+                    // note: the higher crshChance is the LOWER the chance of it crashing is
+                    // due to me being horrible at coding
                     crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
                     tick++; // equivelant to i0
                 }
