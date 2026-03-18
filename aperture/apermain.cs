@@ -179,6 +179,25 @@ namespace aperture
             }
             return sb.ToString();
         }
+        public static byte[] str2Ba(string s)
+        {
+            List<char> inter = [.. s.ToCharArray()];
+            List<byte> inter2 = [];
+            for (int i = 0; i < inter.Count; i++)
+            {
+                inter2.Add((byte)inter[i]);
+            }
+            return [.. inter2];
+        }
+        public static string toB64(string norm)
+        {
+            return System.Convert.ToBase64String(str2Ba(norm));
+        }
+        public static string fromB64(string b64)
+        {
+            return System.Text.Encoding.UTF8.GetString(
+                                        System.Convert.FromBase64String(b64));
+        }
         public static void dumpState<T>()
         {
             Type type = typeof(T);

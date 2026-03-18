@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Media;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
 namespace borktorial
@@ -1704,10 +1705,64 @@ namespace borktorial
                             // And i don't fucking care.
                             Console.WriteLine($"{DateTime.UtcNow:R} BT:{tick}-BMC:{munCycle}");
                             break;
+                        case "cmdmail":
+                            Console.Write("Command to send: ");
+                            string cmd = Console.ReadLine() ?? "";
+                            Console.Write("Message to bundle in (keep it nice!): ");
+                            string msg = Console.ReadLine() ?? "";
+                            if (cmd.Contains("|||"))
+                            {
+                                Console.WriteLine("Error: invalid command");
+                                break;
+                            }
+                            if (cmd == "EXPIREDGARBAGE")
+                            {
+                                Console.WriteLine("Error: invalid command");
+                                break;
+                            }
+                            if (msg.Contains("|||"))
+                            {
+                                Console.WriteLine("Error: invalid message");
+                                break;
+                            }
+                            if (username.Contains("|||"))
+                            {
+                                Console.WriteLine("Error: invalid username");
+                                break;
+                            }
+                            Console.WriteLine($"Your CommandMail(TM) code: {cmdMailEnc(cmd, msg)}");
+                            Console.WriteLine("This code will explire after 3 days");
+                            Console.WriteLine("To use, simply type in the code directly into the command prompt");
+                            Console.WriteLine("Copy it so you can share it with your friends!");
+                            break;
                         default:
                             if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
                             {
                                 break; // do nothing.
+                            }
+                            try
+                            {
+                                if (rawCommin.StartsWith("mail."))
+                                {
+                                    (string username, string command, string message) mail = cmdMailDec(rawCommin);
+                                    if (mail.command == "EXPIREDGARBAGE")
+                                    {
+                                        Console.WriteLine("Hmmm...something seems off about your mail");
+                                        break;
+                                    }
+                                    Console.WriteLine("=== You've got mail! ===");
+                                    Console.WriteLine($"From: {mail.username}");
+                                    Console.WriteLine("To: you");
+                                    Console.WriteLine($"Command to try out: {mail.command}");
+                                    Console.WriteLine($"Message: {mail.message}");
+                                    break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Hmmm, something seems wrong with your CommandMail(TM) code");
+                                shitLog.createEntry("CMDMAIL", ex.ToString(), logType.Err);
+                                break;
                             }
                             string scriptName = Path.Combine("mods", commin[0] + ".lua");
                             if (commin[0].StartsWith("dbg::"))
@@ -2482,6 +2537,31 @@ namespace borktorial
                 shitLog.createEntry("SAVECFG", $"Error: {ex.Message} {ex.StackTrace}", logType.Err);
             }
             File.AppendAllText(cfgFn, cfgS);
+        }
+        // don't ask me how either of the below functions work it's dark magic presumably
+        // if it looks wrong, then you'd be wrong because it somehow works
+        public static string cmdMailEnc(string command, string message)
+        {
+            string cmdMail = "BKTXMAIL|||";
+            cmdMail += $"{command}|||";
+            cmdMail += $"{username}|||";
+            cmdMail += $"{DateTime.UtcNow.ToBinary()}|||";
+            cmdMail += $"{message}|||";
+            cmdMail += errGen.sf15(8, 0); // salt to make each code unique
+            return $"mail.{bktStf.toB64(cmdMail)}";
+        }
+        public static (string username, string command, string message) cmdMailDec(string cmdMail)
+        {
+            cmdMail = cmdMail[5..];
+            cmdMail = bktStf.fromB64(cmdMail);
+            cmdMail = cmdMail.Replace("BKTXMAIL|||", "");
+            string[] cmdMI = cmdMail.Split("|||");
+            DateTime dt = DateTime.FromBinary(long.Parse(cmdMI[2]));
+            if(dt > DateTime.UtcNow.AddDays(3))
+            {
+                return ("", "EXPIREDGARBAGE", "");
+            }
+            return (cmdMI[1], cmdMI[0], cmdMI[3]);
         }
         public static void playModemSound()
         {
