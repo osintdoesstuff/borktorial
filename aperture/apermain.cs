@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Text;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace aperture
@@ -197,6 +198,26 @@ namespace aperture
         {
             return System.Text.Encoding.UTF8.GetString(
                                         System.Convert.FromBase64String(b64));
+        }
+        public static uint crc32(byte[] data)
+        {
+            uint crc = 0;
+            foreach (byte b in data)
+            {
+                crc ^= b;
+                for (int i = 0; i < 7; i++)
+                {
+                    if ((crc & 0x80) == 1)
+                    {
+                        crc = (crc << 1) ^ 0x03;
+                    }
+                    else
+                    {
+                        crc <<= 1;
+                    }
+                }
+            }
+            return (crc ^= (crc >> 6)); // note: the xor is to bork it a bit and make the checksum a teeny tiny bit harder to alter
         }
         public static void dumpState<T>()
         {

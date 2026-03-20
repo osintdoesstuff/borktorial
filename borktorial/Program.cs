@@ -2612,7 +2612,8 @@ namespace borktorial
             cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
             cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00";
-            cmdMail += $"{message}";
+            cmdMail += $"{message}\x00";
+            cmdMail += $"{bktStf.crc32(bktStf.str2Ba(cmdMail)):D10}";
             return $"mail.{bktStf.toB64(cmdMail)}";
         }
         public static DateTime ymd2Dt(string s)
@@ -2627,6 +2628,15 @@ namespace borktorial
             cmdMail = cmdMail[5..];
             cmdMail = bktStf.fromB64(cmdMail);
             string[] cmdMI = cmdMail.Split("\x00");
+            if (cmdMI[0] != "B")
+            {
+                throw new Exception("mail header corrupt");
+            }
+            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0";
+            if (uint.Parse(cmdMI[5]) != bktStf.crc32(bktStf.str2Ba(crcCm)))
+            {
+                throw new Exception($"mail crc fail, expected {cmdMI[5]} got {bktStf.crc32(bktStf.str2Ba(string.Join("\x00", cmdMI[0], cmdMI[1], cmdMI[2], cmdMI[3], cmdMI[4])))}");
+            }
             DateTime dt = ymd2Dt(cmdMI[3]);
             if (dt > DateTime.UtcNow.AddDays(3))
             {
