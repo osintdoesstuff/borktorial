@@ -1710,7 +1710,7 @@ namespace borktorial
                             string cmd = Console.ReadLine() ?? "";
                             Console.Write("Message to bundle in (keep it nice!): ");
                             string msg = Console.ReadLine() ?? "";
-                            if (cmd.Contains("|||"))
+                            if (cmd.Contains('\0'))
                             {
                                 Console.WriteLine("Error: invalid command");
                                 break;
@@ -1720,20 +1720,21 @@ namespace borktorial
                                 Console.WriteLine("Error: invalid command");
                                 break;
                             }
-                            if (msg.Contains("|||"))
+                            if (msg.Contains('\0'))
                             {
                                 Console.WriteLine("Error: invalid message");
                                 break;
                             }
-                            if (username.Contains("|||"))
+                            if (username.Contains('\0'))
                             {
                                 Console.WriteLine("Error: invalid username");
                                 break;
                             }
                             Console.WriteLine($"Your CommandMail(TM) code: {cmdMailEnc(cmd, msg)}");
-                            Console.WriteLine("This code will explire after 3 days");
+                            Console.WriteLine("This code will expire after 3 days");
                             Console.WriteLine("To use, simply type in the code directly into the command prompt");
                             Console.WriteLine("Copy it so you can share it with your friends!");
+                            Console.WriteLine("If you want, you can test it BEFOREHAND");
                             break;
                         default:
                             if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
@@ -1745,16 +1746,27 @@ namespace borktorial
                                 if (rawCommin.StartsWith("mail."))
                                 {
                                     (string username, string command, string message) mail = cmdMailDec(rawCommin);
-                                    if (mail.command == "EXPIREDGARBAGE")
+                                    if (mail == ("\x00", "\x01", "\x02"))
                                     {
-                                        Console.WriteLine("Hmmm...something seems off about your mail");
+                                        Console.WriteLine("This mail code has expired.");
+                                        break;
+                                    }
+                                    if (mail == ("\x02", "\x01", "\x00"))
+                                    {
+                                        Console.WriteLine("This mail code is from the future.");
                                         break;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
                                     Console.WriteLine($"From: {mail.username}");
                                     Console.WriteLine("To: you");
-                                    Console.WriteLine($"Command to try out: {mail.command}");
-                                    Console.WriteLine($"Message: {mail.message}");
+                                    if (mail.command != "")
+                                    {
+                                        Console.WriteLine($"Command to try out: {mail.command}");
+                                    }
+                                    if (mail.message != "")
+                                    {
+                                        Console.WriteLine($"Message: {mail.message}");
+                                    }
                                     break;
                                 }
                             }
@@ -2538,30 +2550,39 @@ namespace borktorial
             }
             File.AppendAllText(cfgFn, cfgS);
         }
-        // don't ask me how either of the below functions work it's dark magic presumably
-        // if it looks wrong, then you'd be wrong because it somehow works
         public static string cmdMailEnc(string command, string message)
         {
-            string cmdMail = "BKTXMAIL|||";
-            cmdMail += $"{command}|||";
-            cmdMail += $"{username}|||";
-            cmdMail += $"{DateTime.UtcNow.ToBinary()}|||";
-            cmdMail += $"{message}|||";
-            cmdMail += errGen.sf15(8, 0); // salt to make each code unique
+            string cmdMail = "B\x00";
+            cmdMail += $"{command}\x00";
+            cmdMail += $"{username}\x00";
+            cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
+            cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
+            cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00";
+            cmdMail += $"{message}";
             return $"mail.{bktStf.toB64(cmdMail)}";
+        }
+        public static DateTime ymd2Dt(string s)
+        {
+            int y = int.Parse(string.Join(string.Empty, s[0], s[1], s[2], s[3])); // beware of the year 10,000!
+            int m = int.Parse(string.Join(string.Empty, s[4], s[5]));
+            int d = int.Parse(string.Join(string.Empty, s[6], s[7]));
+            return new DateTime(y, m, d);
         }
         public static (string username, string command, string message) cmdMailDec(string cmdMail)
         {
             cmdMail = cmdMail[5..];
             cmdMail = bktStf.fromB64(cmdMail);
-            cmdMail = cmdMail.Replace("BKTXMAIL|||", "");
-            string[] cmdMI = cmdMail.Split("|||");
-            DateTime dt = DateTime.FromBinary(long.Parse(cmdMI[2]));
-            if(dt > DateTime.UtcNow.AddDays(3))
+            string[] cmdMI = cmdMail.Split("\x00");
+            DateTime dt = ymd2Dt(cmdMI[3]);
+            if (dt > DateTime.UtcNow.AddDays(3))
             {
-                return ("", "EXPIREDGARBAGE", "");
+                return ("\x00", "\x01", "\x02");
             }
-            return (cmdMI[1], cmdMI[0], cmdMI[3]);
+            if (dt > DateTime.UtcNow)
+            {
+                return ("\x02", "\x01", "\x00");
+            }
+            return (cmdMI[2], cmdMI[1], cmdMI[4]);
         }
         public static void playModemSound()
         {
