@@ -211,7 +211,7 @@ namespace borktorial
             }
             if (args.Length >= 1 && args[0] == "/dumpsplash")
             {
-                sf59("msc_splashdump");
+                sf59("msc_dumpsplash");
                 return;
             }
             // hide the init time away
@@ -2453,6 +2453,10 @@ namespace borktorial
                             Console.WriteLine("Look, you're even on the news!. Check the news command.");
                             Console.WriteLine("P.S. I feel like the sim should've crashed before this message ever pops up due to a bunch of thread safety bugs");
                         }
+                    }
+                    if (((tick * tl) / 1000) % 120 == 0)
+                    {
+                        shitLog.createEntry("TICKER", $"Playtime is {((tick * tl) / 1000)}s. Tick is {tick}. munCycle is {munCycle}. ht0 is {ht0}.", logType.Info);
                     }
                     if (DateTime.UtcNow.Second % 10 == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
