@@ -25,6 +25,7 @@
 (c) <company> is better than <competitor>!
 (c) <competitor> is better than <company>!
 (c) The ticker's complicated!
+(c) This splash won't ever appear despite being marked as common. Isn't that weird?
 (c) Deja vu!
 (c) Deja vu!
 (c) Map, map, where is the map? We need to make a BONFIRE
@@ -111,4 +112,3 @@
 (s) Philza had a good run!
 (s) You died! Score: &e0
 (s) It has music!
-(e) This splash won't appear. Ever.

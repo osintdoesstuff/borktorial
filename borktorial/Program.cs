@@ -145,6 +145,40 @@ namespace borktorial
 
             initmods.lua runs at boot time to initialize mods.
 
+            CLDMSG.TXT:
+
+            This is custom load messages (the ones you see like "Insulting Dr. Breen..." and shit like that that appear after the BIOS screen)
+            Syntax:
+
+            Normal line: load message
+            if line 0 equals "[NOSTOCKLDMSG]": remove all stock loading messages (it must equal this EXACTLY!)
+            if line begins with "//": It's a comment and will be ignored
+            if line begins with "[REMOVE] ": remove a stock load message
+
+            CSPLASH.TXT:
+            This is custom splash texts (the ones you see in the titlebar)
+
+            Weights (have to start any splash):
+
+            "(c) ": Common
+            "(u) ": Uncommon
+            "(r) ": Rare
+            "(e) ": Comment
+            "(m) ": Only on marsDay/spaceDay
+            "(s) ": Only on Snapshot Day (wednesday)
+            Other tag or no tag: Comment
+            Note that it MUST be like this. All splashes must begin with this
+
+            Syntax:
+
+            normal line: This is a splash
+            if line 0 equals "[NOSTOCKSPLASH]": remove all stock splashes (it must equal this EXACTLY!). This does not need a tag
+            if line begins with "//": it's a comment and will be ignored. This does not NEED a tag but usually commented out splashes will have tags
+            if line begins with "[REMOVE] ": remove a specific stock splash (must have the tag in the bit after the "[REMOVE] " bit).
+
+            To find out which specific stock splashes have which tags, you can either read the source, use /dumpsplash command line switch, or fuck about in ILSpy until you find it
+            For the "fuck around in ILSpy" people: It's a embedded resource btw.
+
             That's basically it. Read the fucking source code
             """;
         public static List<(string cmd1, string[] cmd2)> aliases { get; set; } = [];
@@ -173,6 +207,11 @@ namespace borktorial
                 Console.WriteLine($"aprtver: {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}");
                 Console.WriteLine($"inta0: {bktLV.puC[7]}");
                 Console.WriteLine($"inta1: {bktLV.puD[7]}");
+                return;
+            }
+            if (args.Length >= 1 && args[0] == "/dumpsplash")
+            {
+                sf59("msc_splashdump");
                 return;
             }
             // hide the init time away
@@ -534,7 +573,7 @@ namespace borktorial
                     "Running away from true vacuum...",
                     "Adding more hydrogen...",
                     "Tuning matter-antimatter ratio...",
-                    ""
+                    "Adding moar boosters..."
                     ];
                 if (File.Exists(Path.Combine("mods", "cldmsg.txt")))
                 {
@@ -546,6 +585,16 @@ namespace borktorial
                     }
                     foreach (string item in moreLines)
                     {
+                        if (item.StartsWith("[REMOVE] ")) 
+                        {
+                            fullLines.Remove(item[9..]);
+                            fullLines.Remove(item); // just to be surely sure
+                            continue; // skip it
+                        }
+                        if (item.StartsWith("//"))
+                        {
+                            continue; // skip this too
+                        }
                         fullLines.Add(item);
                     }
                     loadMsgs = [.. fullLines];
@@ -2041,7 +2090,8 @@ namespace borktorial
                 ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
                 ["luigi"] = ("borktorial.rsrc.thisisabucket.7z",
                              "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
-                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
+                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav"),
+                ["msc_dumpsplash"] = ("borktorial.rsrc.splashes.txt", "splashdump.txt")
             };
 
             if (!secrets.TryGetValue(code, out (string resource, string filename) secret))
@@ -2623,7 +2673,35 @@ namespace borktorial
             using StreamReader reader = new(stream);
             string[] lines = reader.ReadToEnd()
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
+            List<string> lList = [.. lines];
+            lList.Remove("(c) This splash won't ever appear despite being marked as common. Isn't that weird?");
+            if(File.Exists(Path.Combine("mods", "csplash.txt")))
+            {
+                string[] extraLines = File.ReadAllLines(Path.Combine("mods", "csplash.txt"));
+                if (extraLines.Length > 0 && extraLines[0] == "[NOSTOCKSPLASH]")
+                {
+                    lList = [];
+                }
+                foreach (string item in extraLines)
+                {
+                    if (item == "[NOSTOCKSPLASH]")
+                    {
+                        continue;
+                    }
+                    if (item.StartsWith("[REMOVE] "))
+                    {
+                        lList.Remove(item[9..]);
+                        lList.Remove(item); // just to be surely sure
+                        continue; // skip it
+                    }
+                    if (item.StartsWith("//"))
+                    {
+                        continue; // skip this too
+                    }
+                    lList.Add(item);
+                }
+            }
+            lines = [.. lList];
             // Parse lines with rarity weights
             List<(string Text, int Weight)> splashes = [.. lines
                 .Select(line => line switch
