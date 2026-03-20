@@ -1340,6 +1340,7 @@ namespace borktorial
                             Console.WriteLine("  drinkfood                 - The command line version of psychadelics");
                             Console.WriteLine("  satconnect                - Connect to satellite internet");
                             Console.WriteLine("  format                    - Format drive");
+                            Console.WriteLine("  cmdmail                   - Make CommandMail(TM) codes to share with others");
                             Console.WriteLine();
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
                                 "\r\nNote: Call 1-800-intnet for free internet");
