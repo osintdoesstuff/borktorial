@@ -123,11 +123,11 @@ namespace borktorial
             CPU: Intel 486DX C-Step@50MHz
             RAM: 640KB conventional, 384KB shadow, 15360KB extended
             Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
-            OS: NTOSKRNL v4.0, NT-DOS v2.2
+            OS: NTOSKRNL v4.3, NT-DOS v2.2, running on Console Subsystem.
             Video: Citrus GT-6500 ISA
             Sound: PC beeper, SB1.0
-            Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
-            Network: {mConnected}. Use NETINFO for futher info
+            Other devices: GLaDOS Link Peripheral
+            Network: Networked Microsystems 14400bps. Connected: {mConnected}
             Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
             """;
         public static string luaReadme => """
@@ -219,7 +219,7 @@ namespace borktorial
             Thread.Sleep(2000);
             AnsiConsole.MarkupLine("8192KB [green]OK[/]");
             AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
-            AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
+            AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), [rgb(255,255,0)]Citrus[/] extensions");
             AnsiConsole.MarkupLine("");
             if (!Directory.Exists("mods"))
             {
@@ -897,7 +897,7 @@ namespace borktorial
                                     case "-":
                                         if(cookies < 0)
                                         {
-                                            AnsiConsole.WriteLine("[red]Error[/]: CKI001: Cookies cannot be negative");
+                                            AnsiConsole.MarkupLine("[red]Error[/]: CKI001: Cookies cannot be negative");
                                             break;
                                         }
                                         cookies--;
@@ -921,7 +921,7 @@ namespace borktorial
                                         }
                                         break;
                                     default:
-                                        AnsiConsole.WriteLine("[red]Error[/]: CKI002: Invalid statement");
+                                        AnsiConsole.MarkupLine("[red]Error[/]: CKI002: Invalid statement");
                                         break;
                                 }
                             }
@@ -1341,6 +1341,7 @@ namespace borktorial
                             Console.WriteLine("  satconnect                - Connect to satellite internet");
                             Console.WriteLine("  format                    - Format drive");
                             Console.WriteLine("  cmdmail                   - Make CommandMail(TM) codes to share with others");
+                            Console.WriteLine("  cpp                       - Start the Cookies++ interpreter");
                             Console.WriteLine();
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
                                 "\r\nNote: Call 1-800-intnet for free internet");
@@ -1795,19 +1796,19 @@ namespace borktorial
                             {
                                 if (rawCommin.StartsWith("mail."))
                                 {
-                                    (string username, string command, string message) mail = cmdMailDec(rawCommin);
-                                    if (mail == ("\x00", "\x01", "\x02"))
+                                    (string username, string command, string message, string sid) mail = cmdMailDec(rawCommin);
+                                    if (mail == ("\x00", "\x01", "\x02", "0"))
                                     {
                                         Console.WriteLine("This mail code has expired.");
                                         break;
                                     }
-                                    if (mail == ("\x02", "\x01", "\x00"))
+                                    if (mail == ("\x02", "\x01", "\x00", "0"))
                                     {
                                         Console.WriteLine("This mail code is from the future.");
                                         break;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
-                                    Console.WriteLine($"From: {mail.username}");
+                                    Console.WriteLine($"From: {mail.username} (sid: {mail.sid})");
                                     Console.WriteLine("To: you");
                                     if (mail.command != "")
                                     {
@@ -2614,6 +2615,7 @@ namespace borktorial
             cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00";
             cmdMail += $"{message}\x00";
+            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day):D5}\x00";
             cmdMail += $"{bktStf.crc32(bktStf.str2Ba(cmdMail)):D10}";
             return $"mail.{bktStf.toB64(cmdMail)}";
         }
@@ -2624,7 +2626,7 @@ namespace borktorial
             int d = int.Parse(string.Join(string.Empty, s[6], s[7]));
             return new DateTime(y, m, d);
         }
-        public static (string username, string command, string message) cmdMailDec(string cmdMail)
+        public static (string username, string command, string message, string sid) cmdMailDec(string cmdMail)
         {
             cmdMail = cmdMail[5..];
             cmdMail = bktStf.fromB64(cmdMail);
@@ -2633,21 +2635,21 @@ namespace borktorial
             {
                 throw new Exception("mail header corrupt");
             }
-            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0";
-            if (uint.Parse(cmdMI[5]) != bktStf.crc32(bktStf.str2Ba(crcCm)))
+            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0";
+            if (uint.Parse(cmdMI[6]) != bktStf.crc32(bktStf.str2Ba(crcCm)))
             {
-                throw new Exception($"mail crc fail, expected {cmdMI[5]} got {bktStf.crc32(bktStf.str2Ba(string.Join("\x00", cmdMI[0], cmdMI[1], cmdMI[2], cmdMI[3], cmdMI[4])))}");
+                throw new Exception($"mail crc fail, expected {cmdMI[6]} got {bktStf.crc32(bktStf.str2Ba(string.Join("\x00", cmdMI[0], cmdMI[1], cmdMI[2], cmdMI[3], cmdMI[4], cmdMI[5])))}");
             }
             DateTime dt = ymd2Dt(cmdMI[3]);
             if (dt > DateTime.UtcNow.AddDays(3))
             {
-                return ("\x00", "\x01", "\x02");
+                return ("\x00", "\x01", "\x02", "0");
             }
             if (dt > DateTime.UtcNow)
             {
-                return ("\x02", "\x01", "\x00");
+                return ("\x02", "\x01", "\x00", "0");
             }
-            return (cmdMI[2], cmdMI[1], cmdMI[4]);
+            return (cmdMI[2], cmdMI[1], cmdMI[4], cmdMI[5]);
         }
         public static void playModemSound()
         {
