@@ -1656,13 +1656,7 @@ namespace borktorial
                             {
                                 Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
                             }
-                            sf59("msc_canyon");
-                            Thread rLoop = new(() =>
-                            {
-                                radioLoop("rd0.wav");
-                            });
-                            rLoop.Start();
-                            radioStopped = !radioStopped;
+                            new SoundPlayer("assets\\rd_canyon.wav").Play();
                             break;
                         case "dumpsysstate":
                             bktStf.dumpState<Program>();
@@ -2092,7 +2086,6 @@ namespace borktorial
                 ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
                 ["luigi"] = ("borktorial.rsrc.thisisabucket.7z",
                              "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
-                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav"),
                 ["msc_dumpsplash"] = ("borktorial.rsrc.splashes.txt", "splashdump.txt")
             };
 
@@ -2653,9 +2646,7 @@ namespace borktorial
         }
         public static void playModemSound()
         {
-            using Stream? stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("borktorial.rsrc.modem.wav");
-            new System.Media.SoundPlayer(stream).PlaySync();
+            new System.Media.SoundPlayer("assets\\modem.wav").PlaySync();
         }
         public static string splashPick()
         {
