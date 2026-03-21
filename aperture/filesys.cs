@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace aperture
+﻿namespace aperture
 {
     // this is AI slop code but it WORKS
 

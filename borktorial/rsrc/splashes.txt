@@ -4,6 +4,7 @@
 (e) (s) means only on snapshot day
 
 (c) Beta than Ever!
+(c) You can't spell "borktorial" without b, o, r, k, t, i, a, or l!
 (c) We have Liftoff!
 (c) 18-second prograde burn
 (c) Send all complaints to \Devices\Null! (because we're not POSIX-based savages)
@@ -29,9 +30,9 @@
 (c) Deja vu!
 (c) Deja vu!
 (c) Map, map, where is the map? We need to make a BONFIRE
-(c) #
 (c) Something wonderful has happened.
 (c) In case it isn't obvious, foxes aren't players
+(c) This splash is marked as Common, can't you (c)?
 (u) NTISBTR.
 (u) "Infdev 20100630" is a terrible name for a girl the fuck is that buildnum?
 (u) R.I.P Sun Microsystems
@@ -53,14 +54,11 @@
 (u) MAP11 has two names!
 (u) RTFM
 (u) Thread >>> Task. There is 0 advantage to using tasks and i will die on this hill
-(u) To unlock this splash text, simply solve P=NP!
 (u) [insert uncommon splash text here]
 (u) <nr1000000-5000000> copies sold!
-(u) I...AM STEVE!
 (u) R.I.P <kerbal> Kerman!
 (u) Look, mom, i'm in the title bar!
 (u) OIIA
-(u) idiotsandwich
 (r) I like turtles
 (r) The sun may or may not presumably be a deadly laser
 (r) I hate myself(TM)
@@ -75,6 +73,8 @@
 (r) Probably Turing Complete!
 (r) Pumpkinhead!
 (r) Indev!
+(r) popad!
+(r) Segment registers!
 (r) Ghoughpteighbteau tchoghs!
 (r) en-US!
 (r) .NET 4 + 5 = 9!
@@ -90,14 +90,12 @@
 (r) Xenimal Crossing: New Headcrab
 (r) Where the fuck is THAT THING I HAD IN MY HAND 5 SECONDS AGO???
 (r) When there is not light, there can <hostile>
-(r) adio
 (m) WE'RE SAFE ON MARS!!!
 (m) Bill Kerman made it there first.
 (m) Aw fuck i missed the transfer window :(
 (m) Are we sure we didn't accidentally land on Bounty?
 (m) [insert mars-related joke here]
 (m) 100% Dragon-free!
-(m) oonsharp
 (m) bktx?????????
 (m) Now you're thinking with commands!
 (m) BEES! BEES! BEES!

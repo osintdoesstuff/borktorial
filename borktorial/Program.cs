@@ -1010,8 +1010,8 @@ namespace borktorial
                             }
                             break;
                         case "dbg::crc":
-                            Console.WriteLine(bktStf.crc64(bktStf.str2Ba("Hi!")));
-                            Console.WriteLine(bktStf.crc64(bktStf.str2Ba("Bi!")));
+                            Console.WriteLine(bktStf.md5(bktStf.str2Ba("Hi!")));
+                            Console.WriteLine(bktStf.md5(bktStf.str2Ba("Bi!")));
                             break;
                         case "reboot":
                             rbt0 = true;
@@ -1810,6 +1810,11 @@ namespace borktorial
                                     if (mail == ("\x06", "\x06", "\x06", "0"))
                                     {
                                         Console.WriteLine("Mail integrity error.");
+                                        break;
+                                    }
+                                    if (mail == ("\x07", "\x07", "\x07", "0"))
+                                    {
+                                        Console.WriteLine("Format error.");
                                         break;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
@@ -2621,7 +2626,7 @@ namespace borktorial
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
             cmdMail += $"{message}\x00"; // message
             cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day):D5}\x00"; // sid
-            cmdMail += $"{bktStf.crc64(bktStf.str2Ba(cmdMail))}"; // CRC
+            cmdMail += $"{bktStf.md5(bktStf.str2Ba(cmdMail))}";
             return $"mail.{bktStf.toB64(cmdMail)}";
         }
         public static DateTime ymd2Dt(string s)
@@ -2636,23 +2641,27 @@ namespace borktorial
             cmdMail = cmdMail[5..];
             cmdMail = bktStf.fromB64(cmdMail);
             string[] cmdMI = cmdMail.Split("\x00");
+            if (cmdMI.Length < 7)
+            {
+                return ("\x07", "\x07", "\x07", "0");
+            }
             if (cmdMI[0] != "B")
             {
-                throw new Exception("mail header corrupt");
-            }
-            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0";
-            if (ulong.Parse(cmdMI[6]) != bktStf.crc64(bktStf.str2Ba(crcCm)))
-            {
-                return ("\x06", "\x06", "\x06", "0");
+                return ("\x07", "\x07", "\x07", "0");
             }
             DateTime dt = ymd2Dt(cmdMI[3]);
-            if (dt > DateTime.UtcNow.AddDays(3))
+            if (dt < DateTime.UtcNow.Subtract(new TimeSpan(3, 0, 0, 0)))
             {
                 return ("\x00", "\x01", "\x02", "0");
             }
             if (dt > DateTime.UtcNow)
             {
                 return ("\x02", "\x01", "\x00", "0");
+            }
+            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0";
+            if (cmdMI[6] != bktStf.md5(bktStf.str2Ba(crcCm)))
+            {
+                return ("\x06", "\x06", "\x06", "0");
             }
             return (cmdMI[2], cmdMI[1], cmdMI[4], cmdMI[5]);
         }
@@ -2781,15 +2790,6 @@ namespace borktorial
             accu += bktLV.aprtVer.rv;
             accu += bktLV.puD[7] / bktLV.puC[7];
             accu /= 4;
-            // what the fuck?
-            //if (specialDays.seecretFriday)
-            //{
-            //    accu += 1;
-            //}
-            //if (specialDays.spaceDay)
-            //{
-            //    accu -= 1;
-            //}
             return (int)accu;
         }
         static void catGoBrr(int delay = 100)
@@ -2896,9 +2896,10 @@ namespace borktorial
         }
         public static class specialDays
         {
+            // i'm sure there's some far cleaner way to do this but ehh
             public static bool aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
             public static bool crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
-            public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
+            public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 24;
             public static bool seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
             public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
@@ -2909,7 +2910,7 @@ namespace borktorial
                 DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
-            public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
+            public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday && (DateTime.UtcNow.Year+DateTime.UtcNow.Month - 2009) % 5 == 0;
             public static bool sputnikDay = DateTime.UtcNow.Day == 4
                 && DateTime.UtcNow.Month == 10
                 && (DateTime.UtcNow.Year - 1957) % 10 == 0;
@@ -2933,7 +2934,7 @@ namespace borktorial
                 snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
                 sputnikDay = DateTime.UtcNow.Day == 4
                 && DateTime.UtcNow.Month == 10
-                && (DateTime.UtcNow.Year - 1957) % 10 == 0;
+                && (DateTime.UtcNow.Year - 1957) % 5 == 0;
             }
         }
         public enum mConnectTypes

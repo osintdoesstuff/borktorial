@@ -1,6 +1,4 @@
-﻿using System.Buffers.Text;
-using System.Reflection;
-using System.Security.Cryptography;
+﻿using System.Reflection;
 using System.Text;
 
 namespace aperture
@@ -199,25 +197,18 @@ namespace aperture
             return System.Text.Encoding.UTF8.GetString(
                                         System.Convert.FromBase64String(b64));
         }
-        public static ulong crc64(byte[] data)
+        public static string md5(byte[] data)
         {
-            ulong crc = 0;
-            foreach (byte b in data)
+            List<byte> hData = data.ToList();
+            hData.AddRange(str2Ba("__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75D7FFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
+            hData.Sort();
+            byte[] hashed = System.Security.Cryptography.MD5.HashData(hData.ToArray());
+            string str = "";
+            foreach (byte item in hashed)
             {
-                crc ^= b;
-                for (int i = 0; i < 7; i++)
-                {
-                    if ((crc & 0x80) == 0xFFFFFFFFFFFFFFFF)
-                    {
-                        crc = (crc << 1) ^ 0x03;
-                    }
-                    else
-                    {
-                        crc <<= 1;
-                    }
-                }
+                str += item.ToString("X2");
             }
-            return crc & 0xFFFFFFFFFFFFFFFF;
+            return str;
         }
         public static void dumpState<T>()
         {
