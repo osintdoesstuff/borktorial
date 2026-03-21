@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("aperture")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+abfdec1a9bf5f91a47623fdfc6d6fab2f4d7ef94")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91ef36459e354ab64fcbdded847897d2fa96b26c")]
 [assembly: System.Reflection.AssemblyProductAttribute("aperture")]
 [assembly: System.Reflection.AssemblyTitleAttribute("aperture")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

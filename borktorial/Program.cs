@@ -1009,6 +1009,10 @@ namespace borktorial
                                 }
                             }
                             break;
+                        case "dbg::crc":
+                            Console.WriteLine(bktStf.crc64(bktStf.str2Ba("Hi!")));
+                            Console.WriteLine(bktStf.crc64(bktStf.str2Ba("Bi!")));
+                            break;
                         case "reboot":
                             rbt0 = true;
                             Console.Clear();
@@ -1801,6 +1805,11 @@ namespace borktorial
                                     if (mail == ("\x02", "\x01", "\x00", "0"))
                                     {
                                         Console.WriteLine("This mail code is from the future.");
+                                        break;
+                                    }
+                                    if (mail == ("\x06", "\x06", "\x06", "0"))
+                                    {
+                                        Console.WriteLine("Mail integrity error.");
                                         break;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
@@ -2604,15 +2613,15 @@ namespace borktorial
         }
         public static string cmdMailEnc(string command, string message)
         {
-            string cmdMail = "B\x00";
-            cmdMail += $"{command}\x00";
-            cmdMail += $"{username}\x00";
+            string cmdMail = "B\x00"; // header
+            cmdMail += $"{command}\x00"; // command
+            cmdMail += $"{username}\x00"; // username
             cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
             cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
-            cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00";
-            cmdMail += $"{message}\x00";
-            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day):D5}\x00";
-            cmdMail += $"{bktStf.crc32(bktStf.str2Ba(cmdMail)):D10}";
+            cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
+            cmdMail += $"{message}\x00"; // message
+            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day):D5}\x00"; // sid
+            cmdMail += $"{bktStf.crc64(bktStf.str2Ba(cmdMail))}"; // CRC
             return $"mail.{bktStf.toB64(cmdMail)}";
         }
         public static DateTime ymd2Dt(string s)
@@ -2632,9 +2641,9 @@ namespace borktorial
                 throw new Exception("mail header corrupt");
             }
             string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0";
-            if (uint.Parse(cmdMI[6]) != bktStf.crc32(bktStf.str2Ba(crcCm)))
+            if (ulong.Parse(cmdMI[6]) != bktStf.crc64(bktStf.str2Ba(crcCm)))
             {
-                throw new Exception($"mail crc fail, expected {cmdMI[6]} got {bktStf.crc32(bktStf.str2Ba(string.Join("\x00", cmdMI[0], cmdMI[1], cmdMI[2], cmdMI[3], cmdMI[4], cmdMI[5])))}");
+                return ("\x06", "\x06", "\x06", "0");
             }
             DateTime dt = ymd2Dt(cmdMI[3]);
             if (dt > DateTime.UtcNow.AddDays(3))
