@@ -1564,6 +1564,8 @@ namespace borktorial
                                 else
                                 {
                                     Console.WriteLine($"cannot find: {commin[0]}");
+                                    shitLog.createEntry("LAMBDA", "You uncultured fuck", logType.Err);
+                                    throw new Exception("The HL soundtrack is FREE!!! and you don't have it?");
                                 }
                                 while (true)
                                 {
@@ -1760,7 +1762,7 @@ namespace borktorial
                                 Console.WriteLine("Error: invalid command");
                                 break;
                             }
-                            if (cmd == "EXPIREDGARBAGE")
+                            if (cmd == "\x01")
                             {
                                 Console.WriteLine("Error: invalid command");
                                 break;
@@ -2041,6 +2043,7 @@ namespace borktorial
             writeFullLine($"Memory dumped: {rdSize} KB");
             writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
             fs.mkFile("\\WINNT\\MEMORY.DMP", bktStf.mkRndByteArray(rdSize/8));
+            impulse(5001); // save fs
             writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
@@ -2335,7 +2338,6 @@ namespace borktorial
                     {
                         Console.Clear();
                         Console.WriteLine("CPU triple fault detected!");
-                        Console.WriteLine($"Dump made at C:\\NTDOS\\CRSHHND\\DUMP3955.BIN");
                         Thread.Sleep(5000);
                     }
                     else
@@ -2439,7 +2441,7 @@ namespace borktorial
                         // meaning this would take roughly
                         // 3 years to reach.
                         // that's a long fucking time.
-                        if(rand.Next(0, 8) == 0) // 1 in 9 chance 
+                        if(rand.Next(0, 8) == 0) // 1 in 8 chance 
                         {
                             Console.WriteLine("Howdy! Just checking in to see if you're mentally sane " +
                                 "Judging by the fact that you've played a dumbass DOS sim for " +
@@ -2447,6 +2449,7 @@ namespace borktorial
                             addNews("Local person types commands in a terminal over and over for 3 years in a futile attempt to escape boredom!");
                             Console.WriteLine("Look, you're even on the news!. Check the news command.");
                             Console.WriteLine("P.S. I feel like the sim should've crashed before this message ever pops up due to a bunch of thread safety bugs");
+                            Thread.Sleep(5000);
                         }
                     }
                     if (((tick * tl) / 1000) % 120 == 0)
