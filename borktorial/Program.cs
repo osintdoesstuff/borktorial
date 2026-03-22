@@ -56,6 +56,7 @@ namespace borktorial
         public static Thread? drdhtsr { get; set; }
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
         public static fileSys fs { get; set; } = new();
+        public static int giftCount { get; set; } = 5;
         public static bool rbt0 { get; set; } = false;
         public static string cfgFn { get; set; } = "bktcfg.ssc";
         public static string username { get; set; } = "";
@@ -176,12 +177,11 @@ namespace borktorial
             if line begins with "//": it's a comment and will be ignored. This does not NEED a tag but usually commented out splashes will have tags
             if line begins with "[REMOVE] ": remove a specific stock splash (must have the tag in the bit after the "[REMOVE] " bit).
 
-            To find out which specific stock splashes have which tags, you can either read the source, use /dumpsplash command line switch, or fuck about in ILSpy until you find it
-            For the "fuck around in ILSpy" people: It's a embedded resource btw.
-
+            To find out which specific stock splashes have which tags, you can check the file that contains them all, assets\splashes.txt (In the same folder you put the EXE). If you want, you can even just modify this file direct (not recommended)
             That's basically it. Read the fucking source code
             """;
         public static List<(string cmd1, string[] cmd2)> aliases { get; set; } = [];
+        public static List<(string username, string command, string message, string sid)> usedGifts = []; 
         public static void publicMain(string[] mArgs)
         {
             if (virused)
@@ -207,11 +207,6 @@ namespace borktorial
                 Console.WriteLine($"aprtver: {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}");
                 Console.WriteLine($"inta0: {bktLV.puC[7]}");
                 Console.WriteLine($"inta1: {bktLV.puD[7]}");
-                return;
-            }
-            if (args.Length >= 1 && args[0] == "/dumpsplash")
-            {
-                sf59("msc_dumpsplash");
                 return;
             }
             // hide the init time away
@@ -1757,6 +1752,13 @@ namespace borktorial
                             Console.WriteLine($"{DateTime.UtcNow:R} BT:{tick}-BMC:{munCycle}");
                             break;
                         case "cmdmail":
+                            Console.WriteLine($"Current amount of paper: {giftCount}");
+                            if (giftCount == 0)
+                            {
+                                Console.WriteLine("You're all out of paper!");
+                                Console.WriteLine("To get more paper, you must use mail codes");
+                                break;
+                            }
                             Console.Write("Command to send: ");
                             string cmd = Console.ReadLine() ?? "";
                             Console.Write("Message to bundle in (keep it nice!): ");
@@ -1785,7 +1787,7 @@ namespace borktorial
                             Console.WriteLine("This code will expire after 3 days");
                             Console.WriteLine("To use, simply type in the code directly into the command prompt");
                             Console.WriteLine("Copy it so you can share it with your friends!");
-                            Console.WriteLine("If you want, you can test it BEFOREHAND");
+                            giftCount--;
                             break;
                         default:
                             if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
@@ -1816,6 +1818,16 @@ namespace borktorial
                                     {
                                         Console.WriteLine("Format error.");
                                         break;
+                                    }
+                                    if (usedGifts.Contains(mail))
+                                    {
+                                        Console.WriteLine("You already used this code.");
+                                        break;
+                                    }
+                                    usedGifts.Add(mail);
+                                    if (giftCount < 5)
+                                    {
+                                        giftCount++;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
                                     Console.WriteLine($"From: {mail.username} (sid: {mail.sid})");
@@ -2102,8 +2114,7 @@ namespace borktorial
                 ["waluigi"] = ("borktorial.rsrc.screenshot16.png", "the mun awaits.png"),
                 ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
                 ["luigi"] = ("borktorial.rsrc.thisisabucket.7z",
-                             "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
-                ["msc_dumpsplash"] = ("borktorial.rsrc.splashes.txt", "splashdump.txt")
+                             "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z")
             };
 
             if (!secrets.TryGetValue(code, out (string resource, string filename) secret))
@@ -2470,7 +2481,7 @@ namespace borktorial
                     {
                         shitLog.createEntry("TICKER", $"Playtime is {((tick * tl) / 1000)}s. Tick is {tick}. munCycle is {munCycle}. ht0 is {ht0}.", logType.Info);
                     }
-                    if (DateTime.UtcNow.Second % 10 == 0 &&
+                    if (DateTime.UtcNow.Second % cfg[2] == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
                     {
                         impulse(5001);
@@ -2693,14 +2704,7 @@ namespace borktorial
             {
                 return "Your car is on fire.";
             }
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            using Stream? stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
-
-            if (stream is null)
-                return "missingno";
-
-            using StreamReader reader = new(stream);
-            string[] lines = reader.ReadToEnd()
+            string[] lines = File.ReadAllText("assets\\splashes.txt")
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             List<string> lList = [.. lines];
             lList.Remove("(c) This splash won't ever appear despite being marked as common. Isn't that weird?");
@@ -2887,7 +2891,7 @@ namespace borktorial
             cfg = new int[256];
             cfg[0] = 15; // Tick length in ms
             cfg[1] = 10000; // Mun cycle length in ticks
-            cfg[2] = 15; // Unused (this used to be autosave interval but we don't have saves anymore)
+            cfg[2] = 15; // FS save interval in seconds
             cfg[3] = getBuildNum(); // Version
             cfg[4] = 0; // Fail NTGINA find
             cfg[5] = 0; // No fun pre-logon boot text
