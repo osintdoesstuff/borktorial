@@ -199,8 +199,8 @@ namespace aperture
         }
         public static string md5(byte[] data)
         {
-            List<byte> hData = data.ToList();
-            hData.AddRange(str2Ba("__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75D7FFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
+            List<byte> hData = [.. data];
+            hData.AddRange(str2Ba("__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
             hData.Sort();
             byte[] hashed = System.Security.Cryptography.MD5.HashData(hData.ToArray());
             string str = "";
@@ -208,6 +208,22 @@ namespace aperture
             {
                 str += item.ToString("X2");
             }
+            List<byte> strL = [.. str2Ba(str)];
+            strL.Reverse(); // i kinda wonder if it's possible to have a palindrome hash? i guess we'll never really know
+            // yes i know this is fucking weird but bear with me please
+            for (int i = 0; i < strL.Count-1; i++)
+            {
+                if (strL[i] % 2 == 0)
+                {
+                    strL[i] += 3;
+                }
+                else
+                {
+                    strL[i] -= 1;
+                }
+                strL[i] = Math.Clamp((byte)strL[i], (byte)32, (byte)126); // just in case
+            }
+            str = ba2Str([.. strL]);
             return str;
         }
         public static void dumpState<T>()

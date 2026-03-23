@@ -181,7 +181,7 @@ namespace borktorial
             That's basically it. Read the fucking source code
             """;
         public static List<(string cmd1, string[] cmd2)> aliases { get; set; } = [];
-        public static List<(string username, string command, string message, string sid)> usedGifts = []; 
+        public static List<(string username, string command, string message, string sid)> usedGifts = [];
         public static void publicMain(string[] mArgs)
         {
             if (virused)
@@ -701,10 +701,6 @@ namespace borktorial
                         }
                     }
                 }
-                if (rawCommin.ToLower() == "sudo make me a sandwich")
-                {
-                    Console.WriteLine("Make error 553: Sandwich not tasty enough");
-                }
                 try
                 {
                     switch (commin[0])
@@ -1158,8 +1154,15 @@ namespace borktorial
                             Console.WriteLine($"Actual numbers were {actual}");
                             break;
                         case "shutdown":
-                            Environment.Exit(0);
-                            break; // this is unreachable code but the CSC needs it to compile
+                            Console.WriteLine("Shutting down...");
+                            impulse(5001);
+                            rbt0 = true;
+                            Thread.Sleep(500); // make sure everything's functional
+                            Console.WriteLine("It is now safe to close down Borktorial");
+                            while (true)
+                            {
+                                Thread.Sleep(int.MaxValue);
+                            }
                         case "dbg::virusedToggle":
                             virused = !virused;
                             break;
@@ -1830,7 +1833,14 @@ namespace borktorial
                                         giftCount++;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
-                                    Console.WriteLine($"From: {mail.username} (sid: {mail.sid})");
+                                    if (ushort.Parse(mail.sid) == (ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month) && mail.username == username)
+                                    {
+                                        Console.WriteLine("From: you");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"From: {mail.username} (sid: {mail.sid})");
+                                    }
                                     Console.WriteLine("To: you");
                                     if (mail.command != "")
                                     {
@@ -1838,7 +1848,7 @@ namespace borktorial
                                     }
                                     if (mail.message != "")
                                     {
-                                        Console.WriteLine($"Message: {mail.message}");
+                                        AnsiConsole.MarkupLine($"Message: {parseBorkTag(mail.message)}");
                                     }
                                     break;
                                 }
@@ -2630,13 +2640,13 @@ namespace borktorial
         public static string cmdMailEnc(string command, string message)
         {
             string cmdMail = "B\x00"; // header
-            cmdMail += $"{command}\x00"; // command
+            cmdMail += $"{parseBorkTag(command)}\x00"; // command
             cmdMail += $"{username}\x00"; // username
             cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
             cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
             cmdMail += $"{message}\x00"; // message
-            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day):D5}\x00"; // sid
+            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month):D5}\x00"; // sid
             cmdMail += $"{bktStf.md5(bktStf.str2Ba(cmdMail))}";
             return $"mail.{bktStf.toB64(cmdMail)}";
         }
