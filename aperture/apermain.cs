@@ -9,7 +9,7 @@ namespace aperture
 
     public static class bktLV
     {
-        public static (int maj, int min, int pch, char rv) aprtVer = (0, 4, 3, 'b');
+        public static bktVersion aprtVer = new(0, 4, 3, 'b');
         public static int[] puC { get; } = [255, 127, 63, 31, 15, 7, 3, 2];
         public static int[] puD { get; } = [1, 3, 7, 15, 31, 63, 127, 254];
         public static int[] dallf()
@@ -202,7 +202,7 @@ namespace aperture
             List<byte> hData = [.. data];
             hData.AddRange(str2Ba("__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
             hData.Sort();
-            byte[] hashed = System.Security.Cryptography.MD5.HashData(hData.ToArray());
+            byte[] hashed = System.Security.Cryptography.MD5.HashData([.. hData]);
             string str = "";
             foreach (byte item in hashed)
             {

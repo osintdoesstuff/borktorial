@@ -26,8 +26,7 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static (int maj, int min, int pch, char rv) bktver { get; set; } = (0, 5, 8, 'a');
-        public static (int maj, int min, int pch, char rv) pubver { get; set; } = (1, 2, 1, 'b');
+        public static bktVersion bktver { get; set; } = new(1, 2, 0, 'd');
 
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
@@ -199,17 +198,6 @@ namespace borktorial
                 Thread.Sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
             }
-            if (args.Length >= 1 && args[0] == "/dvforceshowversioninstant")
-            {
-                Console.WriteLine($"Borktorial version {getBuildNum()}");
-                Console.WriteLine("Internal:");
-                Console.WriteLine($"bktver: {bktver.maj}.{bktver.min}.{bktver.pch}{bktver.rv}");
-                Console.WriteLine($"pubver: {pubver.maj}.{pubver.min}.{pubver.pch}{pubver.rv}");
-                Console.WriteLine($"aprtver: {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}");
-                Console.WriteLine($"inta0: {bktLV.puC[7]}");
-                Console.WriteLine($"inta1: {bktLV.puD[7]}");
-                return;
-            }
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
             Thread.Sleep(2000);
@@ -224,9 +212,9 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (bktLV.aprtVer != (0, 4, 3, 'b'))
+            if (bktLV.aprtVer != new bktVersion(0, 4, 3, 'b'))
             {
-                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer}", logType.Warn);
             }
             shitLog.createEntry("BOOT", $"Random seed is 0x{rSeed:X8}", logType.Info);
             impulse(5000);
@@ -260,7 +248,7 @@ namespace borktorial
                         iteration++;
                     }
                     cfg = cfgP;
-                    if (cfg[3] != getBuildNum())
+                    if (cfg[3] != bktver.GetHashCode())
                     {
                         shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
                     }
@@ -288,7 +276,7 @@ namespace borktorial
             }
             if (args.Length >= 1 && args[0] == "/version")
             {
-                Console.WriteLine($"Borktorial verison {getBuildNum()}");
+                Console.WriteLine($"Borktorial verison {bktver.GetHashCode()}");
                 return;
             }
             if (args.Length >= 1 && args[0] == "/dev")
@@ -435,7 +423,7 @@ namespace borktorial
                 }
                 shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
-                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
+                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {bktver.GetHashCode()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division 1987-1994");
                 AnsiConsole.MarkupLine("Original BIOS (C) [rgb(63,127,255)]IBM[/] 1981-1994");
                 Console.WriteLine();
@@ -2796,21 +2784,6 @@ namespace borktorial
             }
 
         }
-        public static int getBuildNum()
-        {
-            float accu = 0;
-            accu += (bktver.maj + pubver.maj) * 8;
-            accu += bktLV.aprtVer.maj * 7;
-            accu += (bktver.min + pubver.min) * 4;
-            accu += bktLV.aprtVer.min * 5;
-            accu += (bktver.pch + pubver.pch) * 2;
-            accu += bktLV.aprtVer.pch * 3;
-            accu += (bktver.rv + pubver.rv);
-            accu += bktLV.aprtVer.rv;
-            accu += bktLV.puD[7] / bktLV.puC[7];
-            accu /= 4;
-            return (int)accu;
-        }
         static void catGoBrr(int delay = 100)
         {
             int consoleWidth = Console.WindowWidth;
@@ -2909,7 +2882,7 @@ namespace borktorial
             cfg[0] = 15; // Tick length in ms
             cfg[1] = 10000; // Mun cycle length in ticks
             cfg[2] = 15; // FS save interval in seconds
-            cfg[3] = getBuildNum(); // Version
+            cfg[3] = bktver.GetHashCode(); // Version
             cfg[4] = 0; // Fail NTGINA find
             cfg[5] = 0; // No fun pre-logon boot text
             cfg[6] = 0; // No asking for username and password
