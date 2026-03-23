@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
 using Spectre.Console;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;
 using System.Net;
@@ -65,7 +66,7 @@ namespace borktorial
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
         public static byte cmdFErrCount { get; set; } = 0;
 
-        public static List<string> currNews { get; set; } = new(4096);
+        public static List<string> currNews { get; set; } = [];
 
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
         public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(bktStf.nookEnc(username, password)));
@@ -1801,6 +1802,10 @@ namespace borktorial
                             {
                                 if (rawCommin.StartsWith("mail."))
                                 {
+                                    if (usedGifts.Count > 5)
+                                    {
+                                        usedGifts.RemoveAt(0);
+                                    }
                                     (string username, string command, string message, string sid) mail = cmdMailDec(rawCommin);
                                     if (mail == ("\x00", "\x01", "\x02", "0"))
                                     {
@@ -2616,7 +2621,7 @@ namespace borktorial
 
             if (currNews.Count > 5)
             {
-                currNews.RemoveAt(0); // Remove first/oldest
+                currNews.RemoveAt(0);
             }
         }
         public static void saveCfg()
@@ -2894,6 +2899,8 @@ namespace borktorial
             exp = bktStf.pNrH(exp, rand);
             exp = errGen.genCustomTemplate(exp)[0];
             exp = newsGen.genCustomTemplate(exp);
+            exp = exp.Replace("<newline>", "\r\n");
+            exp = exp.Replace("<empty>", "");
             return exp;
         }
         public static void forceDefaultCfg()
