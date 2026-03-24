@@ -55,7 +55,9 @@
                 bw.Write(f.contents);
                 bw.Write(f.attribs.Length);
                 foreach (fileAttrib a in f.attribs)
+                {
                     bw.Write((int)a);
+                }
             }
         }
 
@@ -67,7 +69,10 @@
                 bw.Write(d.name);
                 bw.Write(d.attribs.Length);
                 foreach (fileAttrib a in d.attribs)
+                {
                     bw.Write((int)a);
+                }
+
                 writeFileList(bw, d.files);
                 writeDirList(bw, d.subDirs);  // recursive
             }
@@ -85,7 +90,10 @@
                 int attrLen = br.ReadInt32();
                 fileAttrib[] attribs = new fileAttrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
+                {
                     attribs[j] = (fileAttrib)br.ReadInt32();
+                }
+
                 files.Add(new vFile(name, contents, attribs));
             }
             return files;
@@ -101,7 +109,10 @@
                 int attrLen = br.ReadInt32();
                 fileAttrib[] attribs = new fileAttrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
+                {
                     attribs[j] = (fileAttrib)br.ReadInt32();
+                }
+
                 List<vFile> files = readFileList(br);
                 List<vDir> subDirs = readDirList(br);  // recursive
                 dirs.Add(new vDir(name, files, subDirs, attribs));
@@ -114,9 +125,21 @@
         // Converts relative path to absolute
         private string resolvePath(string path)
         {
-            if (string.IsNullOrEmpty(path)) return workingPath;
-            if (path.StartsWith('\\')) return path;
-            if (workingPath == "\\") return "\\" + path;
+            if (string.IsNullOrEmpty(path))
+            {
+                return workingPath;
+            }
+
+            if (path.StartsWith('\\'))
+            {
+                return path;
+            }
+
+            if (workingPath == "\\")
+            {
+                return "\\" + path;
+            }
+
             return workingPath + "\\" + path;
         }
 
@@ -132,7 +155,9 @@
             string[] parts = parsePath(resolvePath(path));
 
             if (parts.Length == 0)
+            {
                 return (rootFiles, rootDirs);
+            }
 
             List<vDir> currentDirs = rootDirs;
             for (int i = 0; i < parts.Length; i++)
@@ -146,10 +171,15 @@
                         break;
                     }
                 }
-                if (idx == -1) return null;
+                if (idx == -1)
+                {
+                    return null;
+                }
 
                 if (i == parts.Length - 1)
+                {
                     return (currentDirs[idx].files, currentDirs[idx].subDirs);
+                }
 
                 currentDirs = currentDirs[idx].subDirs;
             }
@@ -160,19 +190,27 @@
         private (List<vFile> files, List<vDir> dirs, string name)? getParent(string path)
         {
             string[] parts = parsePath(resolvePath(path));
-            if (parts.Length == 0) return null;
+            if (parts.Length == 0)
+            {
+                return null;
+            }
 
             string targetName = parts[^1];
 
             if (parts.Length == 1)
+            {
                 return (rootFiles, rootDirs, targetName);
+            }
 
             string[] parentParts = new string[parts.Length - 1];
             Array.Copy(parts, parentParts, parts.Length - 1);
             string parentPath = "\\" + string.Join("\\", parentParts);
 
             (List<vFile> files, List<vDir> dirs)? parent = getDirContents(parentPath);
-            if (parent == null) return null;
+            if (parent == null)
+            {
+                return null;
+            }
 
             return (parent.Value.files, parent.Value.dirs, targetName);
         }
@@ -193,10 +231,15 @@
             if (path == "..")
             {
                 string[] parts = parsePath(workingPath);
-                if (parts.Length == 0) return false;
+                if (parts.Length == 0)
+                {
+                    return false;
+                }
 
                 if (parts.Length == 1)
+                {
                     workingPath = "\\";
+                }
                 else
                 {
                     string[] newParts = new string[parts.Length - 1];
@@ -220,12 +263,20 @@
         public bool mkDir(string path, fileAttrib[]? attribs = null)
         {
             (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
-            if (result == null) return false;
+            if (result == null)
+            {
+                return false;
+            }
 
             (List<vFile> _, List<vDir> dirs, string name) = result.Value;
 
             for (int i = 0; i < dirs.Count; i++)
-                if (dirs[i].name == name) return false;
+            {
+                if (dirs[i].name == name)
+                {
+                    return false;
+                }
+            }
 
             dirs.Add(new vDir(name, [], [], attribs ?? []));
             return true;
@@ -237,12 +288,20 @@
         public bool mkFile(string path, byte[]? contents = null, fileAttrib[]? attribs = null)
         {
             (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
-            if (result == null) return false;
+            if (result == null)
+            {
+                return false;
+            }
 
             (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
-                if (files[i].name == name) return false;
+            {
+                if (files[i].name == name)
+                {
+                    return false;
+                }
+            }
 
             files.Add(new vFile(name, contents ?? [], attribs ?? []));
             return true;
@@ -256,12 +315,20 @@
             }
             byte[] ctBytes = [.. tempBytes];
             (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
-            if (result == null) return false;
+            if (result == null)
+            {
+                return false;
+            }
 
             (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
-                if (files[i].name == name) return false;
+            {
+                if (files[i].name == name)
+                {
+                    return false;
+                }
+            }
 
             files.Add(new vFile(name, ctBytes ?? [], attribs ?? []));
             return true;
@@ -273,7 +340,10 @@
         public bool delFile(string path)
         {
             (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
-            if (result == null) return false;
+            if (result == null)
+            {
+                return false;
+            }
 
             (List<vFile> files, List<vDir> _, string name) = result.Value;
 
@@ -294,7 +364,10 @@
         public bool delDir(string path)
         {
             (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
-            if (result == null) return false;
+            if (result == null)
+            {
+                return false;
+            }
 
             (List<vFile> _, List<vDir> dirs, string name) = result.Value;
 

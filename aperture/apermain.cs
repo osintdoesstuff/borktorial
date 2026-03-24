@@ -34,54 +34,104 @@ namespace aperture
         public static string byteFormat(UInt128 bytes)
         {
             if (bytes < (UInt128)Math.Pow(1024, 1))
+            {
                 return $"{bytes}B";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 2))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 1)}KB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 3))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 2)}MB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 4))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 3)}GB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 5))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 4)}TB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 6))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 5)}PB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 7))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 6)}EB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 8))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 7)}ZB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 9))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 8)}YB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 10))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 9)}RB";
+            }
             else if (bytes < (UInt128)Math.Pow(1024, 11))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 10)}QB";
-            else return $"Yes.";
+            }
+            else
+            {
+                return $"Yes.";
+            }
         }
         public static string byteFormat(ulong bytes)
         {
             if (bytes < (ulong)Math.Pow(1024, 1))
+            {
                 return $"{bytes}B";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 2))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 1)}KB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 3))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 2)}MB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 4))
+            {
                 return $"{bytes / (UInt128)Math.Pow(1024, 3)}GB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 5))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 4)}TB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 6))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 5)}PB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 7))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 6)}EB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 8))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 7)}ZB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 9))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 8)}YB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 10))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 9)}RB";
+            }
             else if (bytes < (ulong)Math.Pow(1024, 11))
+            {
                 return $"{bytes / (ulong)Math.Pow(1024, 10)}QB";
-            else return $"Yes.";
+            }
+            else
+            {
+                return $"Yes.";
+            }
         }
         public static byte[] mkRndByteArray(int length)
         {
@@ -97,8 +147,15 @@ namespace aperture
         {
             List<(double from, double to)> sorted = [.. points.OrderBy(p => p.from)];
 
-            if (input <= sorted.First().from) return sorted.First().to;
-            if (input >= sorted.Last().from) return sorted.Last().to;
+            if (input <= sorted.First().from)
+            {
+                return sorted.First().to;
+            }
+
+            if (input >= sorted.Last().from)
+            {
+                return sorted.Last().to;
+            }
 
             for (int i = 0; i < sorted.Count - 1; i++)
             {
@@ -270,7 +327,9 @@ namespace aperture
             for (int i = 0; i < length; i++)
             {
                 if (gs > 0 && i > 0 && i % gs == 0)
+                {
                     sb.Append(sep);
+                }
 
                 sb.Append(hexDigits[rand.Next(hexDigits.Length)]);
             }

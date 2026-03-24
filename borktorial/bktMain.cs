@@ -334,7 +334,11 @@ namespace borktorial
             }
             if (!forceNoBoot)
             {
-                if (!ballmerMode) Console.Clear();
+                if (!ballmerMode)
+                {
+                    Console.Clear();
+                }
+
                 Console.Title = $"borktorial: {splashPick()}";
                 if (rand.Next(0, 69) == 0) // 1 in 69
                 {
@@ -664,7 +668,10 @@ namespace borktorial
                             break;
                         case "echo":
                             if (commin.Length > 1)
+                            {
                                 Console.WriteLine(string.Join(" ", rawCommin.Split(' ').Skip(1)));
+                            }
+
                             break;
                         case "quoteoftheday":
                             string quote = lines[rand.Next(0, lines.Length)];
@@ -2065,7 +2072,9 @@ namespace borktorial
             };
 
             if (!secrets.TryGetValue(code, out (string resource, string filename) secret))
+            {
                 return;
+            }
 
             using Stream? stream = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream(secret.resource) ?? throw new Exception("Err in sf15: Stream was null");
@@ -2684,7 +2693,9 @@ namespace borktorial
                 })];
 
             if (splashes.Count == 0)
+            {
                 return "404 splash not found";
+            }
 
             // Weighted random selection
             int totalWeight = splashes.Sum(s => s.Weight);
@@ -2695,7 +2706,9 @@ namespace borktorial
             {
                 cumulative += splash.Weight;
                 if (roll < cumulative)
+                {
                     return parseBorkTag(splash.Text);
+                }
             }
 
             return parseBorkTag(splashes[^1].Text);
@@ -2727,8 +2740,12 @@ namespace borktorial
 
             int catWidth = 0;
             foreach (string line in catLines)
+            {
                 if (line.Length > catWidth)
+                {
                     catWidth = line.Length;
+                }
+            }
 
             int startPos = consoleWidth - catWidth;
             int endPos = 0;
