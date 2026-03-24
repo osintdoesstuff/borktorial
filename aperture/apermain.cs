@@ -23,7 +23,7 @@ namespace aperture
             return puE;
         }
     }
-    public static class bktStf
+    public class bktStf
     {
         public static int[] nrHndlr(string nrs)
         {

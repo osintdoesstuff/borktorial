@@ -1636,7 +1636,13 @@ namespace borktorial
                             {
                                 Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
                             }
-                            new SoundPlayer("assets\\rd_canyon.wav").Play();
+                            SoundPlayer rSp = new("assets\\rd_canyon.wav");
+                            if (Directory.Exists("assets\\customRadioSongs"))
+                            {
+                                string[] songs = Directory.GetFiles("assets\\customRadioSongs");
+                                rSp.SoundLocation = songs[rand.Next(songs.Length - 1)];
+                            }
+                            rSp.Play();
                             break;
                         case "dumpsysstate":
                             bktStf.dumpState<Program>();
@@ -1852,7 +1858,6 @@ namespace borktorial
                                 try
                                 {
                                     string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
-
                                     string? lut = typeof(Program).FullName;
 
                                     lua.DoString($@"
@@ -2379,18 +2384,6 @@ namespace borktorial
                 {
                     Thread.Sleep(100);
                 }
-            }
-        }
-        public static void radioLoop(string fn)
-        {
-            SoundPlayer radio1 = new(fn);
-            while (!radioStopped)
-            {
-                if (rbt0)
-                {
-                    return;
-                }
-                radio1.PlaySync();
             }
         }
         public static void timeLoop(int tl, int mcl)
