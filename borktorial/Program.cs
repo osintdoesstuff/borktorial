@@ -23,7 +23,7 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static bktVersion bktver { get; set; } = new(1, 2, 0, 'd');
+        public static bktVersion bktver { get; set; } = new(1, 2, 0, 'd', snapshotVer.minVer);
 
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
@@ -200,7 +200,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (bktLV.aprtVer != new bktVersion(0, 4, 3, 'b'))
+            if (bktLV.aprtVer != new bktVersion(0, 4, 3, 'b', snapshotVer.minVer))
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer}", logType.Warn);
             }

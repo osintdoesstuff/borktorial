@@ -28,7 +28,7 @@
             long maxSize = 1048576,
             bool doRotate = true,
             string csLogType = "",
-            string rotateDateFormat = "yyyyMMdd-HHmmss")
+            string rotateDateFormat = "yyyy/MM/dd HH-mm-ss")
         {
             lock (logLock)
             {
