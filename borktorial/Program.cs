@@ -23,7 +23,7 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static bktVersion bktver { get; set; } = new(1, 2, 0, 'd', snapshotVer.minVer);
+        public static bktVersion bktver { get; set; } = new(1, 2, 1, 'a', snapshotVer.minVer);
 
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
@@ -200,7 +200,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (bktLV.aprtVer != new bktVersion(0, 4, 3, 'b', snapshotVer.minVer))
+            if (bktLV.aprtVer != new bktVersion(0, 4, 4, 'a', snapshotVer.minVer))
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer}", logType.Warn);
             }
@@ -236,7 +236,7 @@ namespace borktorial
                         iteration++;
                     }
                     cfg = cfgP;
-                    if (cfg[3] != bktver.GetHashCode())
+                    if (cfg[3] != getBuildNum())
                     {
                         shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
                     }
@@ -264,7 +264,7 @@ namespace borktorial
             }
             if (args.Length >= 1 && args[0] == "/version")
             {
-                Console.WriteLine($"Borktorial verison {bktver.GetHashCode()}");
+                Console.WriteLine($"Borktorial verison {getBuildNum()}");
                 return;
             }
             if (args.Length >= 1 && args[0] == "/dev")
@@ -411,7 +411,7 @@ namespace borktorial
                 }
                 shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
-                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {bktver.GetHashCode()})");
+                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division 1987-1994");
                 AnsiConsole.MarkupLine("Original BIOS (C) [rgb(63,127,255)]IBM[/] 1981-1994");
                 Console.WriteLine();
@@ -2748,6 +2748,10 @@ namespace borktorial
 
             return parseBorkTag(splashes[^1].Text);
         }
+        public static int getBuildNum()
+        {
+            return bktver.GetHashCode() + bktLV.aprtVer.GetHashCode();
+        }
         public static void sttw()
         {
             Console.WriteLine("Now loading STTW...");
@@ -2862,7 +2866,7 @@ namespace borktorial
             cfg[0] = 15; // Tick length in ms
             cfg[1] = 10000; // Mun cycle length in ticks
             cfg[2] = 15; // FS save interval in seconds
-            cfg[3] = bktver.GetHashCode(); // Version
+            cfg[3] = getBuildNum(); // Version
             cfg[4] = 0; // Fail NTGINA find
             cfg[5] = 0; // No fun pre-logon boot text
             cfg[6] = 0; // No asking for username and password

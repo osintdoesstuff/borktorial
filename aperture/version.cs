@@ -105,7 +105,7 @@
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return (maj * 8) + (min * 6) + (pch * 4) + (rev * 2) + snapshot.GetHashCode();
+            return ((maj * 8) + (min * 6) + (pch * 4) + (rev * 2) + snapshot.GetHashCode()) * ((int)stage + 1);
         }
     }
     public class snapshotVer(int year, int month, int day, int build)
@@ -148,7 +148,7 @@
         /// <returns>A semi-decent hash for the snapshot</returns>
         public override int GetHashCode()
         {
-            return (year * 8) + (month * 6) + (day * 4) + (build * 2);
+            return (year * 8) + (month * 6) + (day * 4) + (build * 2) / 1000;
         }
     }
     /// <summary>
