@@ -354,26 +354,5 @@ namespace borktorial
             gErrI = bktStf.pNrH(gErrI, rand);
             return [gErrI, processName];
         }
-        /// <summary>
-        /// Generate random hex strings
-        /// </summary>
-        /// <param name="length">Length</param>
-        /// <param name="gs">Group size</param>
-        /// <param name="sep">Separator character</param>
-        /// <returns>A random hex string with the params</returns>
-        public static string sf15(int length, int gs, char sep = '-')
-        {
-            StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
-
-            for (int i = 0; i < length; i++)
-            {
-                if (gs > 0 && i > 0 && i % gs == 0)
-                    sb.Append(sep);
-
-                sb.Append(hexDigits[rand.Next(hexDigits.Length)]);
-            }
-
-            return sb.ToString();
-        }
     }
 }

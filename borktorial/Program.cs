@@ -2,14 +2,11 @@
 using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
 using Spectre.Console;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using Panel = Spectre.Console.Panel;
 namespace borktorial
 {
     public class Program
@@ -38,9 +35,7 @@ namespace borktorial
         public static bool radioStopped { get; set; } = true;
         public static bool jmtrigger { get; set; } = false;
         public static bool root { get; set; } = false;
-
         public static bool s5a85 { get; } = OperatingSystem.IsWindows();
-
         public static int mSpeed { get; set; } = 1800;
         public static int crshChance { get; set; } = 10000;
         public static int jebcounter { get; set; } = 0;
@@ -49,9 +44,7 @@ namespace borktorial
         public static double ninovium { get; set; } = 1;
         public static double schonite { get; set; } = 1;
         public static double sysstab { get; set; } = 1;
-
         public static mConnectTypes mCt { get; set; } = mConnectTypes.Null;
-
         public static Random rand { get; set; } = new();
         public static Thread? drdhtsr { get; set; }
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
@@ -61,12 +54,9 @@ namespace borktorial
         public static string cfgFn { get; set; } = "bktcfg.ssc";
         public static string username { get; set; } = "";
         public static string password { get; set; } = "";
-
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
         public static byte cmdFErrCount { get; set; } = 0;
-
         public static List<string> currNews { get; set; } = [];
-
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
         public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(bktStf.nookEnc(username, password)));
         public static string[] lines { get; } = [
@@ -85,7 +75,6 @@ namespace borktorial
             "Science isn't about WHY. It's about WHY NOT. Why is so much of our science dangerous? Why not marry safe science if you love it so much. In fact, why not invent a special safety door that won't hit you on the butt on the way out, because you are fired.",
             "Dr. Freeman to Anomalous Materials test laboratory immediately."
         ];
-
         public static string[] linesAttr { get; } = [
             "-Cave Johnson",
             "-G-man",
@@ -96,7 +85,6 @@ namespace borktorial
             "-Aristotle",
             "-Sun Tzu"
         ];
-
         public static string[] linesBooks { get; } = [
             "How to fire test subjects",
             "How to ruin a science lab",
@@ -606,15 +594,15 @@ namespace borktorial
                         Console.Write("Password: ");
                         password = Console.ReadLine() ?? "";
                     }
-
-                    //if (username == "root" && password == "Bacon532!") // this makes no sense on NT
-                    //{
-                    //    root = true;
-                    //}
                     if (username == "SYSTEM" && rand.Next(0, 37) == 0)
                     {
                         root = true;
                     }
+                }
+                else
+                {
+                    username = bktStf.mkShitUsername(rand);
+                    password = bktStf.genHexStr(16);
                 }
                 Thread timeThread = new(() =>
                 {
@@ -989,10 +977,6 @@ namespace borktorial
                                 }
                             }
                             break;
-                        case "dbg::crc":
-                            Console.WriteLine(bktStf.md5(bktStf.str2Ba("Hi!")));
-                            Console.WriteLine(bktStf.md5(bktStf.str2Ba("Bi!")));
-                            break;
                         case "reboot":
                             rbt0 = true;
                             Console.Clear();
@@ -1138,7 +1122,7 @@ namespace borktorial
                             string actual;
                             do
                             {
-                                actual = errGen.sf15(16, 4).Replace("-", "").ToUpper();
+                                actual = bktStf.genHexStr(16, 4).Replace("-", "").ToUpper();
                             } while (userNums == actual);
                             Console.WriteLine($"Actual numbers were {actual}");
                             break;
@@ -1307,6 +1291,9 @@ namespace borktorial
                                 Console.WriteLine($"cannot find: {commin[0]}");
                                 break;
                             }
+                            break;
+                        case "dbg::namegen":
+                            Console.WriteLine(bktStf.mkShitUsername(rand));
                             break;
                         case "help":
                             Console.WriteLine("Available commands:");
@@ -1506,7 +1493,7 @@ namespace borktorial
                             Console.Write("\r\n");
                             Console.Write("Finding optimal satellite cluster...");
                             Thread.Sleep(rand.Next(5300, 8800));
-                            Console.Write($"Found sat group: {errGen.sf15(8, 4)}\r\n");
+                            Console.Write($"Found sat group: {bktStf.genHexStr(8, 4)}\r\n");
                             Thread.Sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
@@ -2042,7 +2029,7 @@ namespace borktorial
 
             for (int i = 0; i < 6; i++)
             {
-                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')}");
+                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {bktStf.genHexStr(8, 0, ' ')} {bktStf.genHexStr(8, 0, ' ')} {bktStf.genHexStr(8, 0, ' ')} {bktStf.genHexStr(8, 0, ' ')}");
             }
 
             writeEmptyLine();
@@ -2073,7 +2060,7 @@ namespace borktorial
             writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
             fs.mkFile("\\WINNT\\MEMORY.DMP", bktStf.mkRndByteArray(rdSize/8));
             impulse(5001); // save fs
-            writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
+            writeFullLine($"Report ID: {bktStf.genHexStr(8, 4)}-{bktStf.genHexStr(12, 4)}-{bktStf.genHexStr(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
             writeFullLine($"*** Process: {pName} (PID: {rand.Next(1, 65536)})");

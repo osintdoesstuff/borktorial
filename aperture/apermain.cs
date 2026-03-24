@@ -238,5 +238,63 @@ namespace aperture
                 Console.WriteLine($"{property.Name} = {value}");
             }
         }
+        /// <summary>
+        /// Makes a shitty username. Kinda-ish like the Reddit default usernames
+        /// </summary>
+        /// <param name="rand">A suitable RNGesus to decide shit</param>
+        /// <returns>A shitty username</returns>
+        public static string mkShitUsername(Random rand)
+        {
+            string[] adjectives = [
+                "Big", "Small", "Huge", "Little", "Lil", "Medium",
+                "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow",
+                "Swinging", "Running", "Walking", "Ducking", "Crouching",
+                "Stupid", "Smart", "Ugly", "Pretty", "Fast", "Slow",
+                "Edible", "Usable", "Delicious", "Bitter", "Shitty",
+                "Shiny", "Glowing", "Heavenly", "Demonic",
+                "Sneaky", "Silent", "Loud"
+            ];
+            string[] things = [
+                "Fish", "Duck", "Dog", "Cat", "Cow", "Deer", "Mouse", "Turtle", "Bigfoot",
+                "Computer", "Printer", "Robot", "Program", "Monitor",
+                "Cup", "Mug", "Plate", "Kitchen", "Pen", "Clock",
+                "Table", "Chair", "Couch", "Flooring", "Wallpaper",
+                "Fruit", "Paper", "Carpet", "Sign", "Tree",
+                "Command", "Kerbal", "Planet", "Moon", "Asteroid", "Comet",
+                "Creeper", "Skeleton", "Zombie", "Spider", "Witch", "Pillager", "Enderman",
+                "Pizza", "Chicken", "Potato", "Fries", "Pancake", "Fry", "Salad",
+                "Sandwich", "Corn", "Popcorn", "Chips"
+                ];
+            string[] separators = ["", "-", "_", "", "", ""]; // some padding to make the separators more rare
+            return
+                adjectives[rand.Next(adjectives.Length - 1)] +
+                separators[rand.Next(separators.Length - 1)] +
+                adjectives[rand.Next(adjectives.Length - 1)] +
+                separators[rand.Next(separators.Length - 1)] +
+                things[rand.Next(things.Length - 1)];
+            }
+        /// <summary>
+        /// Generate random hex strings
+        /// </summary>
+        /// <param name="length">Length</param>
+        /// <param name="gs">Group size</param>
+        /// <param name="sep">Separator character</param>
+        /// <returns>A random hex string with the params</returns>
+        public static string genHexStr(int length, int gs = 0, char sep = '-')
+        {
+            Random rand = new();
+            char[] hexDigits = "0123456789ABCDEF".ToCharArray();
+            StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
+
+            for (int i = 0; i < length; i++)
+            {
+                if (gs > 0 && i > 0 && i % gs == 0)
+                    sb.Append(sep);
+
+                sb.Append(hexDigits[rand.Next(hexDigits.Length)]);
+            }
+
+            return sb.ToString();
+        }
     }
 }
