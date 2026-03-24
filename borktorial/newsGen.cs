@@ -292,7 +292,7 @@ namespace borktorial
             gNe = gNe.Replace("<hostile>", mcmobsH[rand.Next(mcmobsH.Length)]);
 
             // Process number ranges
-            gNe = bktStf.pNrH(gNe, rand);
+            gNe = aprtMain.pNrH(gNe, rand);
 
             return gNe;
         }

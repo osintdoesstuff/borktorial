@@ -4,12 +4,11 @@ using NAudio.Wave;
 using Spectre.Console;
 using System.Diagnostics;
 using System.Media;
-using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 namespace borktorial
 {
-    public class Program
+    public class bktMain
     {
         public static string cat { get; } = """
              |\\_,-~/
@@ -58,7 +57,7 @@ namespace borktorial
         public static byte cmdFErrCount { get; set; } = 0;
         public static List<string> currNews { get; set; } = [];
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
-        public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(bktStf.nookEnc(username, password)));
+        public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password)));
         public static string[] lines { get; } = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
@@ -115,7 +114,6 @@ namespace borktorial
             OS: NTOSKRNL v4.3, NT-DOS v2.2, running on Console Subsystem.
             Video: Citrus GT-6500 ISA
             Sound: PC beeper, SB1.0
-            Other devices: GLaDOS Link Peripheral
             Network: Networked Microsystems 14400bps. Connected: {mConnected}
             Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
             """;
@@ -200,9 +198,9 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (bktLV.aprtVer != new bktVersion(0, 4, 4, 'a', snapshotVer.minVer))
+            if (aprtMain.aprtVer != new bktVersion(0, 4, 4, 'a', snapshotVer.minVer))
             {
-                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer}", logType.Warn);
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {aprtMain.aprtVer}", logType.Warn);
             }
             shitLog.createEntry("BOOT", $"Random seed is 0x{rSeed:X8}", logType.Info);
             impulse(5000);
@@ -334,37 +332,6 @@ namespace borktorial
                 Console.WriteLine("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
                 Thread.Sleep(5000);
             }
-            // Verification (and me just testing the lib)
-            int[] avServer = bktLV.dallf();
-            int[] avClient = new int[8];
-            int[] avCv1 = [255, 127, 63, 31, 15, 7, 3, 2];
-            int[] avCv2 = [1, 3, 7, 15, 31, 63, 127, 254];
-            if (failIntaAlways)
-            {
-                avCv1[0] = int.MaxValue;
-            }
-            for (int i = 0; i < avClient.Length; i++)
-            {
-                avClient[i] = avCv1[i] + avCv2[i];
-            }
-            if (!avClient.SequenceEqual(avServer))
-            {
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Clear();
-                Console.WriteLine("FAULT: The APERTURE system library is corrupted.");
-                Console.WriteLine("Error code: 492. The INTA verification failed.");
-                Console.WriteLine("This incident will be logged\r\n");
-                Console.WriteLine("Potential reasons why you saw this error:");
-                Console.WriteLine("  * You modified APERTURE.DLL in such a way that the verification failed");
-                Console.WriteLine("  * The DLL is corrupted");
-                Console.WriteLine("  * Your copy was tampered with somehow");
-                Console.WriteLine("  * The program just hates you in particular\r\n");
-                Console.WriteLine("Retry in 10 seconds.");
-                shitLog.createEntry("INTA", "The INTA verification failed.", logType.Err);
-                Thread.Sleep(10000);
-                publicMain([]);
-            }
             if (!forceNoBoot)
             {
                 if (!ballmerMode) Console.Clear();
@@ -383,7 +350,7 @@ namespace borktorial
                     {
                         string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
 
-                        string? lut = typeof(Program).FullName;
+                        string? lut = typeof(bktMain).FullName;
 
                         lua.DoString($@"
                                             luanet.load_assembly('{luAsm}')
@@ -411,9 +378,8 @@ namespace borktorial
                 }
                 shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
-                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
+                Console.WriteLine($"KerBIOS 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division 1987-1994");
-                AnsiConsole.MarkupLine("Original BIOS (C) [rgb(63,127,255)]IBM[/] 1981-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
@@ -601,8 +567,8 @@ namespace borktorial
                 }
                 else
                 {
-                    username = bktStf.mkShitUsername(rand);
-                    password = bktStf.genHexStr(16);
+                    username = aprtMain.mkShitUsername(rand);
+                    password = aprtMain.genHexStr(16);
                 }
                 Thread timeThread = new(() =>
                 {
@@ -656,12 +622,13 @@ namespace borktorial
                 string[] commin = rawCommin.ToLower().Split(' ');
                 if(commin.Length > 0)
                 {
-                    foreach ((string cmd1, string[] cmd2) item in aliases)
+                    for (int i = 0; i < aliases.Count; i++)
                     {
-                        if (commin[0] == item.cmd1)
+                        (string cmd1, string[] cmd2) = aliases[i];
+                        if (commin[0] == cmd1)
                         {
-                            commin = item.cmd2;
-                            rawCommin = string.Join(' ', item.cmd2);
+                            commin = cmd2;
+                            rawCommin = string.Join(' ', cmd2);
                         }
                     }
                 }
@@ -730,7 +697,7 @@ namespace borktorial
                                 {
                                     if(f.name == rawCommin.Split(' ')[1])
                                     {
-                                        Console.WriteLine(bktStf.ba2Str(f.contents));
+                                        Console.WriteLine(aprtMain.ba2Str(f.contents));
                                     }
                                 }
                             }
@@ -1122,7 +1089,7 @@ namespace borktorial
                             string actual;
                             do
                             {
-                                actual = bktStf.genHexStr(16, 4).Replace("-", "").ToUpper();
+                                actual = aprtMain.genHexStr(16, 4).Replace("-", "").ToUpper();
                             } while (userNums == actual);
                             Console.WriteLine($"Actual numbers were {actual}");
                             break;
@@ -1293,7 +1260,7 @@ namespace borktorial
                             }
                             break;
                         case "dbg::namegen":
-                            Console.WriteLine(bktStf.mkShitUsername(rand));
+                            Console.WriteLine(aprtMain.mkShitUsername(rand));
                             break;
                         case "help":
                             Console.WriteLine("Available commands:");
@@ -1493,7 +1460,7 @@ namespace borktorial
                             Console.Write("\r\n");
                             Console.Write("Finding optimal satellite cluster...");
                             Thread.Sleep(rand.Next(5300, 8800));
-                            Console.Write($"Found sat group: {bktStf.genHexStr(8, 4)}\r\n");
+                            Console.Write($"Found sat group: {aprtMain.genHexStr(8, 4)}\r\n");
                             Thread.Sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
@@ -1599,7 +1566,7 @@ namespace borktorial
                                 Thread.Sleep(rand.Next(350, 500));
                                 if (mConnected)
                                 {
-                                    Console.WriteLine($"Fetching news (size: {bktStf.byteFormat((ulong)newsSizeSum)})...");
+                                    Console.WriteLine($"Fetching news (size: {aprtMain.byteFormat((ulong)newsSizeSum)})...");
                                 }
                                 else
                                 {
@@ -1645,22 +1612,7 @@ namespace borktorial
                             rSp.Play();
                             break;
                         case "dumpsysstate":
-                            bktStf.dumpState<Program>();
-                            break;
-                        case "the_most_useless_command_ever":
-                            using (WebClient client = new())
-                            {
-                                // i just host win95 RTM on floppy on my github pages, let's hope it doesn't instantly crash
-                                string win95Link = "https://osintdoesstuff.github.io/webodingus/win95.7z";
-                                Console.WriteLine("Downloading Windows 95...");
-                                client.DownloadFile(win95Link, "win95.7z");
-                                Console.WriteLine("Successfully downloaded.");
-                                Process.Start(new ProcessStartInfo
-                                {
-                                    FileName = "win95.7z",
-                                    UseShellExecute = true
-                                });
-                            }
+                            aprtMain.dumpState<bktMain>();
                             break;
                         case "netinfo":
                             Console.WriteLine("nUtils Utility Pack 1.4 - NETINFO");
@@ -1702,9 +1654,9 @@ namespace borktorial
                             else
                             {
                                 Console.WriteLine($"connection type: {mCtStr}\r\n" +
-                                    $"speed: {bktStf.byteFormat((UInt128)iMspeed)}/s\r\n" +
+                                    $"speed: {aprtMain.byteFormat((UInt128)iMspeed)}/s\r\n" +
                                     $"connected: yes\r\n" +
-                                    $"variance range: -{bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s to {bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s"
+                                    $"variance range: -{aprtMain.byteFormat((UInt128)(iMspeed / 4.5))}/s to {aprtMain.byteFormat((UInt128)(iMspeed / 4.5))}/s"
                                     );
                             }
                             break;
@@ -1858,7 +1810,7 @@ namespace borktorial
                                 try
                                 {
                                     string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
-                                    string? lut = typeof(Program).FullName;
+                                    string? lut = typeof(bktMain).FullName;
 
                                     lua.DoString($@"
                                             luanet.load_assembly('{luAsm}')
@@ -2034,7 +1986,7 @@ namespace borktorial
 
             for (int i = 0; i < 6; i++)
             {
-                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {bktStf.genHexStr(8, 0, ' ')} {bktStf.genHexStr(8, 0, ' ')} {bktStf.genHexStr(8, 0, ' ')} {bktStf.genHexStr(8, 0, ' ')}");
+                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {aprtMain.genHexStr(8, 0, ' ')} {aprtMain.genHexStr(8, 0, ' ')} {aprtMain.genHexStr(8, 0, ' ')} {aprtMain.genHexStr(8, 0, ' ')}");
             }
 
             writeEmptyLine();
@@ -2063,9 +2015,9 @@ namespace borktorial
             int rdSize = rand.Next(128, 524288);
             writeFullLine($"Memory dumped: {rdSize} KB");
             writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
-            fs.mkFile("\\WINNT\\MEMORY.DMP", bktStf.mkRndByteArray(rdSize/8));
+            fs.mkFile("\\WINNT\\MEMORY.DMP", aprtMain.mkRndByteArray(rdSize/8));
             impulse(5001); // save fs
-            writeFullLine($"Report ID: {bktStf.genHexStr(8, 4)}-{bktStf.genHexStr(12, 4)}-{bktStf.genHexStr(8, 4)}");
+            writeFullLine($"Report ID: {aprtMain.genHexStr(8, 4)}-{aprtMain.genHexStr(12, 4)}-{aprtMain.genHexStr(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
             writeFullLine($"*** Process: {pName} (PID: {rand.Next(1, 65536)})");
@@ -2241,7 +2193,7 @@ namespace borktorial
                     char[] bootiniContents = """
                         [bootldr]
                         ; ntdos bootloader 1.3
-                        default IDE0:\part0\NTLDR /SRLOUTONLY
+                        default IDE0:\part0\WINNT\NTOSKRNL.EXE /SRLOUTONLY
                         """.ToCharArray();
                     // Root directories
                     fs.mkDir("WINNT");
@@ -2269,27 +2221,27 @@ namespace borktorial
                     fs.mkDir("WINNT\\Profiles\\Default User\\Start Menu");
 
                     // System files
-                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe", bktStf.mkRndByteArray(32753));
-                    fs.mkFile("WINNT\\System32\\hal.dll", bktStf.mkRndByteArray(19285));
-                    fs.mkFile("WINNT\\System32\\ntdll.dll", bktStf.mkRndByteArray(25932));
-                    fs.mkFile("WINNT\\System32\\kernel32.dll", bktStf.mkRndByteArray(49521));
-                    fs.mkFile("WINNT\\System32\\user32.dll", bktStf.mkRndByteArray(19564));
-                    fs.mkFile("WINNT\\System32\\gdi32.dll", bktStf.mkRndByteArray(45943));
-                    fs.mkFile("WINNT\\System32\\smss.exe", bktStf.mkRndByteArray(19532));
-                    fs.mkFile("WINNT\\System32\\csrss.exe", bktStf.mkRndByteArray(25316));
+                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe", aprtMain.mkRndByteArray(32753));
+                    fs.mkFile("WINNT\\System32\\hal.dll", aprtMain.mkRndByteArray(19285));
+                    fs.mkFile("WINNT\\System32\\ntdll.dll", aprtMain.mkRndByteArray(25932));
+                    fs.mkFile("WINNT\\System32\\kernel32.dll", aprtMain.mkRndByteArray(49521));
+                    fs.mkFile("WINNT\\System32\\user32.dll", aprtMain.mkRndByteArray(19564));
+                    fs.mkFile("WINNT\\System32\\gdi32.dll", aprtMain.mkRndByteArray(45943));
+                    fs.mkFile("WINNT\\System32\\smss.exe", aprtMain.mkRndByteArray(19532));
+                    fs.mkFile("WINNT\\System32\\csrss.exe", aprtMain.mkRndByteArray(25316));
 
 
                     // Registry hives
-                    fs.mkFile("WINNT\\System32\\config\\SAM", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\SECURITY", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\SYSTEM", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\DEFAULT", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SAM", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SECURITY", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SYSTEM", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\DEFAULT", aprtMain.mkRndByteArray(32768));
 
                     // Boot files
                     fs.mkFileChr("boot.ini", bootiniContents);
-                    fs.mkFile("ntldr", bktStf.mkRndByteArray(5942));
-                    fs.mkFile("ntdetect.com", bktStf.mkRndByteArray(2585));
+                    fs.mkFile("ntldr", aprtMain.mkRndByteArray(5942));
+                    fs.mkFile("ntdetect.com", aprtMain.mkRndByteArray(2585));
 
                     // EGG
                     fs.mkFileChr("WINNT\\System32\\drivers\\README.TXT", "You just lost the game.".ToCharArray());
@@ -2390,7 +2342,7 @@ namespace borktorial
         {
             DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
-            double sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
+            double sC;
             double ht0 = 0.01;
             double[] ht0Grph = [0.01, 0.1, 0.2, 0.3, 0.4,
             0.5, 0.6, 0.7, 0.8, 0.9,
@@ -2620,8 +2572,8 @@ namespace borktorial
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
             cmdMail += $"{message}\x00"; // message
             cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month):D5}\x00"; // sid
-            cmdMail += $"{bktStf.md5(bktStf.str2Ba(cmdMail))}";
-            return $"mail.{bktStf.toB64(cmdMail)}";
+            cmdMail += $"{aprtMain.md5(aprtMain.str2Ba(cmdMail))}";
+            return $"mail.{aprtMain.toB64(cmdMail)}";
         }
         public static DateTime ymd2Dt(string s)
         {
@@ -2633,7 +2585,7 @@ namespace borktorial
         public static (string username, string command, string message, string sid) cmdMailDec(string cmdMail)
         {
             cmdMail = cmdMail[5..];
-            cmdMail = bktStf.fromB64(cmdMail);
+            cmdMail = aprtMain.fromB64(cmdMail);
             string[] cmdMI = cmdMail.Split("\x00");
             if (cmdMI.Length < 7)
             {
@@ -2653,7 +2605,7 @@ namespace borktorial
                 return ("\x02", "\x01", "\x00", "0");
             }
             string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0";
-            if (cmdMI[6] != bktStf.md5(bktStf.str2Ba(crcCm)))
+            if (cmdMI[6] != aprtMain.md5(aprtMain.str2Ba(crcCm)))
             {
                 return ("\x06", "\x06", "\x06", "0");
             }
@@ -2750,7 +2702,7 @@ namespace borktorial
         }
         public static int getBuildNum()
         {
-            return bktver.GetHashCode() + bktLV.aprtVer.GetHashCode();
+            return bktver.GetHashCode() + aprtMain.aprtVer.GetHashCode();
         }
         public static void sttw()
         {
@@ -2853,7 +2805,7 @@ namespace borktorial
         }
         public static string parseBorkTag(string exp)
         {
-            exp = bktStf.pNrH(exp, rand);
+            exp = aprtMain.pNrH(exp, rand);
             exp = errGen.genCustomTemplate(exp)[0];
             exp = newsGen.genCustomTemplate(exp);
             exp = exp.Replace("<newline>", "\r\n");

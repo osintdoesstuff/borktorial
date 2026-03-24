@@ -3,28 +3,9 @@ using System.Text;
 
 namespace aperture
 {
-    /// <summary>
-    /// lib testing dingus
-    /// </summary>
-
-    public static class bktLV
+    public class aprtMain
     {
         public static bktVersion aprtVer = new(0, 4, 4, 'a', snapshotVer.minVer);
-        public static int[] puC { get; } = [255, 127, 63, 31, 15, 7, 3, 2];
-        public static int[] puD { get; } = [1, 3, 7, 15, 31, 63, 127, 254];
-        public static int[] dallf()
-        {
-
-            int[] puE = new int[8];
-            for (int i = 0; i < puC.Length; i++)
-            {
-                puE[i] = puC[i] + puD[i];
-            }
-            return puE;
-        }
-    }
-    public class bktStf
-    {
         public static int[] nrHndlr(string nrs)
         {
             nrs = nrs.Replace(">", "");
