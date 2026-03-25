@@ -105,19 +105,24 @@
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return ((maj * 8) + (min * 6) + (pch * 4) + (rev * 2) + snapshot.GetHashCode()) * ((int)stage + 1);
+            if (snapshot == snapshotVer.minVer)
+            {
+                return (maj * 8) + (min * 6) + (pch * 4) + (rev * 2) + (int)stage;
+            }
+            return (maj * 8) + (min * 6) + (pch * 4) + (rev * 2) + snapshot.GetHashCode() + (int)stage;
         }
     }
     public class snapshotVer(int year, int month, int day, int build)
     {
         /// <summary>
         /// The minimum version this can represent
+        /// Note: this is usually used as a default for shit
         /// </summary>
-        public static snapshotVer minVer { get; } = new(0, 0, 0, 0);
+        public static snapshotVer minVer { get; } = new(0, 1, 1, 0);
         /// <summary>
         /// The maximum version this can represent
         /// </summary>
-        public static snapshotVer maxVer { get; } = new(9999, 99, 99, 99);
+        public static snapshotVer maxVer { get; } = new(9999, 12, 31, 99);
         /// <summary>
         /// The year
         /// </summary>

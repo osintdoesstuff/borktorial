@@ -555,8 +555,12 @@ namespace borktorial
                 {
                     while (string.IsNullOrWhiteSpace(username))
                     {
-                        Console.Write("Username: ");
+                        Console.Write("Username (\"<default>\" to generate one): ");
                         username = Console.ReadLine()?.Trim() ?? "";
+                        if (username == "<default>")
+                        {
+                            username = aprtMain.mkShitUsername(rand);
+                        }
                     }
 
                     while (string.IsNullOrWhiteSpace(password))
@@ -1515,8 +1519,6 @@ namespace borktorial
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"cannot find: {commin[0]}");
-                                    shitLog.createEntry("LAMBDA", "You uncultured fuck", logType.Err);
                                     throw new Exception("The HL soundtrack is FREE!!! and you don't have it?");
                                 }
                                 while (true)

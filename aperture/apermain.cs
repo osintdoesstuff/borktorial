@@ -286,7 +286,7 @@ namespace aperture
             string[] adjectives = [
                 "Big", "Small", "Huge", "Little", "Lil", "Medium",
                 "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow",
-                "Swinging", "Running", "Walking", "Ducking", "Crouching",
+                "Swinging", "Running", "Walking", "Ducking", "Crouching", "Climbing",
                 "Stupid", "Smart", "Ugly", "Pretty", "Fast", "Slow",
                 "Edible", "Usable", "Delicious", "Bitter", "Shitty",
                 "Shiny", "Glowing", "Heavenly", "Demonic",
