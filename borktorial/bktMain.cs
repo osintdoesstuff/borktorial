@@ -202,9 +202,9 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (aprtMain.aprtVer != new bktVersion(0, 4, 4, 'a', snapshotVer.minVer))
+            if (!bktVersion.isEqual(new bktVersion(0, 4, 4, 'a', snapshotVer.minVer), aprtMain.aprtVer))
             {
-                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {aprtMain.aprtVer}", logType.Warn);
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.4a, got {aprtMain.aprtVer}", logType.Warn);
             }
             shitLog.createEntry("BOOT", $"Random seed is 0x{rSeed:X8}", logType.Info);
             impulse(5000);
