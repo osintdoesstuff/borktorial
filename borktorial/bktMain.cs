@@ -40,7 +40,6 @@ namespace borktorial
         public static int jebcounter { get; set; } = 0;
         public static double tick { get; set; } = 0;
         public static double munCycle { get; set; } = 0;
-        public static double ninovium { get; set; } = 1;
         public static double schonite { get; set; } = 1;
         public static double sysstab { get; set; } = 1;
         public static mConnectTypes mCt { get; set; } = mConnectTypes.Null;
@@ -183,6 +182,11 @@ namespace borktorial
             {
                 Thread.Sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
+            }
+            Console.Title = $"borktorial: {splashPick()}";
+            if (rand.Next(0, 69) == 0) // 1 in 69
+            {
+                Console.Title = $"broktorial: {splashPick()}";
             }
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
@@ -338,12 +342,6 @@ namespace borktorial
                 {
                     Console.Clear();
                 }
-
-                Console.Title = $"borktorial: {splashPick()}";
-                if (rand.Next(0, 69) == 0) // 1 in 69
-                {
-                    Console.Title = $"broktorial: {splashPick()}";
-                }
                 bootSw.Stop();
                 if (File.Exists(Path.Combine("mods", "initmods.lua")))
                 {
@@ -382,7 +380,7 @@ namespace borktorial
                 }
                 shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
-                Console.WriteLine($"KerBIOS 3.14 Revision 159 (build {getBuildNum()})");
+                AnsiConsole.MarkupLine($"[bold][green]Ker[/]BIOS[/] 3.14 Revision 159 (build {getBuildNum()})");
                 AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division 1987-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
@@ -1004,80 +1002,6 @@ namespace borktorial
                         case "smss":
                         case "csrss":
                             Console.WriteLine("Cannot run native binaries in NT-DOS subsystem");
-                            break;
-                        case "ninov":
-                            Console.WriteLine("Ninovium is a resource used for system stabilization and minor performance gains\r\n" +
-                                "Help:\r\n\r\n" +
-                                "mine: Mine ninovium and add to bank\r\n" +
-                                "dispose: Dispose all ninovium (WARNING: MAY LEAD TO SYSTEM INSTABILITY)\r\n" +
-                                "reinsert: Remove and re-add ninovium\r\n" +
-                                $"\r\n{ninovium} ninovium cubes in bank resulting in a stability factor of {sysstab:F2}!" +
-                                "\r\nWARNING: Dingus Solutions. Inc is not responsible for any spontoneus human combustion from ninovium usage");
-                            if (commin.Length >= 2)
-                            {
-                                switch (commin[1])
-                                {
-                                    case "mine":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            ProgressTask task1 = ctx.AddTask("[green]Mining...[/]");
-                                            ProgressTask task2 = ctx.AddTask("[green]Inserting...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(5, 15));
-                                                task1.Increment(rand.Next(1, 3));
-                                                Thread.Sleep(rand.Next(5, 15));
-                                                task2.Increment(rand.Next(1, 3));
-                                            }
-                                        });
-                                        ninovium += 1;
-                                        break;
-                                    case "dispose":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            ProgressTask task1 = ctx.AddTask("[green]Disposing...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(3, 5));
-                                                task1.Increment(rand.Next(3, 5));
-                                            }
-                                        });
-                                        ninovium = 0;
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            ProgressTask task1 = ctx.AddTask("[green]Resting to recover stability...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(3, 5));
-                                                task1.Increment(rand.Next(3, 5));
-                                            }
-                                        });
-                                        break;
-                                    case "reinsert":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            ProgressTask task1 = ctx.AddTask("[green]Reinserting...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(5, 15));
-                                                task1.Increment(rand.Next(3, 5));
-                                            }
-                                        });
-                                        break;
-                                }
-                            }
                             break;
                         case "drdhtsr":
                             if (drdhtsr == null || !drdhtsr.IsAlive)
@@ -1780,18 +1704,11 @@ namespace borktorial
                                         giftCount++;
                                     }
                                     Console.WriteLine("=== You've got mail! ===");
-                                    if (ushort.Parse(mail.sid) == (ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month) && mail.username == username)
-                                    {
-                                        Console.WriteLine("From: you");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"From: {mail.username} (sid: {mail.sid})");
-                                    }
+                                    AnsiConsole.MarkupLine($"From: {mail.username} (sid: {mail.sid})");
                                     Console.WriteLine("To: you");
                                     if (mail.command != "")
                                     {
-                                        Console.WriteLine($"Command to try out: {mail.command}");
+                                        AnsiConsole.MarkupLine($"Command to try out: {mail.command}");
                                     }
                                     if (mail.message != "")
                                     {
@@ -2368,6 +2285,7 @@ namespace borktorial
             int ht0Idx = 0;
             int lastNewsSecond = -1;
             int lastFsSaveSecond = -1;
+            double spCnChnMl = 1;
             while (true)
             {
                 try
@@ -2379,7 +2297,7 @@ namespace borktorial
                         return;
                     }
 
-                    sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
+                    sC = Math.Log10(schonite * 0.35);
                     sysstab = Math.Clamp(sC, 0.01, 50);
                     if (tick % mcl == 0)
                     {
@@ -2451,13 +2369,14 @@ namespace borktorial
                                 schonite -= Math.Clamp(rand.NextSingle() * 0.1, 0.001, 100);
                             }
                         }
-                        if (rand.Next(0, 99) == 0)
+                        if (rand.Next(0, (int)Math.Clamp(10 * spCnChnMl, 10, 30)) == 0)
                         {
                             Console.Title = $"borktorial: {splashPick()}";
                             if (rand.Next(0, 69) == 0) // 1 in 69
                             {
                                 Console.Title = $"broktorial: {splashPick()}";
                             }
+                            spCnChnMl += Math.Clamp(rand.NextDouble(), 0, 0.5);
                         }
                         if (tick % 2 == 0)
                         {
@@ -2506,13 +2425,13 @@ namespace borktorial
                 {
                     if (!specialDays.spaceDay)
                     {
-                        mSpeed += rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
-                        mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                        mSpeed += rand.Next(-mSpeed / 4, mSpeed / 4);
+                        mSpeed -= rand.Next(-mSpeed / 4, mSpeed / 4);
                     }
                     else
                     {
-                        mSpeed += rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
-                        mSpeed -= rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
+                        mSpeed += rand.Next(-(mSpeed / 5), mSpeed / 5);
+                        mSpeed -= rand.Next(-(mSpeed / 5), mSpeed / 5);
                     }
                     Thread.Sleep(rand.Next(650, 6000));
                     if (mSpeed <= 0)
@@ -2560,7 +2479,7 @@ namespace borktorial
             string cfgS = "";
             foreach (int item in cfg)
             {
-                cfgS += (";" + item.ToString("D10"));
+                cfgS += ";" + item;
             }
             cfgS = cfgS[1..];
             try
@@ -2582,7 +2501,8 @@ namespace borktorial
             cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
             cmdMail += $"{message}\x00"; // message
-            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month):D5}\x00"; // sid
+            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month + (DateTime.UtcNow.Year / 100) + strSum(username + password + aprtMain.mkShitUsername(new Random(strSum("ACGCN.TOMNOOK_REDD_SAHARAH_JOAN_RESETTI")))))}"; 
+            cmdMail += $"{(byte)rSeed & (9+rSeed * 2) ^ 13}\x00"; // sid
             cmdMail += $"{aprtMain.md5(aprtMain.str2Ba(cmdMail))}";
             return $"mail.{aprtMain.toB64(cmdMail)}";
         }
@@ -2624,7 +2544,7 @@ namespace borktorial
         }
         public static void playModemSound()
         {
-            new System.Media.SoundPlayer("assets\\modem.wav").PlaySync();
+            new SoundPlayer("assets\\modem.wav").PlaySync();
         }
         public static string splashPick()
         {
@@ -2796,7 +2716,6 @@ namespace borktorial
             jebcounter = 0;
             munCycle = 0;
             tick = 0;
-            ninovium = 1;
             schonite = 1;
             sysstab = 1;
             username = "";
