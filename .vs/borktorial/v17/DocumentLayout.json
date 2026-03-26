@@ -90,8 +90,7 @@
               "RelativeToolTip": "aperture\\version.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-23T22:13:03.592Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-23T22:13:03.592Z"
             },
             {
               "$type": "Document",
@@ -99,9 +98,9 @@
               "Title": "bktMain.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs",
               "RelativeDocumentMoniker": "borktorial\\bktMain.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs",
-              "RelativeToolTip": "borktorial\\bktMain.cs",
-              "ViewState": "AgIAAMgAAAAAAAAAAAAAANIAAAAlAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs*",
+              "RelativeToolTip": "borktorial\\bktMain.cs*",
+              "ViewState": "AgIAACsFAAAAAAAAAAAAADUFAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:18:58.133Z",
               "EditorCaption": ""
@@ -116,8 +115,7 @@
               "RelativeToolTip": "aperture\\apermain.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:50.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:50.288Z"
             },
             {
               "$type": "Document",
@@ -129,8 +127,7 @@
               "RelativeToolTip": "borktorial\\newsGen.cs",
               "ViewState": "AgIAAIMAAAAAAAAAAAAmwB4BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:54.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:54.898Z"
             },
             {
               "$type": "Document",
@@ -178,8 +175,7 @@
               "RelativeToolTip": "borktorial\\errGen.cs",
               "ViewState": "AgIAAEsBAAAAAAAAAAAqwGUBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:54.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-11T21:19:54.121Z"
             },
             {
               "$type": "Document",

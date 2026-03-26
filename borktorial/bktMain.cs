@@ -1329,6 +1329,9 @@ namespace borktorial
                             Console.WriteLine("[INT 5Fh] Link to Kerbal Space Center success!");
                             jebconnect = true;
                             break;
+                        case "whoami":
+                            Console.WriteLine($"NTUSERS\\{username}");
+                            break;
                         case "jebmail":
                             Console.WriteLine("Jebmail e-mail client connecting...");
                             if (jebconnect == true)
