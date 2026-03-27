@@ -306,36 +306,6 @@ namespace borktorial
                     throw new Exception("D", inException3);
                 }
             }
-            if (args.Length >= 1 && args[0] == "prop65")
-            {
-                int attemptsL = 0;
-                while (true)
-                {
-                    Console.WriteLine("Please enter the code you obtained from DOHASHIDOSHAI\r\n");
-                    Console.Write(">");
-                    string theCode = Console.ReadLine() ?? "";
-                    if (theCode == "HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF")
-                    {
-                        sf59("luigi");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid code");
-                        attemptsL++;
-                    }
-                    if (attemptsL == 5)
-                    {
-                        Console.WriteLine("HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF");
-                    }
-                }
-            }
-            if (args.Length >= 2 &&
-                args[0] == "Twyndyllyngs" &&
-                args[1] == "Euouae")
-            {
-                Console.WriteLine("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-                Thread.Sleep(5000);
-            }
             if (!forceNoBoot)
             {
                 if (!ballmerMode)
@@ -1226,9 +1196,6 @@ namespace borktorial
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
                                 "\r\nNote: Call 1-800-intnet for free internet");
                             break;
-                        case "dohashidoshai!":
-                            Console.WriteLine("HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF");
-                            break;
                         case "sudo":
                             if (root == true)
                             {
@@ -1324,6 +1291,16 @@ namespace borktorial
                             break;
                         case "fastcat":
                             catGoBrr(50);
+                            break;
+                        case "halton":
+                            rbt0 = true; // kill everything
+                            ulong count = 0;
+                            while (count < ulong.MaxValue)
+                            {
+                                Thread.Sleep(int.MaxValue);
+                                count++;
+                            }
+                            rbt0 = false;
                             break;
                         case "check_unknown_ints":
                             Console.WriteLine("[INT 5Fh] Link to Kerbal Space Center success!");
@@ -1545,7 +1522,6 @@ namespace borktorial
                                 string[] songs = Directory.GetFiles("assets\\customRadioSongs");
                                 rSp.SoundLocation = songs[rand.Next(songs.Length - 1)];
                             }
-                            rSp.Play();
                             break;
                         case "dumpsysstate":
                             aprtMain.dumpState<bktMain>();
