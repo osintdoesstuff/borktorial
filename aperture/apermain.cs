@@ -5,7 +5,7 @@ namespace aperture
 {
     public class aprtMain
     {
-        public static bktVersion aprtVer = new(0, 4, 4, 'a', snapshotVer.minVer);
+        public static int aprtVer = 465;
         public static int[] nrHndlr(string nrs)
         {
             nrs = nrs.Replace(">", "");

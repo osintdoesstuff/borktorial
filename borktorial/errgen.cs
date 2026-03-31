@@ -35,7 +35,7 @@ namespace borktorial
             ];
         public static readonly string[] subjects =
         [
-            "GLaDOS",
+            "GLADOS",
             "JEBEDIAH_KERMAN",
             "VAL_KERMAN",
             "DRDICKHD",

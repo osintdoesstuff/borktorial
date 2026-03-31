@@ -1,6 +1,7 @@
 ﻿using aperture;
 using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
+using NLua;
 using Spectre.Console;
 using System.Diagnostics;
 using System.Media;
@@ -22,7 +23,7 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static bktVersion bktver { get; set; } = new(1, 2, 1, 'a', snapshotVer.minVer);
+        public static int bktver { get; set; } = 1125;
 
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
@@ -202,7 +203,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
             Thread.Sleep(5000);
-            if (!bktVersion.isEqual(new bktVersion(0, 4, 4, 'a', snapshotVer.minVer), aprtMain.aprtVer))
+            if (aprtMain.aprtVer != 465)
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.4a, got {aprtMain.aprtVer}", logType.Warn);
             }
@@ -1709,7 +1710,7 @@ namespace borktorial
                             }
                             if (File.Exists(scriptName))
                             {
-                                using NLua.Lua lua = new();
+                                using Lua lua = new();
                                 lua.LoadCLRPackage();
 
                                 try
@@ -2616,7 +2617,7 @@ namespace borktorial
         }
         public static int getBuildNum()
         {
-            return bktver.GetHashCode() + aprtMain.aprtVer.GetHashCode();
+            return bktver + aprtMain.aprtVer;
         }
         public static void sttw()
         {
