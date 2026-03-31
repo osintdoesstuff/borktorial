@@ -24,11 +24,9 @@ namespace borktorial
             """;
 
         public static int bktver { get; set; } = 1125;
-
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
         public static bool forceNoBoot { get; set; } = false;
-        public static bool failIntaAlways { get; set; } = false;
         public static bool virused { get; set; } = false;
         public static bool ballmerMode { get; set; } = false;
         public static bool gordonSummoned { get; set; } = File.Exists("GORDON");
@@ -291,10 +289,6 @@ namespace borktorial
                 {
                     ballmerMode = false;
                 }
-                if (args.Length >= 2 && string.Join(' ', args).Contains("FORCEINTAFAIL"))
-                {
-                    failIntaAlways = true;
-                }
                 if (args.Length >= 2 && string.Join(' ', args).Contains("FORCEGORDON"))
                 {
                     gordonSummoned = true;
@@ -407,6 +401,7 @@ namespace borktorial
                     }
                 }
                 AnsiConsole.Markup("[green]ok![/]\r\n");
+
                 Console.WriteLine("\r\nStarting NT-DOS...\r\n");
                 Thread.Sleep(4500);
                 Console.WriteLine("NTXMEM is checking extended memory...\r\n");
@@ -496,7 +491,7 @@ namespace borktorial
                     }
                     foreach (string item in moreLines)
                     {
-                        if (item.StartsWith("[REMOVE] ")) 
+                        if (item.StartsWith("[REMOVE] "))
                         {
                             fullLines.Remove(item[9..]);
                             fullLines.Remove(item); // just to be surely sure
@@ -520,52 +515,52 @@ namespace borktorial
                     }
                 }
                 Console.Clear();
-                if (cfg[6] == 0)
+            }
+            if (cfg[6] == 0)
+            {
+                while (string.IsNullOrWhiteSpace(username))
                 {
-                    while (string.IsNullOrWhiteSpace(username))
+                    Console.Write("Username (\"<default>\" to generate one): ");
+                    username = Console.ReadLine()?.Trim() ?? "";
+                    if (username == "<default>")
                     {
-                        Console.Write("Username (\"<default>\" to generate one): ");
-                        username = Console.ReadLine()?.Trim() ?? "";
-                        if (username == "<default>")
-                        {
-                            username = aprtMain.mkShitUsername(rand);
-                        }
+                        username = aprtMain.mkShitUsername(rand);
                     }
+                }
 
-                    while (string.IsNullOrWhiteSpace(password))
-                    {
-                        Console.Write("Password: ");
-                        password = Console.ReadLine() ?? "";
-                    }
-                    if (username == "SYSTEM" && rand.Next(0, 37) == 0)
-                    {
-                        root = true;
-                    }
-                }
-                else
+                while (string.IsNullOrWhiteSpace(password))
                 {
-                    username = aprtMain.mkShitUsername(rand);
-                    password = aprtMain.genHexStr(16);
+                    Console.Write("Password: ");
+                    password = Console.ReadLine() ?? "";
                 }
-                Thread timeThread = new(() =>
+                if (username == "SYSTEM" && rand.Next(0, 37) == 0)
                 {
-                    timeLoop(cfg[0], cfg[1]);
-                });
-                timeThread.Start();
-                if (!s5a85 || specialDays.aprilfool)
-                {
-                    Thread s58858g = new(s49291);
-                    s58858g.Start();
+                    root = true;
                 }
-                Thread msVarier = new(interspeed);
-                msVarier.Start();
-                Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
-                Thread.Sleep(rand.Next(750, 1500));
-                Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
-                if (specialDays.bktDay)
-                {
-                    Console.WriteLine("Happy Borktorial Day!");
-                }
+            }
+            else
+            {
+                username = aprtMain.mkShitUsername(rand);
+                password = aprtMain.genHexStr(16);
+            }
+            Thread timeThread = new(() =>
+            {
+                timeLoop(cfg[0], cfg[1]);
+            });
+            timeThread.Start();
+            if (!s5a85 || specialDays.aprilfool)
+            {
+                Thread s58858g = new(s49291);
+                s58858g.Start();
+            }
+            Thread msVarier = new(interspeed);
+            msVarier.Start();
+            Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
+            Thread.Sleep(rand.Next(750, 1500));
+            Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
+            if (specialDays.bktDay)
+            {
+                Console.WriteLine("Happy Borktorial Day!");
             }
             // initialize news feed
             try
@@ -597,7 +592,7 @@ namespace borktorial
                     continue;
                 }
                 string[] commin = rawCommin.ToLower().Split(' ');
-                if(commin.Length > 0)
+                if (commin.Length > 0)
                 {
                     for (int i = 0; i < aliases.Count; i++)
                     {
@@ -665,7 +660,7 @@ namespace borktorial
                             Console.WriteLine("HALF-LIFE 3 CONFIRMED");
                             break;
                         case "type":
-                            if(commin.Length >= 2)
+                            if (commin.Length >= 2)
                             {
                                 (List<vFile> files, List<vDir> dirs)? wpCons = fs.getDirContents(fs.workingPath);
                                 if (wpCons == null)
@@ -673,9 +668,9 @@ namespace borktorial
                                     Console.WriteLine("Invalid path");
                                     break;
                                 }
-                                foreach(vFile f in wpCons.Value.files)
+                                foreach (vFile f in wpCons.Value.files)
                                 {
-                                    if(f.name == rawCommin.Split(' ')[1])
+                                    if (f.name == rawCommin.Split(' ')[1])
                                     {
                                         Console.WriteLine(aprtMain.ba2Str(f.contents));
                                     }
@@ -718,7 +713,6 @@ namespace borktorial
 
                             Console.WriteLine();
                             break;
-
                         case "cd":
                             if (rawCommin.Split(' ').Length < 2)
                             {
@@ -810,7 +804,7 @@ namespace borktorial
                                         cookies++;
                                         break;
                                     case "-":
-                                        if(cookies < 0)
+                                        if (cookies < 0)
                                         {
                                             AnsiConsole.MarkupLine("[red]Error[/]: CKI001: Cookies cannot be negative");
                                             break;
@@ -827,9 +821,9 @@ namespace borktorial
                                         fs.mkFileChr("\\ck.dat", cookies.ToString().ToCharArray(), [fileAttrib.Hidden]);
                                         break;
                                     case "l":
-                                        foreach(vFile item in fs.rootFiles)
+                                        foreach (vFile item in fs.rootFiles)
                                         {
-                                            if(item.name == "ck.dat")
+                                            if (item.name == "ck.dat")
                                             {
                                                 cookies = double.Parse(item.contents);
                                             }
@@ -845,7 +839,7 @@ namespace borktorial
                             Console.WriteLine();
                             Console.Write("Enter alias name: ");
                             string aliasName = Console.ReadLine() ?? "";
-                            if(aliasName.Contains(' '))
+                            if (aliasName.Contains(' '))
                             {
                                 Console.WriteLine("Invalid alias name");
                                 break;
@@ -1878,7 +1872,7 @@ namespace borktorial
                 errGen.templates[
                     new Random((int)errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[1];
-                if(i == 0)
+                if (i == 0)
                 {
                     writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
                 }
@@ -1901,13 +1895,13 @@ namespace borktorial
             for (int pct = 0; pct <= 100;)
             {
                 Console.Write($"\rPhysical memory dump: {Math.Min(pct, 100)}% complete    ");
-                if(pct > 90)
+                if (pct > 90)
                 {
                     Thread.Sleep(rand.Next(150, 200));
                 }
                 Thread.Sleep(rand.Next(50, 300));
                 pct += rand.Next(1, 8);
-                if(pct > 95 && pct < 100)
+                if (pct > 95 && pct < 100)
                 {
                     pct = 100;
                 }
@@ -1921,7 +1915,7 @@ namespace borktorial
             int rdSize = rand.Next(128, 524288);
             writeFullLine($"Memory dumped: {rdSize} KB");
             writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
-            fs.mkFile("\\WINNT\\MEMORY.DMP", aprtMain.mkRndByteArray(rdSize/8));
+            fs.mkFile("\\WINNT\\MEMORY.DMP", aprtMain.mkRndByteArray(rdSize / 8));
             impulse(5001); // save fs
             writeFullLine($"Report ID: {aprtMain.genHexStr(8, 4)}-{aprtMain.genHexStr(12, 4)}-{aprtMain.genHexStr(8, 4)}");
             writeEmptyLine();
@@ -2194,9 +2188,9 @@ namespace borktorial
                             Thread.Sleep(1500);
                             Console.WriteLine("Success. Your reward is...");
                             File.Create("GORDON").Dispose();
-                            cfg = 
-                                ['K', 'E', 'R', 'B', 'A', 'L', 
-                                'S', 'P', 'A', 'C', 'E', 
+                            cfg =
+                                ['K', 'E', 'R', 'B', 'A', 'L',
+                                'S', 'P', 'A', 'C', 'E',
                                 'C', 'E', 'N', 'T', 'E', 'R'];
                             saveCfg();
                             Console.Write("ERRORS!\r\n");
@@ -2310,7 +2304,7 @@ namespace borktorial
                         // meaning this would take roughly
                         // 3 years to reach.
                         // that's a long fucking time.
-                        if(rand.Next(0, 8) == 0) // 1 in 8 chance 
+                        if (rand.Next(0, 8) == 0) // 1 in 8 chance 
                         {
                             Console.WriteLine("Howdy! Just checking in to see if you're mentally sane " +
                                 "Judging by the fact that you've played a dumbass DOS sim for " +
@@ -2481,8 +2475,8 @@ namespace borktorial
             cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
             cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
             cmdMail += $"{message}\x00"; // message
-            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month + (DateTime.UtcNow.Year / 100) + strSum(username + password + aprtMain.mkShitUsername(new Random(strSum("ACGCN.TOMNOOK_REDD_SAHARAH_JOAN_RESETTI")))))}"; 
-            cmdMail += $"{(byte)rSeed & (9+rSeed * 2) ^ 13}\x00"; // sid
+            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month + (DateTime.UtcNow.Year / 100) + strSum(username + password + aprtMain.mkShitUsername(new Random(strSum("ACGCN.TOMNOOK_REDD_SAHARAH_JOAN_RESETTI")))))}";
+            cmdMail += $"{(byte)rSeed & (9 + rSeed * 2) ^ 13}\x00"; // sid
             cmdMail += $"{aprtMain.md5(aprtMain.str2Ba(cmdMail))}";
             return $"mail.{aprtMain.toB64(cmdMail)}";
         }
@@ -2554,7 +2548,7 @@ namespace borktorial
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             List<string> lList = [.. lines];
             lList.Remove("(c) This splash won't ever appear despite being marked as common. Isn't that weird?");
-            if(File.Exists(Path.Combine("mods", "csplash.txt")))
+            if (File.Exists(Path.Combine("mods", "csplash.txt")))
             {
                 string[] extraLines = File.ReadAllLines(Path.Combine("mods", "csplash.txt"));
                 if (extraLines.Length > 0 && extraLines[0] == "[NOSTOCKSPLASH]")
@@ -2686,7 +2680,6 @@ namespace borktorial
             jebconnect = false;
             mConnected = false;
             forceNoBoot = false;
-            failIntaAlways = false;
             mSpeed = 1800;
             crshChance = 10000;
             currNews.Clear();
@@ -2758,12 +2751,12 @@ namespace borktorial
                 DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
-            public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday && (DateTime.UtcNow.Year+DateTime.UtcNow.Month - 2009) % 5 == 0;
+            public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday && (DateTime.UtcNow.Year + DateTime.UtcNow.Month - 2009) % 5 == 0;
             public static bool sputnikDay = DateTime.UtcNow.Day == 4
                 && DateTime.UtcNow.Month == 10
                 && (DateTime.UtcNow.Year - 1957) % 10 == 0;
             public static bool spaceDay = marsDay || sputnikDay;
-            
+
 
             public static void update()
             {
