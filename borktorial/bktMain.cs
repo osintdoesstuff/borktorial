@@ -2315,6 +2315,24 @@ namespace borktorial
                             Thread.Sleep(5000);
                         }
                     }
+                    if (tick % 0xBAD1 == 0)
+                    {
+                        if (rand.Next(0, 1000) == 420)
+                        {
+                            Console.WriteLine("Oh noes! A terrible error has occurred!");
+                            Console.WriteLine("Report this code to a support person: 0x2F282E2F");
+                            AnsiConsole.MarkupLine("Occurred at: [green]BBCR[/]_403.DLL:9532");
+                            Console.WriteLine("(technical: BADSUM.CHK. Oh wait did i swap the last 2 bits? I meant BADCHK.SUM. Shit)");
+                            rbt0 = true;
+                            while (true)
+                            {
+                                Console.TreatControlCAsInput = true;
+                                Console.SetOut(TextWriter.Null);
+                                Console.SetError(TextWriter.Null);
+                                Thread.Sleep(2147);
+                            }
+                        }
+                    }
                     if (((tick * tl) / 1000) % 120 == 0)
                     {
                         shitLog.createEntry("TICKER", $"Playtime is {((tick * tl) / 1000)}s. Tick is {tick}. munCycle is {munCycle}. ht0 is {ht0}.", logType.Info);
