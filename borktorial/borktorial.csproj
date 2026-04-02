@@ -48,7 +48,6 @@
     <EmbeddedResource Include="rsrc\eula.txt" />
     <EmbeddedResource Include="rsrc\screenshot16.png" />
     <EmbeddedResource Include="rsrc\sttw.txt" />
-    <EmbeddedResource Include="rsrc\thisisabucket.7z" />
   </ItemGroup>
 
   <ItemGroup>
