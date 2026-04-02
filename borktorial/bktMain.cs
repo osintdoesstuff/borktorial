@@ -54,6 +54,7 @@ namespace borktorial
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
         public static byte cmdFErrCount { get; set; } = 0;
         public static List<string> currNews { get; set; } = [];
+        public static bool spoopMode { get; set; } = true;
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
         public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password)));
         public static string[] lines { get; } = [
@@ -186,6 +187,10 @@ namespace borktorial
             if (rand.Next(0, 69) == 0) // 1 in 69
             {
                 Console.Title = $"broktorial: {splashPick()}";
+                if (rand.Next(0, 42+File.ReadAllLines("assets\\splashes.txt").Length) == 0)
+                {
+                    spoopMode = true;
+                }
             }
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
@@ -2367,6 +2372,13 @@ namespace borktorial
                             if (rand.Next(0, 69) == 0) // 1 in 69
                             {
                                 Console.Title = $"broktorial: {splashPick()}";
+                            }
+                            if (spoopMode)
+                            {
+                                if (rand.Next(0, (int)Math.Ceiling(File.ReadAllLines("assets\\splashes.txt").Length * 2.5)) == 0)
+                                {
+                                    Console.Title = $"{username.ToUpper()} IS YOU!";
+                                }
                             }
                             spCnChnMl += Math.Clamp(rand.NextDouble(), 0, 0.5);
                         }

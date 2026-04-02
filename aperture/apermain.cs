@@ -303,14 +303,18 @@ namespace aperture
                 "Pizza", "Chicken", "Potato", "Fries", "Pancake", "Fry", "Salad",
                 "Sandwich", "Corn", "Popcorn", "Chips"
                 ];
-            string[] separators = ["", "-", "_", "", "", ""]; // some padding to make the separators more rare
-            return
-                adjectives[rand.Next(adjectives.Length - 1)] +
-                separators[rand.Next(separators.Length - 1)] +
-                adjectives[rand.Next(adjectives.Length - 1)] +
-                separators[rand.Next(separators.Length - 1)] +
-                things[rand.Next(things.Length - 1)];
+            string[] separators = ["", "-", "_", "", "", "", "", "", ""]; // some padding to make the separators more rare
+            string name = adjectives[rand.Next(adjectives.Length)] +
+                separators[rand.Next(separators.Length)] +
+                adjectives[rand.Next(adjectives.Length)] +
+                separators[rand.Next(separators.Length)] +
+                things[rand.Next(things.Length)];
+            if (rand.Next(0, 10) == 0)
+            {
+                name += rand.Next(1000, 10000); // random 4 digit value
             }
+            return name;
+        }
         /// <summary>
         /// Generate random hex strings
         /// </summary>
