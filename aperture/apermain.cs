@@ -239,7 +239,7 @@ namespace aperture
         {
             List<byte> hData = [.. data];
             hData.AddRange(str2Ba("__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
-            hData.Sort();
+            hData.Reverse();
             byte[] hashed = System.Security.Cryptography.MD5.HashData([.. hData]);
             string str = "";
             foreach (byte item in hashed)
@@ -326,6 +326,31 @@ namespace aperture
         {
             Random rand = new();
             char[] hexDigits = "0123456789ABCDEF".ToCharArray();
+            StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
+
+            for (int i = 0; i < length; i++)
+            {
+                if (gs > 0 && i > 0 && i % gs == 0)
+                {
+                    sb.Append(sep);
+                }
+
+                sb.Append(hexDigits[rand.Next(hexDigits.Length)]);
+            }
+
+            return sb.ToString();
+        }
+        /// <summary>
+        /// Generates random alphanumeric string
+        /// </summary>
+        /// <param name="length">Length</param>
+        /// <param name="gs">Group size</param>
+        /// <param name="sep">Separator character</param>
+        /// <returns>A random alphanumeric string with the params</returns>
+        public static string genAnStr(int length, int gs = 0, char sep = '-')
+        {
+            Random rand = new();
+            char[] hexDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".ToCharArray();
             StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
 
             for (int i = 0; i < length; i++)

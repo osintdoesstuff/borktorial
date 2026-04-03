@@ -1,9 +1,11 @@
 ﻿using aperture;
 using Microsoft.VisualBasic.Devices;
+using Microsoft.VisualBasic.FileIO;
 using NAudio.Wave;
 using NLua;
 using Spectre.Console;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Media;
 using System.Reflection;
 using System.Windows.Forms;
