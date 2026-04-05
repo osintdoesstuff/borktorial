@@ -5,6 +5,7 @@ using NAudio.Wave;
 using NLua;
 using Spectre.Console;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO.Compression;
 using System.Media;
 using System.Reflection;
@@ -1603,42 +1604,71 @@ namespace borktorial
                             Console.WriteLine($"{DateTime.UtcNow:R} BT:{tick}-BMC:{munCycle}");
                             break;
                         case "cmdmail":
-                            Console.WriteLine($"Current amount of paper: {giftCount}");
-                            if (giftCount == 0)
+                            try
                             {
-                                Console.WriteLine("You're all out of paper!");
-                                Console.WriteLine("To get more paper, you must use mail codes");
+                                Console.WriteLine($"Current amount of paper: {giftCount}");
+                                if (giftCount == 0)
+                                {
+                                    Console.WriteLine("You're all out of paper!");
+                                    Console.WriteLine("To get more paper, you must use mail codes");
+                                    break;
+                                }
+                                Console.Write("Command to send: ");
+                                string cmd = Console.ReadLine() ?? "";
+                                Console.Write("Message to bundle in (keep it nice!): ");
+                                string msg = Console.ReadLine() ?? "";
+                                Console.Write("Days until expiry: ");
+                                int due = 0;
+                                try
+                                {
+                                    due = int.Parse(Console.ReadLine() ?? "");
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("Invalid, defaulting to 3 days!");
+                                    due = 3;
+                                }
+                                if (cmd.Contains('\0'))
+                                {
+                                    Console.WriteLine("Error: invalid command");
+                                    break;
+                                }
+                                if (cmd == "\x01")
+                                {
+                                    Console.WriteLine("Error: invalid command");
+                                    break;
+                                }
+                                if (msg.Contains('\0'))
+                                {
+                                    Console.WriteLine("Error: invalid message");
+                                    break;
+                                }
+                                if (username.Contains('\0'))
+                                {
+                                    Console.WriteLine("Error: invalid username");
+                                    break;
+                                }
+                                if (due > 14)
+                                {
+                                    Console.WriteLine("Error: cannot last more than 14 days!");
+                                    break;
+                                }
+                                if (due < 1) 
+                                {
+                                    Console.WriteLine("Error: cannot last less than 1 day");
+                                }
+                                Console.WriteLine($"Your CommandMail(TM) code: {cmdMailEnc(cmd, msg, due)}");
+                                Console.WriteLine($"This code will expire after {due} days");
+                                Console.WriteLine("To use, simply type in the code directly into the command prompt");
+                                Console.WriteLine("Copy it so you can share it with your friends!");
+                                giftCount--;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error.");
+                                shitLog.createEntry("CMDMAIL", ex.ToString(), logType.Err);
                                 break;
                             }
-                            Console.Write("Command to send: ");
-                            string cmd = Console.ReadLine() ?? "";
-                            Console.Write("Message to bundle in (keep it nice!): ");
-                            string msg = Console.ReadLine() ?? "";
-                            if (cmd.Contains('\0'))
-                            {
-                                Console.WriteLine("Error: invalid command");
-                                break;
-                            }
-                            if (cmd == "\x01")
-                            {
-                                Console.WriteLine("Error: invalid command");
-                                break;
-                            }
-                            if (msg.Contains('\0'))
-                            {
-                                Console.WriteLine("Error: invalid message");
-                                break;
-                            }
-                            if (username.Contains('\0'))
-                            {
-                                Console.WriteLine("Error: invalid username");
-                                break;
-                            }
-                            Console.WriteLine($"Your CommandMail(TM) code: {cmdMailEnc(cmd, msg)}");
-                            Console.WriteLine("This code will expire after 3 days");
-                            Console.WriteLine("To use, simply type in the code directly into the command prompt");
-                            Console.WriteLine("Copy it so you can share it with your friends!");
-                            giftCount--;
                             break;
                         default:
                             if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
@@ -2221,7 +2251,7 @@ namespace borktorial
                     }
                     else
                     {
-                        return;
+                        keBugCheck(0xF0, new(4, 1, 2005));
                     }
                     break;
             }
@@ -2265,6 +2295,8 @@ namespace borktorial
             int lastNewsSecond = -1;
             int lastFsSaveSecond = -1;
             double spCnChnMl = 1;
+            Stopwatch ptTrck = new();
+            ptTrck.Start();
             while (true)
             {
                 try
@@ -2338,9 +2370,9 @@ namespace borktorial
                             }
                         }
                     }
-                    if (((tick * tl) / 1000) % 120 == 0)
+                    if ((int)ptTrck.Elapsed.TotalSeconds % 120 == 0)
                     {
-                        shitLog.createEntry("TICKER", $"Playtime is {((tick * tl) / 1000)}s. Tick is {tick}. munCycle is {munCycle}. ht0 is {ht0}.", logType.Info);
+                        shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F2}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle}. ht0 is {ht0}.", logType.Info);
                     }
                     if (DateTime.UtcNow.Second % cfg[2] == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
@@ -2496,9 +2528,9 @@ namespace borktorial
             }
             File.AppendAllText(cfgFn, cfgS);
         }
-        public static string cmdMailEnc(string command, string message)
+        public static string cmdMailEnc(string command, string message, int expDays)
         {
-            string cmdMail = "B\x00"; // header
+            string cmdMail = "C\x00"; // header (version C)
             cmdMail += $"{parseBorkTag(command)}\x00"; // command
             cmdMail += $"{username}\x00"; // username
             cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
@@ -2507,6 +2539,7 @@ namespace borktorial
             cmdMail += $"{message}\x00"; // message
             cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month + (DateTime.UtcNow.Year / 100) + strSum(username + password + aprtMain.mkShitUsername(new Random(strSum("ACGCN.TOMNOOK_REDD_SAHARAH_JOAN_RESETTI")))))}";
             cmdMail += $"{(byte)rSeed & (9 + rSeed * 2) ^ 13}\x00"; // sid
+            cmdMail += $"{expDays}\x00"; // expiry days
             cmdMail += $"{aprtMain.md5(aprtMain.str2Ba(cmdMail))}";
             return $"mail.{aprtMain.toB64(cmdMail)}";
         }
@@ -2526,12 +2559,12 @@ namespace borktorial
             {
                 return ("\x07", "\x07", "\x07", "0");
             }
-            if (cmdMI[0] != "B")
+            if (cmdMI[0] != "C")
             {
                 return ("\x07", "\x07", "\x07", "0");
             }
             DateTime dt = ymd2Dt(cmdMI[3]);
-            if (dt < DateTime.UtcNow.Subtract(new TimeSpan(3, 0, 0, 0)))
+            if (dt < DateTime.UtcNow.Subtract(new TimeSpan(int.Parse(cmdMI[6]), 0, 0, 0)))
             {
                 return ("\x00", "\x01", "\x02", "0");
             }
@@ -2539,8 +2572,8 @@ namespace borktorial
             {
                 return ("\x02", "\x01", "\x00", "0");
             }
-            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0";
-            if (cmdMI[6] != aprtMain.md5(aprtMain.str2Ba(crcCm)))
+            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0{cmdMI[6]}\x0";
+            if (cmdMI[7] != aprtMain.md5(aprtMain.str2Ba(crcCm)))
             {
                 return ("\x06", "\x06", "\x06", "0");
             }
