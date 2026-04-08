@@ -7,6 +7,7 @@
         public List<vFile> rootFiles = new(65536);
         public List<vDir> rootDirs = new(65536);
         public string workingPath = "\\";
+        public string serNum = "XXXX-XXXX";
 
         //=== SERIALIZATION ===
 
@@ -19,6 +20,7 @@
             using BinaryWriter bw = new(ms);
 
             bw.Write(workingPath);
+            bw.Write(serNum);
             writeFileList(bw, rootFiles);
             writeDirList(bw, rootDirs);
 
@@ -36,6 +38,7 @@
             fileSys fs = new()
             {
                 workingPath = br.ReadString(),
+                serNum = br.ReadString(),
                 rootFiles = readFileList(br),
                 rootDirs = readDirList(br)
             };

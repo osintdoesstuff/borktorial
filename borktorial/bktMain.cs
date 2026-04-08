@@ -211,7 +211,6 @@ namespace borktorial
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.4a, got {aprtMain.aprtVer}", logType.Warn);
             }
             shitLog.createEntry("BOOT", $"Random seed is 0x{rSeed:X8}", logType.Info);
-            impulse(5000);
             Stopwatch bootSw = new();
             bootSw.Start();
             Debug.WriteLine("tada!");
@@ -223,7 +222,22 @@ namespace borktorial
             {
                 rand = new Random(0x4E54);
             }
-            impulse(5000);
+            // fucking hell
+            if (!File.Exists("bktfs"))
+            {
+                impulse(5000);
+                impulse(5001);
+                impulse(5002);
+            }
+            else
+            {
+                impulse(5002);
+            }
+            if (fs.serNum == "XXXX-XXXX")
+            {
+                fs.serNum = aprtMain.genHexStr(8, 4);
+                impulse(5001);
+            }
             impulse(5001);
             impulse(5002);
             try
@@ -687,7 +701,7 @@ namespace borktorial
                             }
                             break;
                         case "dir":
-                            Console.WriteLine($"Volume Serial Number is 4594-8435");
+                            Console.WriteLine($"Volume Serial Number is {fs.serNum}");
                             Console.WriteLine($"Directory listing of C:{fs.workingPath}");
                             Console.WriteLine();
 

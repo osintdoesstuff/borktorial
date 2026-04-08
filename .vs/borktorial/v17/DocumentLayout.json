@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\bktmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\apermain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\apermain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -25,10 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\errgen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\errgen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\rsrc\\screenshot16.png||{58961B49-13E0-48C0-9258-13CBC4D40279}",
@@ -62,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -82,39 +82,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "errGen.cs",
-              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\errGen.cs",
-              "RelativeDocumentMoniker": "borktorial\\errGen.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\errGen.cs",
-              "RelativeToolTip": "borktorial\\errGen.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwAQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:19:54.121Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "filesys.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\filesys.cs",
               "RelativeDocumentMoniker": "aperture\\filesys.cs",
               "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\aperture\\filesys.cs",
               "RelativeToolTip": "aperture\\filesys.cs",
-              "ViewState": "AgIAACIBAAAAAAAAAAAmwC8BAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-30T13:32:59.604Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "borktorial.csproj",
-              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
-              "RelativeDocumentMoniker": "borktorial\\borktorial.csproj",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
-              "RelativeToolTip": "borktorial\\borktorial.csproj",
-              "ViewState": "AgIAADUAAAAAAAAAAAAAADUAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-18T06:59:25.616Z"
+              "WhenOpened": "2026-01-30T13:32:59.604Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -130,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "splashes.txt",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\assets\\splashes.txt",
               "RelativeDocumentMoniker": "borktorial\\assets\\splashes.txt",
@@ -142,12 +119,49 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "bktMain.cs",
+              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs",
+              "RelativeDocumentMoniker": "borktorial\\bktMain.cs",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs*",
+              "RelativeToolTip": "borktorial\\bktMain.cs*",
+              "ViewState": "AgIAAN4AAAAAAAAAAAAAAOkAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T21:18:58.133Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "borktorial.csproj",
+              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
+              "RelativeDocumentMoniker": "borktorial\\borktorial.csproj",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
+              "RelativeToolTip": "borktorial\\borktorial.csproj",
+              "ViewState": "AgIAADUAAAAAAAAAAAAAADUAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-18T06:59:25.616Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "errGen.cs",
+              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\errGen.cs",
+              "RelativeDocumentMoniker": "borktorial\\errGen.cs",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\errGen.cs",
+              "RelativeToolTip": "borktorial\\errGen.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T21:19:54.121Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "apermain.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\apermain.cs",
               "RelativeDocumentMoniker": "aperture\\apermain.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\aperture\\apermain.cs*",
-              "RelativeToolTip": "aperture\\apermain.cs*",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\aperture\\apermain.cs",
+              "RelativeToolTip": "aperture\\apermain.cs",
               "ViewState": "AgIAAPsAAAAAAAAAAAAmwPwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:19:50.288Z",
@@ -155,7 +169,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "newsGen.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\newsGen.cs",
               "RelativeDocumentMoniker": "borktorial\\newsGen.cs",
@@ -164,19 +178,6 @@
               "ViewState": "AgIAAIwAAAAAAAAAAAAAwJUAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:19:54.898Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "bktMain.cs",
-              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs",
-              "RelativeDocumentMoniker": "borktorial\\bktMain.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs*",
-              "RelativeToolTip": "borktorial\\bktMain.cs*",
-              "ViewState": "AgIAAD8JAAAAAAAAAAAUwEUJAABFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-11T21:18:58.133Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
