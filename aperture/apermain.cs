@@ -5,7 +5,7 @@ namespace aperture
 {
     public class aprtMain
     {
-        public static int aprtVer = 465;
+        public static int aprtVer { get; set; } = 465;
         public static int[] nrHndlr(string nrs)
         {
             nrs = nrs.Replace(">", "");
@@ -248,19 +248,6 @@ namespace aperture
             }
             List<byte> strL = [.. str2Ba(str)];
             strL.Reverse(); // i kinda wonder if it's possible to have a palindrome hash? i guess we'll never really know
-            // yes i know this is fucking weird but bear with me please
-            for (int i = 0; i < strL.Count-1; i++)
-            {
-                if (strL[i] % 2 == 0)
-                {
-                    strL[i] += 3;
-                }
-                else
-                {
-                    strL[i] -= 1;
-                }
-                strL[i] = Math.Clamp((byte)strL[i], (byte)32, (byte)126); // just in case
-            }
             str = ba2Str([.. strL]);
             return str;
         }
@@ -350,7 +337,7 @@ namespace aperture
         public static string genAnStr(int length, int gs = 0, char sep = '-')
         {
             Random rand = new();
-            char[] hexDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".ToCharArray();
+            char[] anDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".ToCharArray();
             StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
 
             for (int i = 0; i < length; i++)
@@ -360,7 +347,33 @@ namespace aperture
                     sb.Append(sep);
                 }
 
-                sb.Append(hexDigits[rand.Next(hexDigits.Length)]);
+                sb.Append(anDigits[rand.Next(anDigits.Length)]);
+            }
+
+            return sb.ToString();
+        }
+        /// <summary>
+        /// you get the idea by now. much more general purpose tho
+        /// </summary>
+        /// <param name="length">length</param>
+        /// <param name="gs">group size</param>
+        /// <param name="sep">separator</param>
+        /// <param name="key">chars</param>
+        /// <returns>random string with params</returns>
+        public static string rndStrGen(int length, int gs = 0, char sep = '-', string key = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+        {
+            Random rand = new();
+            char[] anDigits = key.ToCharArray();
+            StringBuilder sb = new(length + (gs > 0 ? length / gs : 0));
+
+            for (int i = 0; i < length; i++)
+            {
+                if (gs > 0 && i > 0 && i % gs == 0)
+                {
+                    sb.Append(sep);
+                }
+
+                sb.Append(anDigits[rand.Next(anDigits.Length)]);
             }
 
             return sb.ToString();

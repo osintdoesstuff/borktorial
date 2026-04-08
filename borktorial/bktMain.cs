@@ -205,7 +205,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
-            Thread.Sleep(5000);
+            Thread.Sleep(2750);
             if (aprtMain.aprtVer != 465)
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.4a, got {aprtMain.aprtVer}", logType.Warn);
@@ -2292,6 +2292,7 @@ namespace borktorial
             int lastNewsSecond = -1;
             int lastFsSaveSecond = -1;
             double spCnChnMl = 1;
+            double lastPtLog = -1;
             Stopwatch ptTrck = new();
             ptTrck.Start();
             while (true)
@@ -2367,9 +2368,10 @@ namespace borktorial
                             }
                         }
                     }
-                    if ((int)ptTrck.Elapsed.TotalSeconds % 120 == 0)
+                    if ((int)ptTrck.Elapsed.TotalSeconds % 120 == 0 && (int)ptTrck.Elapsed.TotalSeconds != lastPtLog)
                     {
-                        shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F2}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle}. ht0 is {ht0}.", logType.Info);
+                        shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F3}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle:F2}. ht0 is {ht0:F2}.", logType.Info);
+                        lastPtLog = (int)ptTrck.Elapsed.TotalSeconds;
                     }
                     if (DateTime.UtcNow.Second % cfg[2] == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
