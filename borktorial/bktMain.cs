@@ -2564,7 +2564,7 @@ namespace borktorial
         }
         public static string cmdMailEnc(string command, string message, int expDays)
         {
-            string cmdMail = "C\x00"; // header (version C)
+            string cmdMail = "d\x00"; // header (version D)
             cmdMail += $"{parseBorkTag(command)}\x00"; // command
             cmdMail += $"{username}\x00"; // username
             cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
@@ -2593,7 +2593,7 @@ namespace borktorial
             {
                 return ("\x07", "\x07", "\x07", "0");
             }
-            if (cmdMI[0] != "C")
+            if (cmdMI[0] != "d")
             {
                 return ("\x07", "\x07", "\x07", "0");
             }
