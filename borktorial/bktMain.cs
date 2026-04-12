@@ -54,7 +54,7 @@ namespace borktorial
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
         public static byte cmdFErrCount { get; set; } = 0;
         public static List<string> currNews { get; set; } = [];
-        public static bool spoopMode { get; set; } = true;
+        public static bool spoopMode { get; set; } = false;
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
         public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password)));
         public static double slwFact { get; set; } = 1+rand.NextDouble();
@@ -2308,6 +2308,7 @@ namespace borktorial
             int lastFsSaveSecond = -1;
             double spCnChnMl = 1;
             double lastPtLog = -1;
+            int lastSwUpSec = -1;
             Stopwatch ptTrck = new();
             ptTrck.Start();
             while (true)
@@ -2385,7 +2386,7 @@ namespace borktorial
                     }
                     if ((int)ptTrck.Elapsed.TotalSeconds % 120 == 0 && (int)ptTrck.Elapsed.TotalSeconds != lastPtLog)
                     {
-                        shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F3}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle:F2}. ht0 is {ht0:F2}.", logType.Info);
+                        shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F3}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle:F2}. ht0 is {ht0:F2}, swf is {slwFact:F2}.", logType.Info);
                         lastPtLog = (int)ptTrck.Elapsed.TotalSeconds;
                     }
                     if (DateTime.UtcNow.Second % cfg[2] == 0 &&
@@ -2450,9 +2451,24 @@ namespace borktorial
                     // note: the higher crshChance is the LOWER the chance of it crashing is
                     // due to me being horrible at coding
                     crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
-                    if (rand.Next(0, 6) == 0)
+                    if (rand.Next(0, 6) == 0 && DateTime.UtcNow.Second % 5 == 0 && DateTime.UtcNow.Second != lastSwUpSec)
                     {
-                        slwFact += Math.Log(Math.Clamp(rand.NextDouble(), 0.01, 0.5) * effectiveTick) / 100;
+                        double delta;
+
+                        if (ht0 > 1.5)
+                        {
+                            delta = -0.012 - (rand.NextDouble() * 0.018);  
+                        }
+                        else
+                        {
+                            delta = 0.0035 + (rand.NextDouble() * 0.007);
+                        }
+
+                        double timeDamp = 1.0 / (1.0 + ptTrck.Elapsed.TotalMinutes * 0.15);
+                        delta *= timeDamp;
+                        slwFact = Math.Clamp(slwFact + delta, 0.1, 15);
+
+                        lastSwUpSec = DateTime.UtcNow.Second;
                     }
                     tick++; // equivelant to i0
                 }
@@ -2776,6 +2792,7 @@ namespace borktorial
             password = "";
             root = false;
             jmtrigger = false;
+            spoopMode = false;
             slwFact = 1 + rand.NextDouble();
             specialDays.update();
         }
@@ -2785,7 +2802,13 @@ namespace borktorial
         /// <param name="time">How long to sleep for in milliseconds</param>
         public static void sleep(int time)
         {
-            Thread.Sleep(time*(int)slwFact);
+            double actTime = time * slwFact;
+            if (actTime < 1)
+            {
+                shitLog.createEntry("SLPFUNC", $"Time to sleep ended up as {actTime}. Falling back to 1ms!", logType.Warn);
+                actTime = 1;
+            }
+            Thread.Sleep((int)actTime);
         }
         public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {
