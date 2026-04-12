@@ -57,6 +57,7 @@ namespace borktorial
         public static bool spoopMode { get; set; } = true;
         public static int[] cfg { get; set; } = [15, 10000, 15, 2];
         public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password)));
+        public static double slwFact { get; set; } = 1+rand.NextDouble();
         public static string[] lines { get; } = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
@@ -180,7 +181,7 @@ namespace borktorial
         {
             if (rbt0)
             {
-                Thread.Sleep(200); // wait for everything to settle the fuck down
+                sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
             }
             Console.Title = $"borktorial: {splashPick()}";
@@ -194,7 +195,7 @@ namespace borktorial
             }
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
-            Thread.Sleep(2000);
+            sleep(2000);
             AnsiConsole.MarkupLine("8192KB [green]OK[/]");
             AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
             AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), [rgb(255,255,0)]Citrus[/] extensions");
@@ -205,7 +206,7 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
-            Thread.Sleep(2750);
+            sleep(2750);
             if (aprtMain.aprtVer != 465)
             {
                 shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.4a, got {aprtMain.aprtVer}", logType.Warn);
@@ -216,7 +217,7 @@ namespace borktorial
             Debug.WriteLine("tada!");
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
             {
-                Thread.Sleep(int.Parse(args[1]));
+                sleep(int.Parse(args[1]));
             }
             if (!s5a85)
             {
@@ -370,42 +371,42 @@ namespace borktorial
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
                 {
-                    Thread.Sleep(800);
+                    sleep(800);
                     AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
                 else
                 {
-                    Thread.Sleep(2000);
+                    sleep(2000);
                     AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
                 AnsiConsole.MarkupLine("Press [white]F11[/] to enter SETUP...");
-                Thread.Sleep(3000);
+                sleep(3000);
                 Console.Write("Primary Master...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("Landgate Xtreme ATA Drive [4096MB]\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Primary Slave...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("Pholops D.I.C.K 8x XD-ROM drive\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Master...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("None\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Slave...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("None\r\n\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Booting from FDD...");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 AnsiConsole.Markup("[red]fail[/]\r\n");
-                Thread.Sleep(rand.Next(500, 750));
+                sleep(rand.Next(500, 750));
                 Console.Write("Booting from CD-ROM...");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 AnsiConsole.Markup("[red]fail[/]\r\n");
-                Thread.Sleep(rand.Next(500, 750));
+                sleep(rand.Next(500, 750));
                 Console.Write("Booting from HDD...");
-                Thread.Sleep(rand.Next(250, 750));
+                sleep(rand.Next(250, 750));
                 if (args.Contains("__virused") || args.Contains("frmt"))
                 {
                     AnsiConsole.Markup("[red]fail[/]\r\n\r\n");
@@ -422,21 +423,21 @@ namespace borktorial
                 AnsiConsole.Markup("[green]ok![/]\r\n");
 
                 Console.WriteLine("\r\nStarting NT-DOS...\r\n");
-                Thread.Sleep(4500);
+                sleep(4500);
                 Console.WriteLine("NTXMEM is checking extended memory...\r\n");
                 if (compi.AvailablePhysicalMemory < 16777216 || !OperatingSystem.IsWindows())
                 {
                     Console.WriteLine("NT-DOS requires at least 16MB of extended memory.");
                     while (true)
                     {
-                        Thread.Sleep(int.MaxValue);
+                        sleep(int.MaxValue);
                     }
                 }
-                Thread.Sleep(1250);
+                sleep(1250);
                 if (gordonSummoned || (!s5a85 && rand.Next(1, 5) == 0))
                 {
                     Console.WriteLine("[WARN] 128 byte memory hole detected at 0x8086!");
-                    Thread.Sleep(500);
+                    sleep(500);
                     keBugCheck(0xBD31052, new(1995, 12, 31, 12, 59, 59, 999, 999));
                 }
                 int[] wrongCfg =
@@ -447,13 +448,13 @@ namespace borktorial
                 {
                     keBugCheck(0xDEADBABE, new DateTime(1956, 10, 4));
                 }
-                Thread.Sleep(1250);
+                sleep(1250);
                 if (cfg[3] == 1)
                 {
                     Console.WriteLine("CRITICAL: Cannot find NTGINA.DLL. System halted");
                     while (true)
                     {
-                        Thread.Sleep(int.MaxValue);
+                        sleep(int.MaxValue);
                     }
                 }
                 string[] loadMsgs = [
@@ -530,7 +531,7 @@ namespace borktorial
                     {
                         Console.Clear();
                         Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
-                        Thread.Sleep(rand.Next(500, 801));
+                        sleep(rand.Next(500, 801));
                     }
                 }
                 Console.Clear();
@@ -575,7 +576,7 @@ namespace borktorial
             Thread msVarier = new(interspeed);
             msVarier.Start();
             Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
-            Thread.Sleep(rand.Next(750, 1500));
+            sleep(rand.Next(750, 1500));
             Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
             if (specialDays.bktDay)
             {
@@ -645,7 +646,7 @@ namespace borktorial
                             {
                                 if (commin.Length > 1)
                                 {
-                                    Thread.Sleep(int.Parse(commin[1]));
+                                    sleep(int.Parse(commin[1]));
                                 }
                             }
                             catch
@@ -898,19 +899,19 @@ namespace borktorial
                                                     break;
                                                 case "totally_not_a_virus_trust_me_im_a_dolphin":
                                                     Console.WriteLine("Installing 253291B package...");
-                                                    Thread.Sleep(Math.Clamp((2532291 / mSpeed) * 1000, 1, int.MaxValue));
+                                                    sleep(Math.Clamp((2532291 / mSpeed) * 1000, 1, int.MaxValue));
                                                     virused = true;
                                                     Console.WriteLine("Installed!");
                                                     break;
                                                 case "tokimla82":
                                                     Console.WriteLine("Installing 645592B package...");
-                                                    Thread.Sleep(Math.Clamp((645592 / mSpeed) * 1000, 1, int.MaxValue));
+                                                    sleep(Math.Clamp((645592 / mSpeed) * 1000, 1, int.MaxValue));
                                                     Console.WriteLine("Installed!");
                                                     break;
                                                 default:
                                                     int pkgSize = rand.Next(16384, 1048576);
                                                     Console.WriteLine($"Installing {pkgSize}B package...");
-                                                    Thread.Sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
+                                                    sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
                                                     if (rand.Next(1, 256) == 255 && (!specialDays.spaceDay))
                                                     {
                                                         virused = true;
@@ -945,11 +946,11 @@ namespace borktorial
                         case "drdickhd":
                             Console.WriteLine("Dr. Dickhead is scanning for viruses...");
                             Console.WriteLine();
-                            Thread.Sleep(rand.Next(15000, 30000));
+                            sleep(rand.Next(15000, 30000));
                             if (virused == true)
                             {
                                 Console.WriteLine("Dolphin Virus detected on computer. Removing...");
-                                Thread.Sleep(rand.Next(5000, 10000));
+                                sleep(rand.Next(5000, 10000));
                                 virused = false;
                                 Console.WriteLine("Dolphin Virus removed.");
                                 break;
@@ -1016,11 +1017,11 @@ namespace borktorial
                             Console.WriteLine("Shutting down...");
                             impulse(5001);
                             rbt0 = true;
-                            Thread.Sleep(500); // make sure everything's functional
+                            sleep(500); // make sure everything's functional
                             Console.WriteLine("It is now safe to close down Borktorial");
                             while (true)
                             {
-                                Thread.Sleep(int.MaxValue);
+                                sleep(int.MaxValue);
                             }
                         case "dbg::virusedToggle":
                             virused = !virused;
@@ -1088,7 +1089,7 @@ namespace borktorial
                                     case "cmdshell":
                                         while (true)
                                         {
-                                            Thread.Sleep(int.MaxValue);
+                                            sleep(int.MaxValue);
                                         }
                                     case "drdhtsr":
                                         if (drdhtsr != null && drdhtsr.IsAlive)
@@ -1111,7 +1112,7 @@ namespace borktorial
                                         {
                                             while (true)
                                             {
-                                                Thread.Sleep(int.MaxValue);
+                                                sleep(int.MaxValue);
                                             }
                                         }
                                         else
@@ -1138,7 +1139,7 @@ namespace borktorial
                                 for (ulong i = 0; i < ulong.MaxValue; i++)
                                 {
                                     // Thou thread shalt not sleep
-                                    // Thread.Sleep(1);
+                                    // sleep(1);
                                     if (rand.Next(0, 5) == 0)
                                     {
                                         Console.Write("A");
@@ -1231,7 +1232,7 @@ namespace borktorial
                                     case "a:":
                                         Console.WriteLine("Insert diskette into drive A: to format");
                                         Console.WriteLine("Waiting for diskette...");
-                                        Thread.Sleep(rand.Next(2500, 3000));
+                                        sleep(rand.Next(2500, 3000));
                                         Console.Write("Found diskette! Format: 720KB\r\n");
                                         Console.WriteLine("Press any key to continue...");
                                         Console.ReadKey(false);
@@ -1239,16 +1240,16 @@ namespace borktorial
                                         for (int i = 0; i < 1440; i++)
                                         {
                                             Console.Write($"Sector {i:D4}/1440...");
-                                            Thread.Sleep(rand.Next(500, 1000));
+                                            sleep(rand.Next(500, 1000));
                                             Console.Write("Done\r\n");
-                                            Thread.Sleep(rand.Next(15, 50));
+                                            sleep(rand.Next(15, 50));
                                         }
                                         Console.WriteLine("Format successful. Returning to DOS");
                                         break;
                                     case "b:":
                                         Console.WriteLine("Insert diskette into drive B: to format");
                                         Console.WriteLine("Waiting for diskette...");
-                                        Thread.Sleep(rand.Next(2500, 3000));
+                                        sleep(rand.Next(2500, 3000));
                                         Console.Write("Found diskette! Format: 720KB\r\n");
                                         Console.WriteLine("Press any key to continue...");
                                         Console.ReadKey(false);
@@ -1256,9 +1257,9 @@ namespace borktorial
                                         for (int i = 0; i < 1440; i++)
                                         {
                                             Console.Write($"Sector {i:D4}/1440...");
-                                            Thread.Sleep(rand.Next(500, 1000));
+                                            sleep(rand.Next(500, 1000));
                                             Console.Write("Done\r\n");
-                                            Thread.Sleep(rand.Next(15, 50));
+                                            sleep(rand.Next(15, 50));
                                         }
                                         Console.WriteLine("Format successful. Returning to DOS");
                                         break;
@@ -1273,15 +1274,15 @@ namespace borktorial
                                                 for (int i = 0; i < 1228800; i++)
                                                 {
                                                     Console.Write($"Sector {i:D7}/1228800...");
-                                                    Thread.Sleep(rand.Next(10, 20));
+                                                    sleep(rand.Next(10, 20));
                                                     Console.Write("Done\r\n");
-                                                    Thread.Sleep(rand.Next(5, 15));
+                                                    sleep(rand.Next(5, 15));
                                                     if (i > 2880)
                                                     {
                                                         fs = new fileSys();
                                                         Console.WriteLine("[NTDOS] System error (NT_SUBSYS_EXITED)");
                                                         Console.WriteLine("Warning: OS is pretty much on life support");
-                                                        Thread.Sleep(5000);
+                                                        sleep(5000);
                                                     }
                                                 }
                                                 break;
@@ -1311,7 +1312,7 @@ namespace borktorial
                             ulong count = 0;
                             while (count < ulong.MaxValue)
                             {
-                                Thread.Sleep(int.MaxValue);
+                                sleep(int.MaxValue);
                                 count++;
                             }
                             rbt0 = false;
@@ -1367,7 +1368,7 @@ namespace borktorial
                                         break;
                                     default:
                                         Console.WriteLine("Dialing...");
-                                        Thread.Sleep(rand.Next(38400, 76800));
+                                        sleep(rand.Next(38400, 76800));
                                         Console.WriteLine("Disconncted.");
                                         break;
                                 }
@@ -1375,7 +1376,7 @@ namespace borktorial
                             break;
                         case "etherconnect":
                             Console.WriteLine("Connecting to ethernet...");
-                            Thread.Sleep(rand.Next(2000, 3000));
+                            sleep(rand.Next(2000, 3000));
                             mSpeed = 524288;
                             mConnected = true;
                             if (specialDays.spaceDay)
@@ -1388,9 +1389,9 @@ namespace borktorial
                         case "satconnect":
                             Console.Write("\r\n");
                             Console.Write("Finding optimal satellite cluster...");
-                            Thread.Sleep(rand.Next(5300, 8800));
+                            sleep(rand.Next(5300, 8800));
                             Console.Write($"Found sat group: {aprtMain.genHexStr(8, 4)}\r\n");
-                            Thread.Sleep(rand.Next(1000, 2001));
+                            sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
                             if (specialDays.spaceDay)
@@ -1490,7 +1491,7 @@ namespace borktorial
                                 {
                                     newsSizeSum += item.Length;
                                 }
-                                Thread.Sleep(rand.Next(350, 500));
+                                sleep(rand.Next(350, 500));
                                 if (mConnected)
                                 {
                                     Console.WriteLine($"Fetching news (size: {aprtMain.byteFormat((ulong)newsSizeSum)})...");
@@ -1504,14 +1505,14 @@ namespace borktorial
                                     Console.WriteLine("Please connect to the Internet.");
                                     break;
                                 }
-                                Thread.Sleep(newsSizeSum / mSpeed);
+                                sleep(newsSizeSum / mSpeed);
                                 foreach (string item in currNews)
                                 {
                                     if (!item.StartsWith("::p_"))
                                     {
                                         Console.WriteLine($"NEWS: {item}");
                                     }
-                                    Thread.Sleep(150);
+                                    sleep(150);
                                 }
                                 break;
                             }
@@ -1569,7 +1570,7 @@ namespace borktorial
                             {
                                 mCtStr = "unknown";
                             }
-                            Thread.Sleep(rand.Next(1250, 5000));
+                            sleep(rand.Next(1250, 5000));
                             if (!mConnected)
                             {
                                 Console.WriteLine("connection type: none\r\n" +
@@ -1856,7 +1857,7 @@ namespace borktorial
         {
             while (!stopTsr)
             {
-                Thread.Sleep(30000);
+                sleep(30000);
                 if (virused)
                 {
                     Console.WriteLine("ALERT! Potential virus detected. Run drdickhd now!");
@@ -1924,7 +1925,7 @@ namespace borktorial
                 {
                     writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
                 }
-                Thread.Sleep(250);
+                sleep(250);
                 writeFullLine($"***       {pName2}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
             }
             writeEmptyLine();
@@ -1945,9 +1946,9 @@ namespace borktorial
                 Console.Write($"\rPhysical memory dump: {Math.Min(pct, 100)}% complete    ");
                 if (pct > 90)
                 {
-                    Thread.Sleep(rand.Next(150, 200));
+                    sleep(rand.Next(150, 200));
                 }
-                Thread.Sleep(rand.Next(50, 300));
+                sleep(rand.Next(50, 300));
                 pct += rand.Next(1, 8);
                 if (pct > 95 && pct < 100)
                 {
@@ -1974,7 +1975,7 @@ namespace borktorial
             rbt0 = true;
             while (true)
             {
-                Thread.Sleep(int.MaxValue);
+                sleep(int.MaxValue);
             }
         }
         /// <summary>
@@ -2058,7 +2059,7 @@ namespace borktorial
                         {
                             hopium -= 0.005;
                             Console.Write(fjbjB[j]);
-                            Thread.Sleep(20);
+                            sleep(20);
                             if (hopium <= 0)
                             {
                                 throw new Exception("NO HOPIUM LEFT!!!");
@@ -2069,7 +2070,7 @@ namespace borktorial
                                 {
                                     hopium -= 0.1;
                                     Console.Write(fjbjB3[k]);
-                                    Thread.Sleep(20);
+                                    sleep(20);
                                 }
                             }
                             if ((rand.Next(0, 7) == 0) && (j == fjbjB.Length - 1))
@@ -2078,7 +2079,7 @@ namespace borktorial
                                 {
                                     hopium -= 0.05;
                                     Console.Write(fjbjB2[k]);
-                                    Thread.Sleep(20);
+                                    sleep(20);
                                 }
                             }
                         }
@@ -2112,7 +2113,7 @@ namespace borktorial
                         for (int k = 0; k < f22Raptor.Length; k++)
                         {
                             Console.Write(f22Raptor[k]);
-                            Thread.Sleep(20 + (int)(Math.Log10(f22Raptor.Length)));
+                            sleep(20 + (int)(Math.Log10(f22Raptor.Length)));
 
                         }
                         new Thread(annoy1).Start();
@@ -2229,9 +2230,9 @@ namespace borktorial
                         {
                             Console.WriteLine("CONGO RATS!!! You found The Secret!");
                             Console.WriteLine("Now processing the reward...");
-                            Thread.Sleep(500);
+                            sleep(500);
                             Console.WriteLine("Contacting bkt://do_not_look_very_hidden/secret...");
-                            Thread.Sleep(1500);
+                            sleep(1500);
                             Console.WriteLine("Success. Your reward is...");
                             File.Create("GORDON").Dispose();
                             cfg =
@@ -2241,7 +2242,7 @@ namespace borktorial
                             saveCfg();
                             Console.Write("ERRORS!\r\n");
                             Console.WriteLine("Get pranked dingus.");
-                            Thread.Sleep(1500);
+                            sleep(1500);
                             publicMain(["baboons!"]);
                         }
                     }
@@ -2258,7 +2259,7 @@ namespace borktorial
                     {
                         Console.Clear();
                         Console.WriteLine("CPU triple fault detected!");
-                        Thread.Sleep(5000);
+                        sleep(5000);
                     }
                     else
                     {
@@ -2282,7 +2283,7 @@ namespace borktorial
                 waveOut.Play();
                 while (waveOut.PlaybackState == PlaybackState.Playing)
                 {
-                    Thread.Sleep(100);
+                    sleep(100);
                 }
             }
         }
@@ -2313,7 +2314,7 @@ namespace borktorial
             {
                 try
                 {
-                    Thread.Sleep(tl);
+                    sleep(tl); // ticks are kinda-inconsistent like this and i like it!
 
                     if (rbt0)
                     {
@@ -2361,7 +2362,7 @@ namespace borktorial
                             addNews("Local person types commands in a terminal over and over for 3 years in a futile attempt to escape boredom!");
                             Console.WriteLine("Look, you're even on the news!. Check the news command.");
                             Console.WriteLine("P.S. I feel like the sim should've crashed before this message ever pops up due to a bunch of thread safety bugs");
-                            Thread.Sleep(5000);
+                            sleep(5000);
                         }
                     }
                     if (tick % 0xBAD1 == 0)
@@ -2378,7 +2379,7 @@ namespace borktorial
                                 Console.TreatControlCAsInput = true;
                                 Console.SetOut(TextWriter.Null);
                                 Console.SetError(TextWriter.Null);
-                                Thread.Sleep(2147);
+                                sleep(2147);
                             }
                         }
                     }
@@ -2449,6 +2450,10 @@ namespace borktorial
                     // note: the higher crshChance is the LOWER the chance of it crashing is
                     // due to me being horrible at coding
                     crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
+                    if (rand.Next(0, 6) == 0)
+                    {
+                        slwFact += Math.Log(Math.Clamp(rand.NextDouble(), 0.01, 0.5) * effectiveTick) / 100;
+                    }
                     tick++; // equivelant to i0
                 }
                 catch (Exception ex)
@@ -2456,7 +2461,7 @@ namespace borktorial
                     shitLog.createEntry("TICKER", ex.ToString(), logType.Err);
                     // do a nice message that hides the exception just a lil' bit! make it seem in-universe!!!
                     Console.WriteLine($"SERVICES: Service \"bktTs.dll\" crashed. Message: {ex.Message}");
-                    Thread.Sleep(250);
+                    sleep(250);
                     Console.WriteLine("SERVICES: Restarted Borktorial Ticker Service");
                     timeLoop(tl, mcl);
                 }
@@ -2482,7 +2487,7 @@ namespace borktorial
                         mSpeed += rand.Next(-(mSpeed / 5), mSpeed / 5);
                         mSpeed -= rand.Next(-(mSpeed / 5), mSpeed / 5);
                     }
-                    Thread.Sleep(rand.Next(650, 6000));
+                    sleep(rand.Next(650, 6000));
                     if (mSpeed <= 0)
                     {
                         mSpeed = 1;
@@ -2490,7 +2495,7 @@ namespace borktorial
                 }
                 else
                 {
-                    Thread.Sleep(8192);
+                    sleep(8192);
                 }
             }
         }
@@ -2502,10 +2507,10 @@ namespace borktorial
                 {
                     return;
                 }
-                Thread.Sleep(rand.Next(5000, 30000));
+                sleep(rand.Next(5000, 30000));
                 for (int i = 0; i < rand.Next(5, 50); i++)
                 {
-                    Thread.Sleep(50);
+                    sleep(50);
                     Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
                     Console.ForegroundColor = (ConsoleColor)rand.Next(0, 16);  // Random color each time
                     Console.BackgroundColor = (ConsoleColor)rand.Next(0, 16);  // Random color each time
@@ -2701,7 +2706,7 @@ namespace borktorial
             foreach (string ln in lines)
             {
                 Console.WriteLine(ln);
-                Thread.Sleep(150);
+                sleep(150);
             }
 
         }
@@ -2736,7 +2741,7 @@ namespace borktorial
 
                     Console.Write(lineToPrint);
                 }
-                Thread.Sleep(delay);
+                sleep(delay);
 
                 for (int y = 0; y < catLines.Length; y++)
                 {
@@ -2744,7 +2749,7 @@ namespace borktorial
                     Console.Write(new string(' ', consoleWidth));
                 }
             }
-            Thread.Sleep(3500);
+            sleep(3500);
             Console.Clear();
             return;
         }
@@ -2771,7 +2776,16 @@ namespace borktorial
             password = "";
             root = false;
             jmtrigger = false;
+            slwFact = 1 + rand.NextDouble();
             specialDays.update();
+        }
+        /// <summary>
+        /// Sleeps. Time in milliseconds
+        /// </summary>
+        /// <param name="time">How long to sleep for in milliseconds</param>
+        public static void sleep(int time)
+        {
+            Thread.Sleep(time*(int)slwFact);
         }
         public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {
@@ -2785,7 +2799,7 @@ namespace borktorial
             foreach (string item in frames)
             {
                 Console.WriteLine(item.Replace("\0", "\r\n"));
-                Thread.Sleep(delay);
+                sleep(delay);
                 Console.Clear();
             }
             return;
