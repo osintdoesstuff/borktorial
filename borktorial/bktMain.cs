@@ -224,23 +224,71 @@ namespace borktorial
                 rand = new Random(0x4E54);
             }
             // fucking hell
-            if (!File.Exists("bktfs"))
+            try
             {
-                impulse(5000);
+                if (!File.Exists("bktfs"))
+                {
+                    impulse(5000);
+                    impulse(5001);
+                    impulse(5002);
+                }
+                else
+                {
+                    impulse(5002);
+                }
+                if (fs.serNum == "XXXX-XXXX")
+                {
+                    fs.serNum = aprtMain.genHexStr(8, 4);
+                    impulse(5001);
+                }
+                if (fs.workingPath == "")
+                {
+                    shitLog.createEntry("BOOT", "fs may be corrupted!", logType.Warn);
+                    if (fs.serNum == "")
+                    {
+                        shitLog.createEntry("BOOT", "fs is probably corrupt, attempting recovery", logType.Warn);
+                        fs = new();
+                        impulse(5000);
+                        impulse(5001);
+                        impulse(5002);
+                    }
+                }
                 impulse(5001);
                 impulse(5002);
             }
-            else
+            catch (Exception ex)
             {
-                impulse(5002);
+                Console.WriteLine("BORKTORIAL RECOVERY\r\n");
+                Console.WriteLine($"Due to a error in loading bktfs ({ex.Message}) (more details in log), this screen has appeared!");
+                shitLog.createEntry("BKTREC", ex.ToString(), logType.Err);
+                Console.WriteLine("Press X to restore FS");
+                ConsoleKey ck = Console.ReadKey().Key;
+                if (ck == ConsoleKey.X)
+                {
+                    fs = new();
+                    impulse(5000);
+                    impulse(5001);
+                    impulse(5002);
+                    publicMain([]);
+                }
+                else
+                {
+                    Console.Write("\r\nOkay, will restart in 5...");
+                    Thread.Sleep(1000);
+                    Console.Write("4...");
+                    Thread.Sleep(1000);
+                    Console.Write("3...");
+                    Thread.Sleep(1000);
+                    Console.Write("2...");
+                    Thread.Sleep(1000);
+                    Console.Write("1...");
+                    Thread.Sleep(1000);
+                    Console.Write("0...");
+                    Thread.Sleep(500);
+                    rbt0 = true;
+                    publicMain([]); // yes i know this recurses
+                }
             }
-            if (fs.serNum == "XXXX-XXXX")
-            {
-                fs.serNum = aprtMain.genHexStr(8, 4);
-                impulse(5001);
-            }
-            impulse(5001);
-            impulse(5002);
             try
             {
                 if (File.Exists(cfgFn)) // Semicolon Separated Config
@@ -563,6 +611,9 @@ namespace borktorial
                 username = aprtMain.mkShitUsername(rand);
                 password = aprtMain.genHexStr(16);
             }
+            rSeed = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password) + $"POWERPC_AEROHYDRODYNAMICS_{rand.NextInt64()}"));
+            rand = new(rSeed);
+            shitLog.createEntry("BOOT", $"New rSeed is {rSeed}", logType.Info);
             Thread timeThread = new(() =>
             {
                 timeLoop(cfg[0], cfg[1]);
