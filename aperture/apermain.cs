@@ -226,6 +226,21 @@ namespace aperture
             }
             return [.. inter2];
         }
+        public static string ca2Str(char[] ca)
+        {
+            List<char> inter = [];
+            foreach (char item in ca)
+            {
+                inter.Add((char)item);
+            }
+            char[] inter2 = [.. inter];
+            StringBuilder sb = new(inter2.Length);
+            for (int i = 0; i < inter2.Length; i++)
+            {
+                sb.Append(inter2[i]);
+            }
+            return sb.ToString();
+        }
         public static string toB64(string norm)
         {
             return System.Convert.ToBase64String(str2Ba(norm));
@@ -238,7 +253,7 @@ namespace aperture
         public static string md5(byte[] data)
         {
             List<byte> hData = [.. data];
-            hData.AddRange(str2Ba("__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
+            hData.AddRange(str2Ba($"__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
             hData.Reverse();
             byte[] hashed = System.Security.Cryptography.MD5.HashData([.. hData]);
             string str = "";

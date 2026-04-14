@@ -2626,7 +2626,10 @@ namespace borktorial
             cmdMail += $"{(byte)rSeed & (9 + rSeed * 2) ^ 13}\x00"; // sid
             cmdMail += $"{expDays}\x00"; // expiry days
             cmdMail += $"{aprtMain.md5(aprtMain.str2Ba(cmdMail))}";
-            return $"mail.{aprtMain.toB64(cmdMail)}";
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
+            cmdMail = aprtMain.toB64(cmdMail);
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
+            return $"mail.{cmdMail}";
         }
         public static DateTime ymd2Dt(string s)
         {
@@ -2638,7 +2641,9 @@ namespace borktorial
         public static (string username, string command, string message, string sid) cmdMailDec(string cmdMail)
         {
             cmdMail = cmdMail[5..];
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
             cmdMail = aprtMain.fromB64(cmdMail);
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
             string[] cmdMI = cmdMail.Split("\x00");
             if (cmdMI.Length < 7)
             {
