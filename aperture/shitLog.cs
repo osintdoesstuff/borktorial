@@ -1,4 +1,6 @@
-﻿namespace aperture
+﻿using System.IO.Compression;
+
+namespace aperture
 {
     /// <summary>
     /// Shitlog: A shitty log
@@ -20,25 +22,35 @@
         /// <param name="doRotate">If it should rotate at all</param>
         /// <param name="csLogType">Custom log type</param>
         /// <param name="rotateDateFormat">The date format that gets used for the filename of a archive log</param>
+        /// <param name="logLogStart">If it should log the log starting</param>
         public static void createEntry(string proc,
             string descr,
             logType lt,
-            string dateFormat = "R",
+            string dateFormat = "yyyy/MM/dd HH:mm:ss.fff",
             string filename = "bktLog.txt",
             long maxSize = 1048576,
             bool doRotate = true,
             string csLogType = "",
-            string rotateDateFormat = "yyyy/MM/dd HH-mm-ss")
+            string rotateDateFormat = "yyyy.MM.dd.HH.mm.ss",
+            bool logLogStart = true)
         {
             lock (logLock)
             {
+                if (!File.Exists(filename))
+                {
+                    File.Create(filename).Dispose();
+                }
                 FileInfo logFile = new(filename);
-
+                if (logFile.Length == 0 && logLogStart)
+                {
+                    File.AppendAllText(filename, $"=== START OF LOG {filename} AT {DateTime.UtcNow.ToString(dateFormat)} ===\r\n");
+                }
                 if (logFile.Exists && logFile.Length > maxSize && doRotate == true)
                 {
                     string timestamp = DateTime.UtcNow.ToString(rotateDateFormat);
-                    string archive = $"{filename}-{timestamp}.txt";
+                    string archive = $"{timestamp}-{filename}";
                     File.Move(filename, archive);
+                    File.AppendAllText(filename, $"=== START OF LOG {filename} AT {DateTime.UtcNow.ToString(dateFormat)} ===\r\n");
                     File.AppendAllText(filename,
                         $"[{DateTime.UtcNow.ToString(dateFormat)}] info: [SHITLOG]: Get rotated idiot (into {archive}).\r\n");
                 }

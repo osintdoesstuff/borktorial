@@ -251,6 +251,8 @@ namespace borktorial
                         impulse(5000);
                         impulse(5001);
                         impulse(5002);
+                        Console.Clear();
+                        publicMain(args);
                     }
                 }
                 impulse(5001);
@@ -269,22 +271,21 @@ namespace borktorial
                     impulse(5000);
                     impulse(5001);
                     impulse(5002);
-                    publicMain([]);
+                    publicMain(args);
                 }
                 else
                 {
                     Console.Write("\r\nOkay, will restart in 5...");
                     Thread.Sleep(1000);
-                    Console.Write("4...");
+                    Console.Write("\rOkay, will restart in 4...");
                     Thread.Sleep(1000);
-                    Console.Write("3...");
+                    Console.Write("\rOkay, will restart in 3...");
                     Thread.Sleep(1000);
-                    Console.Write("2...");
+                    Console.Write("\rOkay, will restart in 2...");
                     Thread.Sleep(1000);
-                    Console.Write("1...");
-                    Thread.Sleep(1000);
-                    Console.Write("0...");
+                    Console.Write("\rOkay, will restart in 1...");
                     Thread.Sleep(500);
+                    Console.Write("\rOkay, will restart in 0...");
                     rbt0 = true;
                     publicMain([]); // yes i know this recurses
                 }
@@ -2015,7 +2016,7 @@ namespace borktorial
             int rdSize = rand.Next(128, 524288);
             writeFullLine($"Memory dumped: {rdSize} KB");
             writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
-            fs.mkFile("\\WINNT\\MEMORY.DMP", aprtMain.mkRndByteArray(rdSize / 8));
+            fs.mkFile("\\WINNT\\MEMORY.DMP", aprtMain.mkRndByteArray(rdSize / (int)(1+(rand.NextDouble()*3))));
             impulse(5001); // save fs
             writeFullLine($"Report ID: {aprtMain.genHexStr(8, 4)}-{aprtMain.genHexStr(12, 4)}-{aprtMain.genHexStr(8, 4)}");
             writeEmptyLine();
