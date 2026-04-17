@@ -1478,19 +1478,24 @@ namespace borktorial
                                     hlDay = true;
                                 }
                             }
+                            List<string> hlSongs = (List<string>)Directory.EnumerateFiles(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\");
+                            string song = hlSongs[rand.Next(hlSongs.Count)];
                             if (hlDay == true)
                             {
                                 Console.Clear();
-                                if (File.Exists(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3"))
+                                if (File.Exists(song))
                                 {
-                                    new Thread(() => mp3PlayLoop(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3"))
+                                    new Thread(() => mp3PlayLoop(song))
                                     {
                                         IsBackground = true
                                     }.Start();
                                 }
                                 else
                                 {
-                                    throw new Exception("The HL soundtrack is FREE!!! and you don't have it?");
+                                    while (true)
+                                    {
+                                        throw new Exception("The HL soundtrack is FREE!!! and you don't have it?");
+                                    }
                                 }
                                 while (true)
                                 {
