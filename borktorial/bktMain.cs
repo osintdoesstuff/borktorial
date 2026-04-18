@@ -379,7 +379,7 @@ namespace borktorial
                 bootSw.Stop();
                 if (File.Exists(Path.Combine("mods", "initmods.lua")))
                 {
-                    using NLua.Lua lua = new();
+                    using Lua lua = new();
                     lua.LoadCLRPackage();
 
                     try

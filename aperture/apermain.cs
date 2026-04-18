@@ -231,7 +231,7 @@ namespace aperture
             List<char> inter = [];
             foreach (char item in ca)
             {
-                inter.Add((char)item);
+                inter.Add(item);
             }
             char[] inter2 = [.. inter];
             StringBuilder sb = new(inter2.Length);
@@ -253,7 +253,13 @@ namespace aperture
         public static string md5(byte[] data)
         {
             List<byte> hData = [.. data];
-            hData.AddRange(str2Ba($"__bktsortedMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
+            hData.AddRange(str2Ba($"__bktMD5::why_so_salty?#lazyCrypto__a secret that is not secret at all:7B541C0441FC5507B453656F0BE2B2EBEA944A7BDB7E46E4B8E6AC75DAFFE2BFAF1310F3EDF2110146E3CDC26F7A12B702FC53264B4EDEA533857264CC8F3EB43CA3BEA4F161F6BB"));
+            hData.Reverse();
+            for (int i = 0; i < hData.Count; i++)
+            {
+                hData[i] ^= (byte)(1+i);
+            }
+            hData.AddRange(BitConverter.GetBytes(hData.Count));
             hData.Reverse();
             byte[] hashed = System.Security.Cryptography.MD5.HashData([.. hData]);
             string str = "";
@@ -264,6 +270,22 @@ namespace aperture
             List<byte> strL = [.. str2Ba(str)];
             strL.Reverse(); // i kinda wonder if it's possible to have a palindrome hash? i guess we'll never really know
             str = ba2Str([.. strL]);
+            str = str.Replace('0', '-');
+            str = str.Replace('1', '!');
+            str = str.Replace('2', '@');
+            str = str.Replace('3', '#');
+            str = str.Replace('4', '$');
+            str = str.Replace('5', '%');
+            str = str.Replace('6', '^');
+            str = str.Replace('7', '&');
+            str = str.Replace('8', '*');
+            str = str.Replace('9', '(');
+            str = str.Replace('A', ')');
+            str = str.Replace('B', ':');
+            str = str.Replace('C', ';');
+            str = str.Replace('D', '<');
+            str = str.Replace('E', '=');
+            str = str.Replace('F', '>');
             return str;
         }
         public static void dumpState<T>()
