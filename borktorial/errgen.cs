@@ -3,7 +3,7 @@ using aperture;
 
 namespace borktorial
 {
-    internal class errGen
+    public class errGen
     {
         public static readonly Random rand = new();
         public static readonly string[] templates = [

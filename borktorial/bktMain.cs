@@ -48,14 +48,12 @@ namespace borktorial
         public static fileSys fs { get; set; } = new();
         public static int giftCount { get; set; } = 5;
         public static bool rbt0 { get; set; } = false;
-        public static string cfgFn { get; set; } = "bktcfg.ssc";
         public static string username { get; set; } = "";
         public static string password { get; set; } = "";
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
         public static byte cmdFErrCount { get; set; } = 0;
         public static List<string> currNews { get; set; } = [];
         public static bool spoopMode { get; set; } = false;
-        public static int[] cfg { get; set; } = [15, 10000, 15, 2];
         public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password)));
         public static double slwFact { get; set; } = 1+rand.NextDouble();
         public static string[] lines { get; } = [
@@ -290,40 +288,6 @@ namespace borktorial
                     publicMain([]); // yes i know this recurses
                 }
             }
-            try
-            {
-                if (File.Exists(cfgFn)) // Semicolon Separated Config
-                {
-                    shitLog.createEntry("CFGLDR", $"Loading {cfgFn}...", logType.Info);
-                    string configC = File.ReadAllText(cfgFn);
-                    string[] cfgR = configC.Split(";");
-                    int[] cfgP = new int[256];
-                    int iteration = 0;
-                    foreach (string item in cfgR)
-                    {
-                        int itemI = int.Parse(item);
-                        cfgP[iteration] = itemI;
-                        iteration++;
-                    }
-                    cfg = cfgP;
-                    if (cfg[3] != getBuildNum())
-                    {
-                        shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
-                    }
-                    shitLog.createEntry("CFGLDR", "Config loading success!", logType.Info);
-                }
-                else
-                {
-                    shitLog.createEntry("CFGLDR", "No config found! Using default!", logType.Warn);
-                    forceDefaultCfg();
-                }
-            }
-            catch (Exception ex)
-            {
-                shitLog.createEntry("CFGLDR", $"Config error: {ex.Message} {ex.StackTrace}", logType.Err);
-                forceDefaultCfg();
-            }
-
             if (args.Length >= 1 && args[0] == "/waluigi")
             {
                 sf59("waluigi");
@@ -489,23 +453,7 @@ namespace borktorial
                     sleep(500);
                     keBugCheck(0xBD31052, new(1995, 12, 31, 12, 59, 59, 999, 999));
                 }
-                int[] wrongCfg =
-                                ['K', 'E', 'R', 'B', 'A', 'L',
-                                'S', 'P', 'A', 'C', 'E',
-                                'C', 'E', 'N', 'T', 'E', 'R'];
-                if (cfg == wrongCfg)
-                {
-                    keBugCheck(0xDEADBABE, new DateTime(1956, 10, 4));
-                }
                 sleep(1250);
-                if (cfg[3] == 1)
-                {
-                    Console.WriteLine("CRITICAL: Cannot find NTGINA.DLL. System halted");
-                    while (true)
-                    {
-                        sleep(int.MaxValue);
-                    }
-                }
                 string[] loadMsgs = [
                     "Processing...",
                     "Doing big math...",
@@ -574,50 +522,39 @@ namespace borktorial
                     }
                     loadMsgs = [.. fullLines];
                 }
-                if (cfg[5] == 0)
+                for (int i = 0; i < rand.Next(5, 16); i++)
                 {
-                    for (int i = 0; i < rand.Next(5, 16); i++)
-                    {
-                        Console.Clear();
-                        Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
-                        sleep(rand.Next(500, 801));
-                    }
+                    Console.Clear();
+                    Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
+                    sleep(rand.Next(500, 801));
                 }
-                Console.Clear();
             }
-            if (cfg[6] == 0)
+            Console.Clear();
+            while (string.IsNullOrWhiteSpace(username))
             {
-                while (string.IsNullOrWhiteSpace(username))
+                Console.Write("Username (\"<default>\" to generate one): ");
+                username = Console.ReadLine()?.Trim() ?? "";
+                if (username == "<default>")
                 {
-                    Console.Write("Username (\"<default>\" to generate one): ");
-                    username = Console.ReadLine()?.Trim() ?? "";
-                    if (username == "<default>")
-                    {
-                        username = aprtMain.mkShitUsername(rand);
-                    }
+                    username = aprtMain.mkShitUsername(rand);
                 }
+            }
 
-                while (string.IsNullOrWhiteSpace(password))
-                {
-                    Console.Write("Password: ");
-                    password = Console.ReadLine() ?? "";
-                }
-                if (username == "SYSTEM" && rand.Next(0, 37) == 0)
-                {
-                    root = true;
-                }
-            }
-            else
+            while (string.IsNullOrWhiteSpace(password))
             {
-                username = aprtMain.mkShitUsername(rand);
-                password = aprtMain.genHexStr(16);
+                Console.Write("Password: ");
+                password = Console.ReadLine() ?? "";
+            }
+            if (username == "SYSTEM" && rand.Next(0, 37) == 0)
+            {
+                root = true;
             }
             rSeed = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password) + $"POWERPC_AEROHYDRODYNAMICS_{rand.NextInt64()}"));
             rand = new(rSeed);
             shitLog.createEntry("BOOT", $"New rSeed is {rSeed}", logType.Info);
             Thread timeThread = new(() =>
             {
-                timeLoop(cfg[0], cfg[1]);
+                timeLoop(5, 10000);
             });
             timeThread.Start();
             if (!s5a85 || specialDays.aprilfool)
@@ -994,6 +931,13 @@ namespace borktorial
                             rbt0 = true;
                             Console.Clear();
                             publicMain(["vs", "49"]);
+                            break;
+                        case "dbg::bktcfg":
+                            List<cfgEnt> testCfg = bktCfg.parseFile("test.bkc");
+                            foreach (cfgEnt entry in testCfg)
+                            {
+                                Console.WriteLine(entry);
+                            }
                             break;
                         case "drdickhd":
                             Console.WriteLine("Dr. Dickhead is scanning for viruses...");
@@ -1461,8 +1405,6 @@ namespace borktorial
                             Console.TreatControlCAsInput = true;
                             // just like real psychadelics, it's fun for a bit
                             // and then it fucking obiliterates everything
-                            cfg[4] = 1;
-                            saveCfg();
                             while (true)
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
@@ -2292,11 +2234,6 @@ namespace borktorial
                             sleep(1500);
                             Console.WriteLine("Success. Your reward is...");
                             File.Create("GORDON").Dispose();
-                            cfg =
-                                ['K', 'E', 'R', 'B', 'A', 'L',
-                                'S', 'P', 'A', 'C', 'E',
-                                'C', 'E', 'N', 'T', 'E', 'R'];
-                            saveCfg();
                             Console.Write("ERRORS!\r\n");
                             Console.WriteLine("Get pranked dingus.");
                             sleep(1500);
@@ -2446,7 +2383,7 @@ namespace borktorial
                         shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F3}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle:F2}. ht0 is {ht0:F2}, swf is {slwFact:F2}.", logType.Info);
                         lastPtLog = (int)ptTrck.Elapsed.TotalSeconds;
                     }
-                    if (DateTime.UtcNow.Second % cfg[2] == 0 &&
+                    if (DateTime.UtcNow.Second % 15 == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
                     {
                         impulse(5001);
@@ -2600,24 +2537,6 @@ namespace borktorial
             {
                 currNews.RemoveAt(0);
             }
-        }
-        public static void saveCfg()
-        {
-            string cfgS = "";
-            foreach (int item in cfg)
-            {
-                cfgS += ";" + item;
-            }
-            cfgS = cfgS[1..];
-            try
-            {
-                File.Delete(cfgFn);
-            }
-            catch (Exception ex)
-            {
-                shitLog.createEntry("SAVECFG", $"Error: {ex.Message} {ex.StackTrace}", logType.Err);
-            }
-            File.AppendAllText(cfgFn, cfgS);
         }
         public static string cmdMailEnc(string command, string message, int expDays)
         {
@@ -2897,18 +2816,6 @@ namespace borktorial
             exp = exp.Replace("<newline>", "\r\n");
             exp = exp.Replace("<empty>", "");
             return exp;
-        }
-        public static void forceDefaultCfg()
-        {
-            cfg = new int[256];
-            cfg[0] = 15; // Tick length in ms
-            cfg[1] = 10000; // Mun cycle length in ticks
-            cfg[2] = 15; // FS save interval in seconds
-            cfg[3] = getBuildNum(); // Version
-            cfg[4] = 0; // Fail NTGINA find
-            cfg[5] = 0; // No fun pre-logon boot text
-            cfg[6] = 0; // No asking for username and password
-            saveCfg();
         }
         public static class specialDays
         {
