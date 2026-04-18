@@ -7,14 +7,13 @@
             try
             {
                 string[] tokens = line.Split(" ");
-                string name = tokens[1];
-                bktTypes type = str2Bt(tokens[0]);
-                if (tokens[2] != "=")
+                string name = tokens[0];
+                if (tokens[1] != "=")
                 {
                     throw new Exception("Config error: Invalid line");
                 }
-                object value = strV2BktV(tokens[3]);
-                return new(type, name, value);
+                int value = int.Parse(tokens[2]);
+                return new(name, value);
             }
             catch
             {
@@ -35,7 +34,7 @@
             }
             return entries;
         }
-        public static cfgEnt? getEntByName(List<cfgEnt> list, string name)
+        public static cfgEnt getEntByName(List<cfgEnt> list, string name)
         {
             foreach (cfgEnt ent in list)
             {
@@ -44,72 +43,16 @@
                     return ent;
                 }
             }
-            return null;
-        }
-        public static bool typeChk(cfgEnt ce, bktTypes type)
-        {
-            if (ce.type == type)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public static object strV2BktV(string str)
-        {
-            if (str.Contains('.'))
-            {
-                return double.Parse(str);
-            }
-            else if (str == "true" || str == "false")
-            {
-                return bool.Parse(str);
-            }
-            else
-            {
-                return int.Parse(str);
-            }
-        }
-        public static string bt2Str(bktTypes bt)
-        {
-            return bt switch
-            {
-                bktTypes.None => "void",
-                bktTypes.Int => "int",
-                bktTypes.Float => "float",
-                bktTypes.Bool => "bool",
-                _ => "unk",
-            };
-        }
-        public static bktTypes str2Bt(string str)
-        {
-            return str switch
-            {
-                "void" => bktTypes.None,
-                "int" => bktTypes.Int,
-                "float" => bktTypes.Float,
-                "bool" => bktTypes.Bool,
-                _ => throw new Exception($"Config error: Unknown type {str}"),
-            };
+            throw new Exception($"Could not find {name}");
         }
     }
-    public class cfgEnt(bktTypes type, string? name, object? value)
+    public class cfgEnt(string name, int value)
     {
-        public bktTypes type = type;
-        public string? name = name;
-        public object? value = value;
+        public string name = name;
+        public int value = value;
         public override string ToString()
         {
-            return $"{type} {name} = {value}";
+            return $"{name} = {value}";
         }
-    }
-    public enum bktTypes
-    {
-        None,
-        Int,
-        Float,
-        Bool,
     }
 }

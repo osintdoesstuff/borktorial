@@ -258,6 +258,7 @@ namespace aperture
             for (int i = 0; i < hData.Count; i++)
             {
                 hData[i] ^= (byte)(1+i);
+                hData[i] = (byte)(255 - hData[i]); // this does indeed work out to !hData[i] but for some reason != does not work on bytes
             }
             hData.AddRange(BitConverter.GetBytes(hData.Count));
             hData.Reverse();
@@ -281,8 +282,8 @@ namespace aperture
             str = str.Replace('8', '*');
             str = str.Replace('9', '(');
             str = str.Replace('A', ')');
-            str = str.Replace('B', ':');
-            str = str.Replace('C', ';');
+            str = str.Replace('B', '[');
+            str = str.Replace('C', '\"');
             str = str.Replace('D', '<');
             str = str.Replace('E', '=');
             str = str.Replace('F', '>');

@@ -41,6 +41,8 @@ namespace borktorial
         public static double munCycle { get; set; } = 0;
         public static double schonite { get; set; } = 1;
         public static double sysstab { get; set; } = 1;
+        public static List<cfgEnt> cfg { get; set; } = [];
+        public static string cfgFn { get; set; } = "config.jeb"; // Named after Jebediah Kerman obviously
         public static mConnectTypes mCt { get; set; } = mConnectTypes.Null;
         public static Random rand { get; set; } = new();
         public static Thread? drdhtsr { get; set; }
@@ -334,6 +336,35 @@ namespace borktorial
                     throw new Exception("D", inException3);
                 }
             }
+            try
+            {
+                if (File.Exists(cfgFn))
+                {
+                    cfg = bktCfg.parseFile(cfgFn);
+                }
+                else
+                {
+                    File.WriteAllText(cfgFn, 
+                        """
+                        // borktorial config
+                        tickL = 15
+                        mcl = 10000
+                        fsAsInt = 15
+                        """);
+                    cfg = bktCfg.parseFile(cfgFn);
+                }
+            }
+            catch
+            {
+                File.WriteAllText(cfgFn,
+                        """
+                        // borktorial config
+                        tickL = 15
+                        mcl = 10000
+                        fsAsInt = 15
+                        """);
+                cfg = bktCfg.parseFile(cfgFn);
+            }
             if (!forceNoBoot)
             {
                 if (!ballmerMode)
@@ -554,7 +585,7 @@ namespace borktorial
             shitLog.createEntry("BOOT", $"New rSeed is {rSeed}", logType.Info);
             Thread timeThread = new(() =>
             {
-                timeLoop(5, 10000);
+                timeLoop(bktCfg.getEntByName(cfg, "tickL").value, bktCfg.getEntByName(cfg, "mcl").value);
             });
             timeThread.Start();
             if (!s5a85 || specialDays.aprilfool)
@@ -2374,7 +2405,7 @@ namespace borktorial
                                 Console.TreatControlCAsInput = true;
                                 Console.SetOut(TextWriter.Null);
                                 Console.SetError(TextWriter.Null);
-                                sleep(2147);
+                                sleep(20100401);
                             }
                         }
                     }
@@ -2383,7 +2414,7 @@ namespace borktorial
                         shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F3}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle:F2}. ht0 is {ht0:F2}, swf is {slwFact:F2}.", logType.Info);
                         lastPtLog = (int)ptTrck.Elapsed.TotalSeconds;
                     }
-                    if (DateTime.UtcNow.Second % 15 == 0 &&
+                    if (DateTime.UtcNow.Second % bktCfg.getEntByName(cfg, "fsAsInt").value == 0 &&
                         DateTime.UtcNow.Second != lastFsSaveSecond)
                     {
                         impulse(5001);
