@@ -3,20 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\osint2\\bktDevGit2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\bktcfg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\bktcfg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\audosey.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\audosey.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\bktmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\bktmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\rsrc\\sttw.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\rsrc\\sttw.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\bktcfg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\bktcfg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\apermain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\apermain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|c:\\users\\osint2\\bktdevgit2\\aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AFEB2F96-3CFA-465F-9712-246F6B08FD35}|aperture\\aperture.csproj|solutionrelative:aperture\\filesys.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\errgen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -53,10 +61,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\rsrc\\eula.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\rsrc\\eula.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|c:\\users\\osint2\\bktdevgit2\\borktorial\\rsrc\\sttw.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{6E8C8B43-7AD7-48E1-9701-87C0CD3A9636}|borktorial\\borktorial.csproj|solutionrelative:borktorial\\rsrc\\sttw.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -87,12 +91,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "audosey.cs",
+              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\audosey.cs",
+              "RelativeDocumentMoniker": "borktorial\\audosey.cs",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\audosey.cs*",
+              "RelativeToolTip": "borktorial\\audosey.cs*",
+              "ViewState": "AgIAACkAAAAAAAAAAAAgwC0AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T12:02:27.727Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "bktCfg.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\bktCfg.cs",
               "RelativeDocumentMoniker": "aperture\\bktCfg.cs",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\aperture\\bktCfg.cs*",
-              "RelativeToolTip": "aperture\\bktCfg.cs*",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAzwAwAAAAeAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\aperture\\bktCfg.cs",
+              "RelativeToolTip": "aperture\\bktCfg.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-18T14:31:09.702Z",
               "EditorCaption": ""
@@ -105,14 +122,14 @@
               "RelativeDocumentMoniker": "borktorial\\bktMain.cs",
               "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\bktMain.cs",
               "RelativeToolTip": "borktorial\\bktMain.cs",
-              "ViewState": "AgIAAK8BAAAAAAAAAAAAAGUBAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAEIKAAAAAAAAAAAnwEsKAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-11T21:18:58.133Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "borktorial.csproj",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
               "RelativeDocumentMoniker": "borktorial\\borktorial.csproj",
@@ -124,7 +141,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "errGen.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\errGen.cs",
               "RelativeDocumentMoniker": "borktorial\\errGen.cs",
@@ -136,7 +153,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "apermain.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\apermain.cs",
               "RelativeDocumentMoniker": "aperture\\apermain.cs",
@@ -149,7 +166,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "newsGen.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\newsGen.cs",
               "RelativeDocumentMoniker": "borktorial\\newsGen.cs",
@@ -161,7 +178,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "screenshot16.png",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\rsrc\\screenshot16.png",
               "RelativeDocumentMoniker": "borktorial\\rsrc\\screenshot16.png",
@@ -172,7 +189,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "eula.txt",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\rsrc\\eula.txt",
               "RelativeDocumentMoniker": "borktorial\\rsrc\\eula.txt",
@@ -185,6 +202,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "sttw.txt",
+              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\rsrc\\sttw.txt",
+              "RelativeDocumentMoniker": "borktorial\\rsrc\\sttw.txt",
+              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\rsrc\\sttw.txt",
+              "RelativeToolTip": "borktorial\\rsrc\\sttw.txt",
+              "ViewState": "AgIAADgDAAAAAAAAAAAiwKgDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-01-26T12:46:01.832Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "filesys.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\filesys.cs",
               "RelativeDocumentMoniker": "aperture\\filesys.cs",
@@ -192,12 +222,11 @@
               "RelativeToolTip": "aperture\\filesys.cs",
               "ViewState": "AgIAAIUBAAAAAAAAAAAAwJEBAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-30T13:32:59.604Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-30T13:32:59.604Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "splashes.txt",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\assets\\splashes.txt",
               "RelativeDocumentMoniker": "borktorial\\assets\\splashes.txt",
@@ -209,7 +238,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "aperture.csproj",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj",
               "RelativeDocumentMoniker": "aperture\\aperture.csproj",
@@ -221,7 +250,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "shitLog.cs",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\aperture\\shitLog.cs",
               "RelativeDocumentMoniker": "aperture\\shitLog.cs",
@@ -234,18 +263,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "sttw.txt",
-              "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\rsrc\\sttw.txt",
-              "RelativeDocumentMoniker": "borktorial\\rsrc\\sttw.txt",
-              "ToolTip": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\rsrc\\sttw.txt",
-              "RelativeToolTip": "borktorial\\rsrc\\sttw.txt",
-              "ViewState": "AgIAADgDAAAAAAAAAAAiwKgDAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-01-26T12:46:01.832Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
               "Title": "borktorial",
               "DocumentMoniker": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
               "RelativeDocumentMoniker": "borktorial\\borktorial.csproj",

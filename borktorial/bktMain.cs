@@ -407,6 +407,7 @@ namespace borktorial
                 {
                     File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
                 }
+                audosey.initAud(16);
                 shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
                 AnsiConsole.MarkupLine($"[bold][green]Ker[/]BIOS[/] 3.14 Revision 159 (build {getBuildNum()})");
@@ -682,9 +683,10 @@ namespace borktorial
 
                             break;
                         case "quoteoftheday":
-                            string quote = lines[rand.Next(0, lines.Length)];
-                            string attr = linesAttr[rand.Next(0, linesAttr.Length)];
-                            string qsrc = linesBooks[rand.Next(0, linesBooks.Length)];
+                            Random dailyRand = new((int)DateTime.UtcNow.Date.Ticks);
+                            string quote = lines[dailyRand.Next(0, lines.Length)];
+                            string attr = linesAttr[dailyRand.Next(0, linesAttr.Length)];
+                            string qsrc = linesBooks[dailyRand.Next(0, linesBooks.Length)];
                             Console.WriteLine(quote);
                             Console.WriteLine($"\r\n{attr}, {qsrc}");
                             if (quote == lines[8])
@@ -1193,7 +1195,7 @@ namespace borktorial
                                     }
                                 }
                             }
-                            if (commin[1] == "--nonormalcyallowed" || specialDays.aprilfool)
+                            if (commin[1] == "/nonormalcyallowed" || specialDays.aprilfool)
                             {
                                 for (ulong i = 0; i < ulong.MaxValue; i++)
                                 {
@@ -1561,12 +1563,16 @@ namespace borktorial
                             {
                                 Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
                             }
-                            SoundPlayer rSp = new("assets\\rd_canyon.wav");
+                            audosey.loadAud("assets\\rd_canyon.wav", 1);
                             if (Directory.Exists("assets\\customRadioSongs"))
                             {
                                 string[] songs = Directory.GetFiles("assets\\customRadioSongs");
-                                rSp.SoundLocation = songs[rand.Next(songs.Length - 1)];
+                                if (rand.Next(0, 2) == 0)
+                                {
+                                    audosey.loadAud(songs[rand.Next(songs.Length)], 1);
+                                }
                             }
+                            audosey.play(1);
                             break;
                         case "dumpsysstate":
                             aprtMain.dumpState<bktMain>();
@@ -2627,7 +2633,9 @@ namespace borktorial
         }
         public static void playModemSound()
         {
-            new SoundPlayer("assets\\modem.wav").PlaySync();
+            audosey.loadAud("assets\\modem.wav", 0);
+            audosey.play(0, true);
+            return;
         }
         public static string splashPick()
         {
