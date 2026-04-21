@@ -1644,6 +1644,22 @@ namespace borktorial
                                 continue; // do nothing
                             }
                             break;
+                        case "book":
+                            string book = """
+                                Now it's time for a cool subject called MATH!
+
+                                2+2 = 4
+                                9+10 = 21
+                                1+9 = 10
+                                4+4 = 8
+                                22+22 = 44
+
+                                Wow, that's so cool! I want to know more!
+
+                                Now solve this: -3*log(4)/32+3
+                                """;
+                            Console.WriteLine(aprtMain.typoinator(book, 3, rand));
+                            break;
                         case "clock":
                             // NOTE: This uses the Borktorial Internal Clock.
                             // The BIC is synced with **UTC TIME**

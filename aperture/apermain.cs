@@ -332,13 +332,41 @@ namespace aperture
             string name = adjectives[rand.Next(adjectives.Length)] +
                 separators[rand.Next(separators.Length)] +
                 adjectives[rand.Next(adjectives.Length)] +
-                separators[rand.Next(separators.Length)] +
-                things[rand.Next(things.Length)];
+                separators[rand.Next(separators.Length)];
+            int newAdjCh = 2;
+            for (int i = 0; i < 2; i++)
+            {
+                if (rand.Next(0, newAdjCh) == 0)
+                {
+                    name += adjectives[rand.Next(adjectives.Length)] +
+                    separators[rand.Next(separators.Length)];
+                }
+                newAdjCh += 2;
+            }
+            name += things[rand.Next(things.Length)];
             if (rand.Next(0, 10) == 0)
             {
                 name += rand.Next(1000, 10000); // random 4 digit value
             }
             return name;
+        }
+        public static string typoinator(string og, int typoness, Random rand)
+        {
+            string[] words = og.Split(' ');
+            for (int i = 0; i < words.Length; i++)
+            {
+                words[i] = swapRand(words[i], typoness, rand);
+            }
+            return string.Join(' ', words);
+        }
+        public static string swapRand(string og, int randness, Random rand)
+        {
+            char[] chars = og.ToCharArray();
+            for (int i = 0; i < randness; i++)
+            {
+                chars[rand.Next(chars.Length)] = chars[rand.Next(chars.Length)];
+            }
+            return ca2Str(chars);
         }
         /// <summary>
         /// Generate random hex strings
