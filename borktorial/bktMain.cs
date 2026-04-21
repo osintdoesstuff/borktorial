@@ -596,6 +596,14 @@ namespace borktorial
             }
             Thread msVarier = new(interspeed);
             msVarier.Start();
+            if (!isGuilty().isGuilty)
+            {
+                makeGuilty();
+            }
+            else
+            {
+                Console.WriteLine("You really should have used shutdown!");
+            }
             Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
             sleep(rand.Next(750, 1500));
             Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
@@ -1044,6 +1052,7 @@ namespace borktorial
                             break;
                         case "shutdown":
                             Console.WriteLine("Shutting down...");
+                            clearGuilt();
                             impulse(5001);
                             rbt0 = true;
                             sleep(500); // make sure everything's functional
@@ -2845,6 +2854,41 @@ namespace borktorial
                 actTime = 1;
             }
             Thread.Sleep((int)actTime);
+        }
+        public static void makeGuilty() 
+        {
+            string guiltCon = $"{username}\0{DateTime.UtcNow.Date.ToBinary()}";
+            guiltCon = guiltCon.ToLowerInvariant();
+            fs.mkFile("\\guilt.bkt", aprtMain.str2Ba(guiltCon), [fileAttrib.Hidden]);
+            impulse(5001);
+            return;
+        }
+        public static void clearGuilt()
+        {
+            fs.delFile("\\guilt.bkt");
+            impulse(5001);
+            return;
+        }
+        public static (bool isGuilty, string un, DateTime date) isGuilty()
+        {
+            bool isGuilty = false;
+            vFile gFile = new("a", [], []);
+            foreach (vFile file in fs.rootFiles)
+            {
+                if (file.name == "guilt.bkt")
+                {
+                    isGuilty = true;
+                    gFile = file;
+                    break;
+                }
+            }
+            if (gFile.name == "a")
+            {
+                return (false, "", new());
+            }
+            string un = aprtMain.ba2Str(gFile.contents).Split('\0')[0];
+            DateTime date = DateTime.FromBinary(long.Parse(aprtMain.ba2Str(gFile.contents).Split('\0')[1]));
+            return (isGuilty, un, date);
         }
         public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {
