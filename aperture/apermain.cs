@@ -348,6 +348,10 @@ namespace aperture
             {
                 name += rand.Next(1000, 10000); // random 4 digit value
             }
+            if (rand.Next(0, 10) == 0)
+            {
+                name = typoinator(name, rand.Next(1, 3), rand);
+            }
             return name;
         }
         public static string typoinator(string og, int typoness, Random rand)
