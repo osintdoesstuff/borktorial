@@ -336,6 +336,10 @@ namespace borktorial
                     Exception inException3 = new("C", inException2);
                     throw new Exception("D", inException3);
                 }
+                if (args.Length >= 2 && string.Join(' ', args).Contains("CLEARSIG"))
+                {
+                    borkVerf.clearSig();
+                }
             }
             try
             {
