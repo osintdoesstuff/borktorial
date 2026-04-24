@@ -403,16 +403,14 @@
 
     public enum fileAttrib
     {
-        None,
-        Hidden,
-        System,
-        Readonly,
-        bktRs1,
-        bktRs2,
-        bktRs3,
-        bktRs4,
-        bktRs5,
-        bktRs6,
-        bktRs7
+        None = 0,
+        Hidden = 0b00000001,
+        System = 0b00000010,
+        Readonly = 0b00000100,
+        bktRs1 = 0b00001000,
+        bktRs2 = 0b00010000,
+        bktRs3 = 0b00100000,
+        bktRs4 = 0b01000000,
+        bktRs5 = 0b10000000,
     }
 }

@@ -663,6 +663,15 @@ namespace borktorial
                         }
                     }
                 }
+                // bad QoL hack to handle dos-like cd.. properly
+                if (commin.Length >= 1)
+                {
+                    if (commin[0] == "cd..")
+                    {
+                        rawCommin = "cd ..";
+                        commin = "cd ..".Split(' ');
+                    }
+                }
                 try
                 {
                     switch (commin[0])
@@ -970,6 +979,33 @@ namespace borktorial
                             Console.Clear();
                             publicMain(["vs", "49"]);
                             break;
+                        case "editor":
+                            if (commin.Length < 2)
+                            {
+                                Console.WriteLine("invalid params. usage editor [filename]. note: cannot edit existing files");
+                                break;
+                            }
+                            Console.WriteLine("Welcome to editor.\r\n" +
+                                "Type a line to add it in, or @exit to exit");
+                            Console.WriteLine();
+                            bool stopE = false;
+                            string fullText = "";
+                            while (!stopE)
+                            {
+                                Console.Write("> ");
+                                string inp = Console.ReadLine() ?? "";
+                                if (inp == "@exit")
+                                {
+                                    stopE = true;
+                                }
+                                else
+                                {
+                                    fullText += inp + "\r\n";
+                                }
+                            }
+                            fs.mkFile(commin[1].Replace("C:\\", "\\"), aprtMain.str2Ba(fullText), [fileAttrib.bktRs5]);
+                            Console.WriteLine("Saved.");
+                            break;
                         case "dbg::bktcfg":
                             List<cfgEnt> testCfg = bktCfg.parseFile("test.bkc");
                             foreach (cfgEnt entry in testCfg)
@@ -1225,6 +1261,7 @@ namespace borktorial
                             Console.WriteLine("  del <filename>            - Delete file");
                             Console.WriteLine("  deltree <dirname>         - Delete folder");
                             Console.WriteLine("  type <filename>           - Type file contents");
+                            Console.WriteLine("  editor <filename>         - Text editor. Does not support editing existing files");
                             Console.WriteLine("  pkgmngr install <package> - Install a package (try 'hl3', 'totally_not_a_virus_trust_me_im_a_dolphin', or 'tokimla82').");
                             Console.WriteLine("  drdickhd                  - Scan for and remove viruses.");
                             Console.WriteLine("  drdhtsr                   - Start the Dr. Dickhead TSR (background virus monitor).");
