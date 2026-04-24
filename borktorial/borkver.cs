@@ -13,7 +13,7 @@ namespace borktorial
     /// </summary>
     internal class borkVerf
     {
-        const string fn = "veribork.bkt";
+        static readonly string fn = $"VB{Environment.UserName}.bkt";
         public static byte[] sqwimbleify(byte[] data)
         {
             byte[] b64Lot = aprtMain.str2Ba(aprtMain.toB64(aprtMain.toB64(aprtMain.toB64(aprtMain.ba2Str(data)))));
@@ -31,6 +31,17 @@ namespace borktorial
             cDat += ci.OSFullName + "\0";
             cDat += ci.TotalPhysicalMemory + "\0";
             cDat += Environment.ProcessorCount + "\0";
+            cDat += ci.InstalledUICulture;
+            // just windows things(R)
+            cDat += (Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("PROCESSOR_LEVEL") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("PROCESSOR_REVISION") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("USERDOMAIN") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("USERDOMAIN_ROAMINGPROFILE") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("USERNAME") ?? "\0") + "\0";
+            cDat += (Environment.GetEnvironmentVariable("USERPROFILE") ?? "\0") + "\0";
             return cDat;
         }
         public static byte[] getSig() 
