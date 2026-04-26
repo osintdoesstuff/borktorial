@@ -4,7 +4,6 @@ using NAudio.Wave;
 using NLua;
 using Spectre.Console;
 using System.Diagnostics;
-using System.Media;
 using System.Reflection;
 using System.Windows.Forms;
 namespace borktorial
@@ -168,6 +167,7 @@ namespace borktorial
             """;
         public static List<(string cmd1, string[] cmd2)> aliases { get; set; } = [];
         public static List<(string username, string command, string message, string sid)> usedGifts = [];
+        public static bool noNtldr = false;
         public static void publicMain(string[] mArgs)
         {
             if (virused)
@@ -1478,6 +1478,7 @@ namespace borktorial
                             break;
                         case "drinkfood":
                             Console.TreatControlCAsInput = true;
+                            File.WriteAllText("GORDON", "a");
                             // just like real psychadelics, it's fun for a bit
                             // and then it fucking obiliterates everything
                             while (true)
@@ -2457,7 +2458,7 @@ namespace borktorial
                     }
                     if (tick % 0xBAD1 == 0)
                     {
-                        if (rand.Next(0, 1000) == 420)
+                        if (rand.Next(0, 1000) == 0)
                         {
                             Console.WriteLine("Oh noes! A terrible error has occurred!");
                             Console.WriteLine("Report this code to a support person: 0x2F282E2F");

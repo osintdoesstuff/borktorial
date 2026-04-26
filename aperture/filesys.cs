@@ -48,7 +48,7 @@
 
         //=== BINARY HELPERS ===
 
-        private static void writeFileList(BinaryWriter bw, List<vFile> files)
+        public static void writeFileList(BinaryWriter bw, List<vFile> files)
         {
             bw.Write(files.Count);
             foreach (vFile f in files)
@@ -64,7 +64,7 @@
             }
         }
 
-        private static void writeDirList(BinaryWriter bw, List<vDir> dirs)
+        public static void writeDirList(BinaryWriter bw, List<vDir> dirs)
         {
             bw.Write(dirs.Count);
             foreach (vDir d in dirs)
@@ -81,7 +81,7 @@
             }
         }
 
-        private static List<vFile> readFileList(BinaryReader br)
+        public static List<vFile> readFileList(BinaryReader br)
         {
             int count = br.ReadInt32();
             List<vFile> files = new(count);
@@ -102,7 +102,7 @@
             return files;
         }
 
-        private static List<vDir> readDirList(BinaryReader br)
+        public static List<vDir> readDirList(BinaryReader br)
         {
             int count = br.ReadInt32();
             List<vDir> dirs = new(count);
@@ -123,10 +123,8 @@
             return dirs;
         }
 
-        //=== PRIVATE HELPERS ===
-
         // Converts relative path to absolute
-        private string resolvePath(string path)
+        public string resolvePath(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -147,7 +145,7 @@
         }
 
         // Splits path into parts
-        private static string[] parsePath(string path)
+        public static string[] parsePath(string path)
         {
             return path.Split(['\\'], StringSplitOptions.RemoveEmptyEntries);
         }
@@ -190,7 +188,7 @@
         }
 
         // Gets parent directory contents + target name
-        private (List<vFile> files, List<vDir> dirs, string name)? getParent(string path)
+        public (List<vFile> files, List<vDir> dirs, string name)? getParent(string path)
         {
             string[] parts = parsePath(resolvePath(path));
             if (parts.Length == 0)
