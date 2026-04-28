@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "8I7z67HibUw=",
+  "dgSpecHash": "E3WuWSw4KLM=",
   "success": true,
   "projectFilePath": "C:\\Users\\osint2\\bktDevGit2\\borktorial\\borktorial.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\osint2\\.nuget\\packages\\keralua\\1.4.9\\keralua.1.4.9.nupkg.sha512",
-    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.13\\microsoft.dotnet.ilcompiler.9.0.13.nupkg.sha512",
+    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.14\\microsoft.dotnet.ilcompiler.9.0.14.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.14\\microsoft.net.illink.tasks.9.0.14.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
@@ -17,11 +17,12 @@
     "C:\\Users\\osint2\\.nuget\\packages\\naudio.winforms\\2.2.1\\naudio.winforms.2.2.1.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\naudio.winmm\\2.2.1\\naudio.winmm.2.2.1.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\nlua\\1.7.8\\nlua.1.7.8.nupkg.sha512",
-    "C:\\Users\\osint2\\.nuget\\packages\\spectre.console\\0.54.1-alpha.0.7\\spectre.console.0.54.1-alpha.0.7.nupkg.sha512",
+    "C:\\Users\\osint2\\.nuget\\packages\\spectre.console\\0.55.2\\spectre.console.0.55.2.nupkg.sha512",
+    "C:\\Users\\osint2\\.nuget\\packages\\spectre.console.ansi\\0.55.2\\spectre.console.ansi.0.55.2.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512",
     "C:\\Users\\osint2\\.nuget\\packages\\system.windows.extensions\\10.0.0-rc.2.25502.107\\system.windows.extensions.10.0.0-rc.2.25502.107.nupkg.sha512",
-    "C:\\Users\\osint2\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\9.0.13\\runtime.win-x64.microsoft.dotnet.ilcompiler.9.0.13.nupkg.sha512"
+    "C:\\Users\\osint2\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\9.0.14\\runtime.win-x64.microsoft.dotnet.ilcompiler.9.0.14.nupkg.sha512"
   ],
   "logs": []
 }

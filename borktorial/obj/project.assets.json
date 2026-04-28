@@ -85,7 +85,7 @@
           }
         }
       },
-      "Microsoft.DotNet.ILCompiler/9.0.13": {
+      "Microsoft.DotNet.ILCompiler/9.0.14": {
         "type": "package",
         "build": {
           "build/Microsoft.DotNet.ILCompiler.props": {}
@@ -268,8 +268,11 @@
           }
         }
       },
-      "Spectre.Console/0.54.1-alpha.0.7": {
+      "Spectre.Console/0.55.2": {
         "type": "package",
+        "dependencies": {
+          "Spectre.Console.Ansi": "0.55.2"
+        },
         "compile": {
           "lib/net9.0/Spectre.Console.dll": {
             "related": ".xml"
@@ -277,6 +280,19 @@
         },
         "runtime": {
           "lib/net9.0/Spectre.Console.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Spectre.Console.Ansi/0.55.2": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/Spectre.Console.Ansi.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Spectre.Console.Ansi.dll": {
             "related": ".xml"
           }
         }
@@ -433,10 +449,10 @@
         "runtimes/win10-x86/nativeassets/uap10.0/lua54.dll"
       ]
     },
-    "Microsoft.DotNet.ILCompiler/9.0.13": {
-      "sha512": "HjOJCDy5GcOzkOeQuBLgbu8nUBvoZIZ+yA8SkDbb00PLAtYlRyZyfjjyNuhj3C0k+aliAV1oUCzVXqRQFxeI8g==",
+    "Microsoft.DotNet.ILCompiler/9.0.14": {
+      "sha512": "lhAsN6MyG7tSo4qPZNHdGKqSFjU0re4vqoJdjRu6MFYxNbroAUzrEc7lTLm5Dh/H5mqucdAs4ADJHZII4GxgGQ==",
       "type": "package",
-      "path": "microsoft.dotnet.ilcompiler/9.0.13",
+      "path": "microsoft.dotnet.ilcompiler/9.0.14",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -455,7 +471,7 @@
         "build/NativeAOT.natvis",
         "build/WindowsAPIs.txt",
         "build/findvcvarsall.bat",
-        "microsoft.dotnet.ilcompiler.9.0.13.nupkg.sha512",
+        "microsoft.dotnet.ilcompiler.9.0.14.nupkg.sha512",
         "microsoft.dotnet.ilcompiler.nuspec",
         "runtime.json",
         "tools/netstandard/ILCompiler.Build.Tasks.deps.json",
@@ -726,10 +742,10 @@
         "nlua.nuspec"
       ]
     },
-    "Spectre.Console/0.54.1-alpha.0.7": {
-      "sha512": "MU45KyTK88EZ+ZXg4CRf41ElPUorymmtR5Eay/HFocxxlMjWIr/kd66aFy1/xeOCHMgxen8Q5uj5LQN6K6TjVw==",
+    "Spectre.Console/0.55.2": {
+      "sha512": "yc0g12YJpmZHofGJLTQX02/uqfzJ6XHRx6pe9rANNjleQptXMHPxD9KI2/DWkXiJWddc+4oizEdGox15c89hhw==",
       "type": "package",
-      "path": "spectre.console/0.54.1-alpha.0.7",
+      "path": "spectre.console/0.55.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -743,8 +759,29 @@
         "lib/netstandard2.0/Spectre.Console.dll",
         "lib/netstandard2.0/Spectre.Console.xml",
         "logo.png",
-        "spectre.console.0.54.1-alpha.0.7.nupkg.sha512",
+        "spectre.console.0.55.2.nupkg.sha512",
         "spectre.console.nuspec"
+      ]
+    },
+    "Spectre.Console.Ansi/0.55.2": {
+      "sha512": "tN3KEJQQZwLW9HJnG5YTSAxfBwxsmg1wVuGvhGG2rM+pbl+NGaHU8pDcNofPlOXlgpkbpBMxI5t9o9qPfy3sHQ==",
+      "type": "package",
+      "path": "spectre.console.ansi/0.55.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net10.0/Spectre.Console.Ansi.dll",
+        "lib/net10.0/Spectre.Console.Ansi.xml",
+        "lib/net8.0/Spectre.Console.Ansi.dll",
+        "lib/net8.0/Spectre.Console.Ansi.xml",
+        "lib/net9.0/Spectre.Console.Ansi.dll",
+        "lib/net9.0/Spectre.Console.Ansi.xml",
+        "lib/netstandard2.0/Spectre.Console.Ansi.dll",
+        "lib/netstandard2.0/Spectre.Console.Ansi.xml",
+        "logo.png",
+        "spectre.console.ansi.0.55.2.nupkg.sha512",
+        "spectre.console.ansi.nuspec"
       ]
     },
     "System.Security.AccessControl/4.7.0": {
@@ -882,11 +919,11 @@
   },
   "projectFileDependencyGroups": {
     "net9.0-windows7.0": [
-      "Microsoft.DotNet.ILCompiler >= 9.0.13",
+      "Microsoft.DotNet.ILCompiler >= 9.0.14",
       "Microsoft.NET.ILLink.Tasks >= 9.0.14",
       "NAudio >= 2.2.1",
       "NLua >= 1.7.8",
-      "Spectre.Console >= 0.54.1-alpha.0.7",
+      "Spectre.Console >= 0.55.2",
       "System.Windows.Extensions >= 10.0.0-rc.2.25502.107",
       "aperture >= 1.0.0"
     ]
@@ -948,7 +985,7 @@
           "Microsoft.DotNet.ILCompiler": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.13, )",
+            "version": "[9.0.14, )",
             "autoReferenced": true
           },
           "Microsoft.NET.ILLink.Tasks": {
@@ -967,7 +1004,7 @@
           },
           "Spectre.Console": {
             "target": "Package",
-            "version": "[0.54.1-alpha.0.7, )"
+            "version": "[0.55.2, )"
           },
           "System.Windows.Extensions": {
             "target": "Package",
@@ -988,7 +1025,7 @@
         "downloadDependencies": [
           {
             "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
-            "version": "[9.0.13, 9.0.13]"
+            "version": "[9.0.14, 9.0.14]"
           }
         ],
         "frameworkReferences": {

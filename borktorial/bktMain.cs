@@ -22,7 +22,7 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static int bktver { get; set; } = 1125;
+        public static int bktver { get; set; } = 1128;
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
         public static bool forceNoBoot { get; set; } = false;
@@ -586,7 +586,7 @@ namespace borktorial
             {
                 root = true;
             }
-            rSeed = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password) + $"POWERPC_AEROHYDRODYNAMICS_{rand.NextInt64()}"));
+            rSeed = (int)(DateTime.UtcNow.Date.Ticks + strSum(aprtMain.nookEnc(username, password) + $"POWERPC_AEROHYDRODYNAMICS_X86_CSHARPISBTR"));
             rand = new(rSeed);
             shitLog.createEntry("BOOT", $"New rSeed is {rSeed}", logType.Info);
             Thread timeThread = new(() =>
@@ -1334,6 +1334,7 @@ namespace borktorial
                                         }
                                         Console.WriteLine("Format successful. Returning to DOS");
                                         break;
+                                    // this comment is on line 1337 of bktMain.cs
                                     case "c:":
                                         Console.WriteLine("WARNING! All data on non-removable disk C: will be erased!");
                                         Console.WriteLine("Are you sure you wanna continue (Y/N)? ");
@@ -1524,6 +1525,14 @@ namespace borktorial
                             {
                                 Console.WriteLine($"cannot find: {commin[0]}");
                             }
+                            break;
+                        case "rolld20x20":
+                            Console.WriteLine();
+                            for (int i = 0; i < 20; i++)
+                            {
+                                Console.Write(rand.Next(1, 21)); // 1 to 20 because upper bound is exclusive
+                            }
+                            Console.WriteLine();
                             break;
                         case "lgr":
                             Console.ForegroundColor = ConsoleColor.Green;
