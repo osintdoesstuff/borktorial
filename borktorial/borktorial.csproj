@@ -10,6 +10,8 @@
 	  <!-- Optional, trims unused code -->
 	  <InvariantGlobalization>true</InvariantGlobalization>
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	  <ApplicationIcon>bktico-hi.ico</ApplicationIcon>
+	  <Platforms>AnyCPU;x64</Platforms>
 	  <!-- Optional, smaller binary -->
   </PropertyGroup>
 
@@ -18,7 +20,17 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Optimize>True</Optimize>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebugType>portable</DebugType>
     <Optimize>True</Optimize>
   </PropertyGroup>
@@ -29,19 +41,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="rsrc\modem.wav" />
-    <EmbeddedResource Include="rsrc\rd_canyon.wav" />
-    <EmbeddedResource Include="rsrc\splashes.txt" />
+    <Content Include="bktico-hi.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="rsrc\eula.txt" />
     <EmbeddedResource Include="rsrc\screenshot16.png" />
     <EmbeddedResource Include="rsrc\sttw.txt" />
-    <EmbeddedResource Include="rsrc\thisisabucket.7z" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NLua" Version="1.7.8" />
-    <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.7" />
+    <PackageReference Include="Spectre.Console" Version="0.55.2" />
     <PackageReference Include="System.Windows.Extensions" Version="10.0.0-rc.2.25502.107" />
   </ItemGroup>
 
@@ -51,5 +63,17 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\modem.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\rd_canyon.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\splashes.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

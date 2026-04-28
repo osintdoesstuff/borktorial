@@ -6,7 +6,7 @@ namespace borktorial
     {
         public static readonly Random rand = new();
         public static readonly string[] templates = [
-            "<company> announced <product> today, expected to ship Q<nr1-4> <nr1995-1999>.",
+            "<company> announced <product> today, expected to ship Q<nr1-4> <nr1996-1999>.",
             "<company> stock fell <nr5-40>% following <scandal>.",
             "<product> version <nr1-9>.<nr0-99> released with <feature> support.",
             "<company> acquires <competitor> for $<nr50-999> million.",
@@ -32,7 +32,10 @@ namespace borktorial
             "Service pack <nr1-4> for <product> fixes <nr20-150> known issues.",
             "<event> attendance hits record <nr5000-50000>, <product> demos dominate floor.",
             "Florida <mw> throws baby alligator into <v_102>",
-            "Pet <wpet>. Dangerous fad or juicy new market?"
+            "Pet <wpet>. Dangerous fad or juicy new market?",
+            "\"We are approaching <product>...\" - <company> in a NET SEND message",
+            "\"We are approaching <competitor_product>...\" - <competitor> in a NET SEND message",
+            "Strange fad has parents naming children things such as \"emma.cs\" and \"john.cs\". At least one \"babyAbstract.cs\" has been reported"
                 ];
 
         public static readonly string[] companies = [
@@ -52,7 +55,8 @@ namespace borktorial
             "Sun Microsystems",
             "Borland",
             "Lotus",
-            "Netscape"
+            "Netscape",
+            "Nintendo"
                 ];
 
         public static readonly string[] products = [
@@ -69,7 +73,8 @@ namespace borktorial
             "RIVA TNT2",
             "Half-Life",
             "StarCraft",
-            "RedHat Linux 6.0"
+            "RedHat Linux 6.0",
+            "Ultra 64"
                 ];
 
         public static readonly string[] competitors = [
@@ -78,7 +83,8 @@ namespace borktorial
             "VIA",
             "Trident",
             "Rendition",
-            "Number Nine"
+            "Number Nine",
+            "SEGA"
                 ];
 
         public static readonly string[] competitor_products = [
@@ -87,7 +93,8 @@ namespace borktorial
             "TNT",
             "Voodoo 2",
             "Pentium II",
-            "K6-2"
+            "K6-2",
+            "Saturn"
                 ];
 
         public static readonly string[] persons = [
@@ -128,7 +135,9 @@ namespace borktorial
             "OpenGL 1.2",
             "Direct3D 6",
             "EAX audio",
-            "USB"
+            "USB",
+            "SIMD extensions",
+            "PowerPC support"
                 ];
 
         public static readonly string[] technologies = [
@@ -137,7 +146,8 @@ namespace borktorial
             "FireWire",
             "DDR RAM",
             "DVD-ROM",
-            "UDMA/66"
+            "UDMA/66",
+            "PowerPC"
                 ];
 
         public static readonly string[] tech = [
@@ -145,7 +155,8 @@ namespace borktorial
             "ISA",
             "EDO RAM",
             "CD-ROM",
-            "IDE"
+            "IDE",
+            "x86"
                 ];
 
         public static readonly string[] events = [
@@ -153,7 +164,8 @@ namespace borktorial
             "E3",
             "CES",
             "WinHEC",
-            "LinuxWorld"
+            "LinuxWorld",
+            "Macworld"
                 ];
 
         public static readonly string[] industries = [
@@ -228,7 +240,7 @@ namespace borktorial
             "Pending",
             "Explained"
                 ];
-        public static readonly string[] mcmobsH = 
+        public static readonly string[] mcmobsH =
             [
             "zombie",
             "creeper",
@@ -237,7 +249,7 @@ namespace borktorial
             "witch"
             ];
 
-        public static string Generate()
+        public static string generateNws()
         {
             string gNe = templates[rand.Next(templates.Length)];
 
@@ -280,20 +292,24 @@ namespace borktorial
             gNe = gNe.Replace("<hostile>", mcmobsH[rand.Next(mcmobsH.Length)]);
 
             // Process number ranges
-            gNe = bktStf.pNrH(gNe, rand);
+            gNe = aprtMain.pNrH(gNe, rand);
 
             return gNe;
         }
         public static string bbsNameGen()
         {
 
-            string[] bbs_adjectives = ["Silicon", "Digital", "Cyber", "Neon", "Electric", "Data"];
-            string[] bbs_nouns = ["Dreams", "Dungeon", "Zone", "Haven", "Cafe", "Nexus"];
-            string[] bbs_prefixes = ["The ", ""];
+            string[] bbs_adjectives = ["Silicon", "Digital", "Cyber", "Neon", "Electric", "Data",
+            "Computing", "System", "Dingus"];
+            string[] bbs_nouns = ["Dream", "Dungeon", "Zone", "Haven", "Cafe", "Nexus",
+            "Place", "Area", "Group", "Board"];
+            string[] bbs_seps = [" ", ""];
+            string[] bbs_prefixes = ["The ", "A ", ""];
 
             // Generate:
             string bbsName = bbs_prefixes[rand.Next(bbs_prefixes.Length)] +
-                             bbs_adjectives[rand.Next(bbs_adjectives.Length)] + " " +
+                             bbs_adjectives[rand.Next(bbs_adjectives.Length)] +
+                             bbs_seps[rand.Next(bbs_seps.Length)] +
                              bbs_nouns[rand.Next(bbs_nouns.Length)];
             return bbsName;
         }

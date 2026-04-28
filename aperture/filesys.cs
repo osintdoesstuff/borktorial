@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace aperture
+﻿namespace aperture
 {
     // this is AI slop code but it WORKS
 
@@ -9,20 +7,22 @@ namespace aperture
         public List<vFile> rootFiles = new(65536);
         public List<vDir> rootDirs = new(65536);
         public string workingPath = "\\";
+        public string serNum = "XXXX-XXXX";
 
         //=== SERIALIZATION ===
 
         /// <summary>
         /// Serialize to binary blob
         /// </summary>
-        public byte[] ToBinary()
+        public byte[] toBinary()
         {
-            using var ms = new MemoryStream();
-            using var bw = new BinaryWriter(ms);
+            using MemoryStream ms = new();
+            using BinaryWriter bw = new(ms);
 
             bw.Write(workingPath);
-            WriteFileList(bw, rootFiles);
-            WriteDirList(bw, rootDirs);
+            bw.Write(serNum);
+            writeFileList(bw, rootFiles);
+            writeDirList(bw, rootDirs);
 
             return ms.ToArray();
         }
@@ -30,109 +30,135 @@ namespace aperture
         /// <summary>
         /// Load from binary blob
         /// </summary>
-        public static fileSys FromBinary(byte[] data)
+        public static fileSys fromBinary(byte[] data)
         {
-            using var ms = new MemoryStream(data);
-            using var br = new BinaryReader(ms);
+            using MemoryStream ms = new(data);
+            using BinaryReader br = new(ms);
 
-            var fs = new fileSys();
-            fs.workingPath = br.ReadString();
-            fs.rootFiles = ReadFileList(br);
-            fs.rootDirs = ReadDirList(br);
+            fileSys fs = new()
+            {
+                workingPath = br.ReadString(),
+                serNum = br.ReadString(),
+                rootFiles = readFileList(br),
+                rootDirs = readDirList(br)
+            };
 
             return fs;
         }
 
         //=== BINARY HELPERS ===
 
-        private static void WriteFileList(BinaryWriter bw, List<vFile> files)
+        public static void writeFileList(BinaryWriter bw, List<vFile> files)
         {
             bw.Write(files.Count);
-            foreach (var f in files)
+            foreach (vFile f in files)
             {
                 bw.Write(f.name);
                 bw.Write(f.contents.Length);
                 bw.Write(f.contents);
                 bw.Write(f.attribs.Length);
-                foreach (var a in f.attribs)
+                foreach (fileAttrib a in f.attribs)
+                {
                     bw.Write((int)a);
+                }
             }
         }
 
-        private static void WriteDirList(BinaryWriter bw, List<vDir> dirs)
+        public static void writeDirList(BinaryWriter bw, List<vDir> dirs)
         {
             bw.Write(dirs.Count);
-            foreach (var d in dirs)
+            foreach (vDir d in dirs)
             {
                 bw.Write(d.name);
                 bw.Write(d.attribs.Length);
-                foreach (var a in d.attribs)
+                foreach (fileAttrib a in d.attribs)
+                {
                     bw.Write((int)a);
-                WriteFileList(bw, d.files);
-                WriteDirList(bw, d.subDirs);  // recursive
+                }
+
+                writeFileList(bw, d.files);
+                writeDirList(bw, d.subDirs);  // recursive
             }
         }
 
-        private static List<vFile> ReadFileList(BinaryReader br)
+        public static List<vFile> readFileList(BinaryReader br)
         {
             int count = br.ReadInt32();
-            var files = new List<vFile>(count);
+            List<vFile> files = new(count);
             for (int i = 0; i < count; i++)
             {
                 string name = br.ReadString();
                 int contentLen = br.ReadInt32();
                 byte[] contents = br.ReadBytes(contentLen);
                 int attrLen = br.ReadInt32();
-                var attribs = new attrib[attrLen];
+                fileAttrib[] attribs = new fileAttrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
-                    attribs[j] = (attrib)br.ReadInt32();
+                {
+                    attribs[j] = (fileAttrib)br.ReadInt32();
+                }
+
                 files.Add(new vFile(name, contents, attribs));
             }
             return files;
         }
 
-        private static List<vDir> ReadDirList(BinaryReader br)
+        public static List<vDir> readDirList(BinaryReader br)
         {
             int count = br.ReadInt32();
-            var dirs = new List<vDir>(count);
+            List<vDir> dirs = new(count);
             for (int i = 0; i < count; i++)
             {
                 string name = br.ReadString();
                 int attrLen = br.ReadInt32();
-                var attribs = new attrib[attrLen];
+                fileAttrib[] attribs = new fileAttrib[attrLen];
                 for (int j = 0; j < attrLen; j++)
-                    attribs[j] = (attrib)br.ReadInt32();
-                var files = ReadFileList(br);
-                var subDirs = ReadDirList(br);  // recursive
+                {
+                    attribs[j] = (fileAttrib)br.ReadInt32();
+                }
+
+                List<vFile> files = readFileList(br);
+                List<vDir> subDirs = readDirList(br);  // recursive
                 dirs.Add(new vDir(name, files, subDirs, attribs));
             }
             return dirs;
         }
 
-        //=== PRIVATE HELPERS ===
-
         // Converts relative path to absolute
-        private string ResolvePath(string path)
+        public string resolvePath(string path)
         {
-            if (string.IsNullOrEmpty(path)) return workingPath;
-            if (path.StartsWith("\\")) return path;
-            if (workingPath == "\\") return "\\" + path;
+            if (string.IsNullOrEmpty(path))
+            {
+                return workingPath;
+            }
+
+            if (path.StartsWith('\\'))
+            {
+                return path;
+            }
+
+            if (workingPath == "\\")
+            {
+                return "\\" + path;
+            }
+
             return workingPath + "\\" + path;
         }
 
         // Splits path into parts
-        private string[] ParsePath(string path)
+        public static string[] parsePath(string path)
         {
-            return path.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            return path.Split(['\\'], StringSplitOptions.RemoveEmptyEntries);
         }
 
         // Gets contents of a directory by path (null if not found)
-        public (List<vFile> files, List<vDir> dirs)? GetDirContents(string path)
+        public (List<vFile> files, List<vDir> dirs)? getDirContents(string path)
         {
-            string[] parts = ParsePath(ResolvePath(path));
+            string[] parts = parsePath(resolvePath(path));
 
             if (parts.Length == 0)
+            {
                 return (rootFiles, rootDirs);
+            }
 
             List<vDir> currentDirs = rootDirs;
             for (int i = 0; i < parts.Length; i++)
@@ -146,10 +172,15 @@ namespace aperture
                         break;
                     }
                 }
-                if (idx == -1) return null;
+                if (idx == -1)
+                {
+                    return null;
+                }
 
                 if (i == parts.Length - 1)
+                {
                     return (currentDirs[idx].files, currentDirs[idx].subDirs);
+                }
 
                 currentDirs = currentDirs[idx].subDirs;
             }
@@ -157,22 +188,30 @@ namespace aperture
         }
 
         // Gets parent directory contents + target name
-        private (List<vFile> files, List<vDir> dirs, string name)? GetParent(string path)
+        public (List<vFile> files, List<vDir> dirs, string name)? getParent(string path)
         {
-            string[] parts = ParsePath(ResolvePath(path));
-            if (parts.Length == 0) return null;
+            string[] parts = parsePath(resolvePath(path));
+            if (parts.Length == 0)
+            {
+                return null;
+            }
 
-            string targetName = parts[parts.Length - 1];
+            string targetName = parts[^1];
 
             if (parts.Length == 1)
+            {
                 return (rootFiles, rootDirs, targetName);
+            }
 
             string[] parentParts = new string[parts.Length - 1];
             Array.Copy(parts, parentParts, parts.Length - 1);
             string parentPath = "\\" + string.Join("\\", parentParts);
 
-            var parent = GetDirContents(parentPath);
-            if (parent == null) return null;
+            (List<vFile> files, List<vDir> dirs)? parent = getDirContents(parentPath);
+            if (parent == null)
+            {
+                return null;
+            }
 
             return (parent.Value.files, parent.Value.dirs, targetName);
         }
@@ -192,11 +231,16 @@ namespace aperture
 
             if (path == "..")
             {
-                string[] parts = ParsePath(workingPath);
-                if (parts.Length == 0) return false;
+                string[] parts = parsePath(workingPath);
+                if (parts.Length == 0)
+                {
+                    return false;
+                }
 
                 if (parts.Length == 1)
+                {
                     workingPath = "\\";
+                }
                 else
                 {
                     string[] newParts = new string[parts.Length - 1];
@@ -206,9 +250,9 @@ namespace aperture
                 return true;
             }
 
-            if (GetDirContents(path) != null)
+            if (getDirContents(path) != null)
             {
-                workingPath = ResolvePath(path);
+                workingPath = resolvePath(path);
                 return true;
             }
             return false;
@@ -217,53 +261,77 @@ namespace aperture
         /// <summary>
         /// Creates a directory. Returns false if parent doesn't exist or already exists.
         /// </summary>
-        public bool mkDir(string path, attrib[] attribs = null)
+        public bool mkDir(string path, fileAttrib[]? attribs = null)
         {
-            var result = GetParent(path);
-            if (result == null) return false;
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
+            if (result == null)
+            {
+                return false;
+            }
 
-            var (_, dirs, name) = result.Value;
+            (List<vFile> _, List<vDir> dirs, string name) = result.Value;
 
             for (int i = 0; i < dirs.Count; i++)
-                if (dirs[i].name == name) return false;
+            {
+                if (dirs[i].name == name)
+                {
+                    return false;
+                }
+            }
 
-            dirs.Add(new vDir(name, new List<vFile>(), new List<vDir>(), attribs ?? Array.Empty<attrib>()));
+            dirs.Add(new vDir(name, [], [], attribs ?? []));
             return true;
         }
 
         /// <summary>
         /// Creates a file. Returns false if parent doesn't exist or file already exists.
         /// </summary>
-        public bool mkFile(string path, byte[] contents = null, attrib[] attribs = null)
+        public bool mkFile(string path, byte[]? contents = null, fileAttrib[]? attribs = null)
         {
-            var result = GetParent(path);
-            if (result == null) return false;
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
+            if (result == null)
+            {
+                return false;
+            }
 
-            var (files, _, name) = result.Value;
+            (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
-                if (files[i].name == name) return false;
+            {
+                if (files[i].name == name)
+                {
+                    return false;
+                }
+            }
 
-            files.Add(new vFile(name, contents ?? Array.Empty<byte>(), attribs ?? Array.Empty<attrib>()));
+            files.Add(new vFile(name, contents ?? [], attribs ?? []));
             return true;
         }
-        public bool mkFileChr(string path, char[] contents = null, attrib[] attribs = null)
+        public bool mkFileChr(string path, char[]? contents = null, fileAttrib[]? attribs = null)
         {
-            List<byte> tempBytes = new();
-            foreach(var item in contents)
+            List<byte> tempBytes = [];
+            foreach (char item in contents ?? [])
             {
                 tempBytes.Add((byte)item);
             }
-            byte[] ctBytes = tempBytes.ToArray();
-            var result = GetParent(path);
-            if (result == null) return false;
+            byte[] ctBytes = [.. tempBytes];
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
+            if (result == null)
+            {
+                return false;
+            }
 
-            var (files, _, name) = result.Value;
+            (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
-                if (files[i].name == name) return false;
+            {
+                if (files[i].name == name)
+                {
+                    return false;
+                }
+            }
 
-            files.Add(new vFile(name, ctBytes ?? Array.Empty<byte>(), attribs ?? Array.Empty<attrib>()));
+            files.Add(new vFile(name, ctBytes ?? [], attribs ?? []));
             return true;
         }
 
@@ -272,10 +340,13 @@ namespace aperture
         /// </summary>
         public bool delFile(string path)
         {
-            var result = GetParent(path);
-            if (result == null) return false;
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
+            if (result == null)
+            {
+                return false;
+            }
 
-            var (files, _, name) = result.Value;
+            (List<vFile> files, List<vDir> _, string name) = result.Value;
 
             for (int i = 0; i < files.Count; i++)
             {
@@ -293,10 +364,13 @@ namespace aperture
         /// </summary>
         public bool delDir(string path)
         {
-            var result = GetParent(path);
-            if (result == null) return false;
+            (List<vFile> files, List<vDir> dirs, string name)? result = getParent(path);
+            if (result == null)
+            {
+                return false;
+            }
 
-            var (_, dirs, name) = result.Value;
+            (List<vFile> _, List<vDir> dirs, string name) = result.Value;
 
             for (int i = 0; i < dirs.Count; i++)
             {
@@ -310,46 +384,31 @@ namespace aperture
         }
     }
 
-    public struct vFile
+    public struct vFile(string nm, byte[] ct, fileAttrib[] at)
     {
-        public vFile(string nm, byte[] ct, attrib[] at)
-        {
-            name = nm;
-            contents = ct;
-            attribs = at;
-        }
-        public string name;
-        public byte[] contents;
-        public attrib[] attribs;
+        public string name = nm;
+        public byte[] contents = ct;
+        public fileAttrib[] attribs = at;
     }
 
-    public struct vDir
+    public struct vDir(string nm, List<vFile> fls, List<vDir> subdirs, fileAttrib[] attr)
     {
-        public vDir(string nm, List<vFile> fls, List<vDir> subdirs, attrib[] attr)
-        {
-            name = nm;
-            files = fls;
-            subDirs = subdirs;
-            attribs = attr;
-        }
-        public string name;
-        public List<vFile> files;
-        public List<vDir> subDirs;  // this shit is needed
-        public attrib[] attribs;
+        public string name = nm;
+        public List<vFile> files = fls;
+        public List<vDir> subDirs = subdirs;  // this shit is needed
+        public fileAttrib[] attribs = attr;
     }
 
-    public enum attrib
+    public enum fileAttrib
     {
-        None,
-        Hidden,
-        System,
-        Readonly,
-        bktRs1,
-        bktRs2,
-        bktRs3,
-        bktRs4,
-        bktRs5,
-        bktRs6,
-        bktRs7
+        None = 0,
+        Hidden = 0b00000001,
+        System = 0b00000010,
+        Readonly = 0b00000100,
+        bktRs1 = 0b00001000,
+        bktRs2 = 0b00010000,
+        bktRs3 = 0b00100000,
+        bktRs4 = 0b01000000,
+        bktRs5 = 0b10000000,
     }
 }

@@ -1,17 +1,14 @@
 ﻿using aperture;
 using Microsoft.VisualBasic.Devices;
-using Microsoft.Win32;
 using NAudio.Wave;
+using NLua;
 using Spectre.Console;
 using System.Diagnostics;
-using System.Media;
-using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
-using Panel = Spectre.Console.Panel;
 namespace borktorial
 {
-    public class Program
+    public class bktMain
     {
         public static string cat { get; } = """
              |\\_,-~/
@@ -25,50 +22,41 @@ namespace borktorial
              ((_/`(____,-'
             """;
 
-        public static (int maj, int min, int pch, char rv) bktver { get; set; } = (0, 5, 8, 'a');
-        public static (int maj, int min, int pch, char rv) pubver { get; set; } = (1, 2, 1, 'b');
-
+        public static int bktver { get; set; } = 1128;
         public static bool jebconnect { get; set; } = false;
         public static bool mConnected { get; set; } = false;
         public static bool forceNoBoot { get; set; } = false;
-        public static bool failIntaAlways { get; set; } = false;
         public static bool virused { get; set; } = false;
         public static bool ballmerMode { get; set; } = false;
         public static bool gordonSummoned { get; set; } = File.Exists("GORDON");
         public static bool radioStopped { get; set; } = true;
         public static bool jmtrigger { get; set; } = false;
         public static bool root { get; set; } = false;
-
-        public static bool __5a85 { get; } = OperatingSystem.IsWindows();
-
+        public static bool s5a85 { get; } = OperatingSystem.IsWindows();
         public static int mSpeed { get; set; } = 1800;
         public static int crshChance { get; set; } = 10000;
         public static int jebcounter { get; set; } = 0;
-        public static int tick { get; set; } = 0;
+        public static double tick { get; set; } = 0;
         public static double munCycle { get; set; } = 0;
-        public static double ninovium { get; set; } = 1;
         public static double schonite { get; set; } = 1;
         public static double sysstab { get; set; } = 1;
-
+        public static List<cfgEnt> cfg { get; set; } = [];
+        public static string cfgFn { get; set; } = "config.jeb"; // Named after Jebediah Kerman obviously
         public static mConnectTypes mCt { get; set; } = mConnectTypes.Null;
-
         public static Random rand { get; set; } = new();
-        public static Thread drdhtsr { get; set; }
+        public static Thread? drdhtsr { get; set; }
         public static ComputerInfo compi { get; set; } = new(); // Was readonly, but object state is mutable
-        public static RegistryKey formatkey { get; } = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\bkt\srga\fC"); // RegistryKey itself shouldn't be swapped
-
         public static fileSys fs { get; set; } = new();
+        public static int giftCount { get; set; } = 5;
         public static bool rbt0 { get; set; } = false;
-        public static string cfgFn { get; set; } = "bktcfg.ssc";
         public static string username { get; set; } = "";
         public static string password { get; set; } = "";
-
         public static int iRnd { get; set; } = rand.Next(0, 12); // 1 in 13
-
-        public static List<string> currNews { get; set; } = new(4096);
-
-        public static int[] cfg { get; set; } = [15, 10000, 15, 2];
-
+        public static byte cmdFErrCount { get; set; } = 0;
+        public static List<string> currNews { get; set; } = [];
+        public static bool spoopMode { get; set; } = false;
+        public static int rSeed { get; set; } = (int)(DateTime.UtcNow.Ticks + strSum(aprtMain.nookEnc(username, password)));
+        public static double slwFact { get; set; } = 1+rand.NextDouble();
         public static string[] lines { get; } = [
             "Gordon doesn't need to hear this, he's a highly trained professional!",
             "Good morning and welcome to the Black Mesa Transit System.",
@@ -85,7 +73,6 @@ namespace borktorial
             "Science isn't about WHY. It's about WHY NOT. Why is so much of our science dangerous? Why not marry safe science if you love it so much. In fact, why not invent a special safety door that won't hit you on the butt on the way out, because you are fired.",
             "Dr. Freeman to Anomalous Materials test laboratory immediately."
         ];
-
         public static string[] linesAttr { get; } = [
             "-Cave Johnson",
             "-G-man",
@@ -96,7 +83,6 @@ namespace borktorial
             "-Aristotle",
             "-Sun Tzu"
         ];
-
         public static string[] linesBooks { get; } = [
             "How to fire test subjects",
             "How to ruin a science lab",
@@ -111,7 +97,7 @@ namespace borktorial
             "How to blame Aperture Science for issues you've had"
         ];
 
-        public static string JEBMSG { get; } = """
+        public static string jebMsg { get; } = """
             Jebediah Kerman did not die
             He survived the Shitfuck 15 mission.
             Press K to celebrate.
@@ -124,11 +110,10 @@ namespace borktorial
             CPU: Intel 486DX C-Step@50MHz
             RAM: 640KB conventional, 384KB shadow, 15360KB extended
             Drives: A: (720KB FD), B: (720KB FD), C: (os drive, 614400KB)
-            OS: NTOSKRNL v4.0, NT-DOS v2.2
+            OS: NTOSKRNL v4.3, NT-DOS v2.2, running on Console Subsystem.
             Video: Citrus GT-6500 ISA
             Sound: PC beeper, SB1.0
-            Other devices: GLaDOS Link Peripheral, Networked Microsystems 14400bps
-            Network: {mConnected}. Use NETINFO for futher info
+            Network: Networked Microsystems 14400bps. Connected: {mConnected}
             Unknown: STANDARD ISA16 PERIPHERAL hooked onto int 5Fh.
             """;
         public static string luaReadme => """
@@ -146,10 +131,49 @@ namespace borktorial
 
             initmods.lua runs at boot time to initialize mods.
 
+            CLDMSG.TXT:
+
+            This is custom load messages (the ones you see like "Insulting Dr. Breen..." and shit like that that appear after the BIOS screen)
+            Syntax:
+
+            Normal line: load message
+            if line 0 equals "[NOSTOCKLDMSG]": remove all stock loading messages (it must equal this EXACTLY!)
+            if line begins with "//": It's a comment and will be ignored
+            if line begins with "[REMOVE] ": remove a stock load message
+
+            CSPLASH.TXT:
+            This is custom splash texts (the ones you see in the titlebar)
+
+            Weights (have to start any splash):
+
+            "(c) ": Common
+            "(u) ": Uncommon
+            "(r) ": Rare
+            "(e) ": Comment
+            "(m) ": Only on marsDay/spaceDay
+            "(s) ": Only on Snapshot Day (wednesday)
+            Other tag or no tag: Comment
+            Note that it MUST be like this. All splashes must begin with this
+
+            Syntax:
+
+            normal line: This is a splash
+            if line 0 equals "[NOSTOCKSPLASH]": remove all stock splashes (it must equal this EXACTLY!). This does not need a tag
+            if line begins with "//": it's a comment and will be ignored. This does not NEED a tag but usually commented out splashes will have tags
+            if line begins with "[REMOVE] ": remove a specific stock splash (must have the tag in the bit after the "[REMOVE] " bit).
+
+            To find out which specific stock splashes have which tags, you can check the file that contains them all, assets\splashes.txt (In the same folder you put the EXE). If you want, you can even just modify this file direct (not recommended)
             That's basically it. Read the fucking source code
             """;
+        public static List<(string cmd1, string[] cmd2)> aliases { get; set; } = [];
+        public static List<(string username, string command, string message, string sid)> usedGifts = [];
+        public static bool noNtldr = false;
         public static void publicMain(string[] mArgs)
         {
+            if (virused)
+            {
+                mArgs = [.. mArgs, "__virused"];
+            }
             resetState();
             Main(mArgs);
         }
@@ -157,26 +181,25 @@ namespace borktorial
         {
             if (rbt0)
             {
-                Thread.Sleep(200); // wait for everything to settle the fuck down
+                sleep(200); // wait for everything to settle the fuck down
                 rbt0 = false;
             }
-            if(args.Length >= 1 && args[0] == "/dvforceshowversioninstant") 
+            Console.Title = $"borktorial: {splashPick()}";
+            if (rand.Next(0, 69) == 0) // 1 in 69
             {
-                Console.WriteLine($"Borktorial version {getBuildNum()}");
-                Console.WriteLine("Internal:");
-                Console.WriteLine($"bktver: {bktver.maj}.{bktver.min}.{bktver.pch}{bktver.rv}");
-                Console.WriteLine($"pubver: {pubver.maj}.{pubver.min}.{pubver.pch}{pubver.rv}");
-                Console.WriteLine($"aprtver: {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}");
-                Console.WriteLine($"inta0: {bktLV.puC[7]}");
-                Console.WriteLine($"inta1: {bktLV.puD[7]}");
-                return;
+                Console.Title = $"broktorial: {splashPick()}";
+                if (rand.Next(0, 42+File.ReadAllLines("assets\\splashes.txt").Length) == 0)
+                {
+                    spoopMode = true;
+                }
             }
+            borkVerf.checkBv();
             // hide the init time away
             AnsiConsole.MarkupLine("[rgb(255,255,0)]Citrus[/] Emerald Sneak VGA BIOS...");
-            Thread.Sleep(2000);
+            sleep(2000);
             AnsiConsole.MarkupLine("8192KB [green]OK[/]");
             AnsiConsole.MarkupLine("Card: [rgb(255,255,0)]Citrus[/] GT-6500 ISA");
-            AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), VESA (T), VESA (G), [rgb(255,255,0)]Citrus[/] extensions");
+            AnsiConsole.MarkupLine("Modes: CGA (T), CGA (G), EGA (T), EGA (G), VGA (T), VGA (G), [rgb(255,255,0)]Citrus[/] extensions");
             AnsiConsole.MarkupLine("");
             if (!Directory.Exists("mods"))
             {
@@ -184,57 +207,90 @@ namespace borktorial
                 File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
                 File.WriteAllText(Path.Combine("mods", "README.TXT"), luaReadme);
             }
-            Thread.Sleep(5000);
-            if (bktLV.aprtVer != (0, 4, 3, 'a'))
+            sleep(2750);
+            if (aprtMain.aprtVer != 465)
             {
-                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.3a, got {bktLV.aprtVer.maj}.{bktLV.aprtVer.min}.{bktLV.aprtVer.pch}{bktLV.aprtVer.rv}", logType.Warn);
+                shitLog.createEntry("BOOT", $"APRT version mismatch. Expected 0.4.4a, got {aprtMain.aprtVer}", logType.Warn);
             }
-            impulse(5000);
-            Stopwatch bootSw = new Stopwatch();
+            shitLog.createEntry("BOOT", $"Random seed is 0x{rSeed:X8}", logType.Info);
+            Stopwatch bootSw = new();
             bootSw.Start();
             Debug.WriteLine("tada!");
             if (args.Length >= 2 && args[0] == "bktint:delayStart")
             {
-                Thread.Sleep(int.Parse(args[1]));
+                sleep(int.Parse(args[1]));
             }
-            if (!__5a85)
+            if (!s5a85)
             {
                 rand = new Random(0x4E54);
             }
+            // fucking hell
             try
             {
-                if (File.Exists(cfgFn)) // Semicolon Separated Config
+                if (!File.Exists("bktfs"))
                 {
-                    shitLog.createEntry("CFGLDR", $"Loading {cfgFn}...", logType.Info);
-                    string configC = File.ReadAllText(cfgFn);
-                    string[] cfgR = configC.Split(";");
-                    int[] cfgP = new int[256];
-                    int iteration = 0;
-                    foreach (var item in cfgR)
-                    {
-                        int itemI = int.Parse(item);
-                        cfgP[iteration] = itemI;
-                        iteration++;
-                    }
-                    cfg = cfgP;
-                    if (cfg[3] != getBuildNum())
-                    {
-                        shitLog.createEntry("CFGLDR", $"{cfgFn} has wrong version", logType.Warn);
-                    }
-                    shitLog.createEntry("CFGLDR", "Config loading success!", logType.Info);
+                    impulse(5000);
+                    impulse(5001);
+                    impulse(5002);
                 }
                 else
                 {
-                    shitLog.createEntry("CFGLDR", "No config found! Using default!", logType.Warn);
-                    forceDefaultCfg();
+                    impulse(5002);
                 }
+                if (fs.serNum == "XXXX-XXXX")
+                {
+                    fs.serNum = aprtMain.genHexStr(8, 4);
+                    impulse(5001);
+                }
+                if (fs.workingPath == "")
+                {
+                    shitLog.createEntry("BOOT", "fs may be corrupted!", logType.Warn);
+                    if (fs.serNum == "")
+                    {
+                        shitLog.createEntry("BOOT", "fs is probably corrupt, attempting recovery", logType.Warn);
+                        fs = new();
+                        impulse(5000);
+                        impulse(5001);
+                        impulse(5002);
+                        Console.Clear();
+                        publicMain(args);
+                    }
+                }
+                impulse(5001);
+                impulse(5002);
             }
             catch (Exception ex)
             {
-                shitLog.createEntry("CFGLDR", $"Config error: {ex.Message} {ex.StackTrace}", logType.Err);
-                forceDefaultCfg();
+                Console.WriteLine("BORKTORIAL RECOVERY\r\n");
+                Console.WriteLine($"Due to a error in loading bktfs ({ex.Message}) (more details in log), this screen has appeared!");
+                shitLog.createEntry("BKTREC", ex.ToString(), logType.Err);
+                Console.WriteLine("Press X to restore FS");
+                ConsoleKey ck = Console.ReadKey().Key;
+                if (ck == ConsoleKey.X)
+                {
+                    fs = new();
+                    impulse(5000);
+                    impulse(5001);
+                    impulse(5002);
+                    publicMain(args);
+                }
+                else
+                {
+                    Console.Write("\r\nOkay, will restart in 5...");
+                    Thread.Sleep(1000);
+                    Console.Write("\rOkay, will restart in 4...");
+                    Thread.Sleep(1000);
+                    Console.Write("\rOkay, will restart in 3...");
+                    Thread.Sleep(1000);
+                    Console.Write("\rOkay, will restart in 2...");
+                    Thread.Sleep(1000);
+                    Console.Write("\rOkay, will restart in 1...");
+                    Thread.Sleep(500);
+                    Console.Write("\rOkay, will restart in 0...");
+                    rbt0 = true;
+                    publicMain([]); // yes i know this recurses
+                }
             }
-
             if (args.Length >= 1 && args[0] == "/waluigi")
             {
                 sf59("waluigi");
@@ -269,10 +325,6 @@ namespace borktorial
                 {
                     ballmerMode = false;
                 }
-                if (args.Length >= 2 && string.Join(' ', args).Contains("FORCEINTAFAIL"))
-                {
-                    failIntaAlways = true;
-                }
                 if (args.Length >= 2 && string.Join(' ', args).Contains("FORCEGORDON"))
                 {
                     gordonSummoned = true;
@@ -284,209 +336,161 @@ namespace borktorial
                     Exception inException3 = new("C", inException2);
                     throw new Exception("D", inException3);
                 }
-            }
-            if (args.Length >= 1 && args[0] == "prop65")
-            {
-                int attemptsL = 0;
-                while (true)
+                if (args.Length >= 2 && string.Join(' ', args).Contains("CLEARSIG"))
                 {
-                    Console.WriteLine("Please enter the code you obtained from DOHASHIDOSHAI\r\n");
-                    Console.Write(">");
-                    string theCode = Console.ReadLine();
-                    if (theCode == "HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF")
-                    {
-                        sf59("luigi");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid code");
-                        attemptsL++;
-                    }
-                    if (attemptsL == 5)
-                    {
-                        Console.WriteLine("HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF");
-                    }
+                    borkVerf.clearSig();
                 }
             }
-            if (args.Length >= 2 &&
-                args[0] == "Twyndyllyngs" &&
-                args[1] == "Euouae")
+            try
             {
-                Console.WriteLine("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-                Thread.Sleep(5000);
+                if (File.Exists(cfgFn))
+                {
+                    cfg = bktCfg.parseFile(cfgFn);
+                }
+                else
+                {
+                    File.WriteAllText(cfgFn, 
+                        """
+                        // borktorial config
+                        tickL = 15
+                        mcl = 10000
+                        fsAsInt = 15
+                        """);
+                    cfg = bktCfg.parseFile(cfgFn);
+                }
             }
-            // Verification (and me just testing the lib)
-            int[] avServer = bktLV.dallf();
-            int[] avClient = new int[8];
-            int[] avCv1 = [255, 127, 63, 31, 15, 7, 3, 2];
-            int[] avCv2 = [1, 3, 7, 15, 31, 63, 127, 254];
-            if (failIntaAlways)
+            catch
             {
-                avCv1[0] = int.MaxValue;
-            }
-            for (int i = 0; i < avClient.Length; i++)
-            {
-                avClient[i] = avCv1[i] + avCv2[i];
-            }
-            if (!avClient.SequenceEqual(avServer))
-            {
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Clear();
-                Console.WriteLine("FAULT: The APERTURE system library is corrupted.");
-                Console.WriteLine("Error code: 492. The INTA verification failed.");
-                Console.WriteLine("This incident will be logged\r\n");
-                Console.WriteLine("Potential reasons why you saw this error:");
-                Console.WriteLine("  * You modified APERTURE.DLL in such a way that the verification failed");
-                Console.WriteLine("  * The DLL is corrupted");
-                Console.WriteLine("  * Your copy was tampered with somehow");
-                Console.WriteLine("  * The program just hates you in particular\r\n");
-                Console.WriteLine("Retry in 10 seconds.");
-                shitLog.createEntry("INTA", "The INTA verification failed.", logType.Err);
-                Thread.Sleep(10000);
-                publicMain([]);
+                File.WriteAllText(cfgFn,
+                        """
+                        // borktorial config
+                        tickL = 15
+                        mcl = 10000
+                        fsAsInt = 15
+                        """);
+                cfg = bktCfg.parseFile(cfgFn);
             }
             if (!forceNoBoot)
             {
-                if (!ballmerMode) Console.Clear();
-                Console.Title = $"borktorial: {splashPick()}";
-                if (rand.Next(0, 69) == 0) // 1 in 69
+                if (!ballmerMode)
                 {
-                    Console.Title = $"broktorial: {splashPick()}";
+                    Console.Clear();
                 }
                 bootSw.Stop();
                 if (File.Exists(Path.Combine("mods", "initmods.lua")))
                 {
-                    using (var lua = new NLua.Lua())
+                    using Lua lua = new();
+                    lua.LoadCLRPackage();
+
+                    try
                     {
-                        lua.LoadCLRPackage();
+                        string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
 
-                        try
-                        {
-                            var luAsm = Assembly.GetExecutingAssembly().GetName().Name;
+                        string? lut = typeof(bktMain).FullName;
 
-                            var lut = typeof(Program).FullName;
-
-                            lua.DoString($@"
+                        lua.DoString($@"
                                             luanet.load_assembly('{luAsm}')
                                             Sys = luanet.import_type('{lut}')
                                         ");
 
-                            if (lua["Sys"] == null)
-                            {
-                                shitLog.createEntry("LUALDR", "Failed to load ASM.", logType.Err);
-                            }
-                            else
-                            {
-                                lua.DoFile(Path.Combine("mods", "initmods.lua"));
-                            }
-                        }
-                        catch (Exception ex)
+                        if (lua["Sys"] == null)
                         {
-                            shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
-                            throw;
+                            shitLog.createEntry("LUALDR", "Failed to load ASM.", logType.Err);
                         }
+                        else
+                        {
+                            lua.DoFile(Path.Combine("mods", "initmods.lua"));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                        throw;
                     }
                 }
                 else
                 {
-
+                    File.WriteAllText(Path.Combine("mods", "initmods.lua"), "");
                 }
-                shitLog.createEntry("Bootymcbootface", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
+                audosey.initAud(16);
+                shitLog.createEntry("BOOT", $"Init took {bootSw.ElapsedMilliseconds}ms!", logType.Info);
                 Console.Clear();
-                Console.WriteLine($"GLaBIOS 3.14 Revision 159 (build {getBuildNum()})");
-                AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division and [blue]Aperture Science[/] 1984-1994");
-                AnsiConsole.MarkupLine("Original BIOS (C) [rgb(31,63,127)]IBM[/] 1981-1994");
+                AnsiConsole.MarkupLine($"[bold][green]Ker[/]BIOS[/] 3.14 Revision 159 (build {getBuildNum()})");
+                AnsiConsole.MarkupLine("(C) [lime]KSC[/] Computer Division 1987-1994");
                 Console.WriteLine();
                 Console.Write("Memory test...");
                 if (args.Length >= 2 && args[0] == "vs" && args[1] == "49")
                 {
-                    Thread.Sleep(800);
+                    sleep(800);
                     AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
                 else
                 {
-                    Thread.Sleep(2000);
+                    sleep(2000);
                     AnsiConsole.Markup("16384kb [green]ok[/]\r\n");
                 }
                 AnsiConsole.MarkupLine("Press [white]F11[/] to enter SETUP...");
-                Thread.Sleep(3000);
+                sleep(3000);
                 Console.Write("Primary Master...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("Landgate Xtreme ATA Drive [4096MB]\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Primary Slave...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("Pholops D.I.C.K 8x XD-ROM drive\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Master...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("None\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Secondary Slave...");
-                Thread.Sleep(500);
+                sleep(500);
                 Console.Write("None\r\n\r\n");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 Console.Write("Booting from FDD...");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 AnsiConsole.Markup("[red]fail[/]\r\n");
-                Thread.Sleep(rand.Next(500, 750));
+                sleep(rand.Next(500, 750));
                 Console.Write("Booting from CD-ROM...");
-                Thread.Sleep(rand.Next(500, 1000));
+                sleep(rand.Next(500, 1000));
                 AnsiConsole.Markup("[red]fail[/]\r\n");
-                Thread.Sleep(rand.Next(500, 750));
+                sleep(rand.Next(500, 750));
                 Console.Write("Booting from HDD...");
-                Thread.Sleep(rand.Next(250, 750));
-                AnsiConsole.Markup("[green]ok![/]\r\n");
-                if (File.Exists("temp_fcBA39-FA31.bin"))
+                sleep(rand.Next(250, 750));
+                if (args.Contains("__virused") || args.Contains("frmt"))
                 {
-                    formatkey.SetValue("algl", "waluigi");
-                    Console.Clear();
-                    Console.WriteLine("\r\nNo boot device found.");
+                    AnsiConsole.Markup("[red]fail[/]\r\n\r\n");
+                    AnsiConsole.Markup("No boot devices found. F1 to reboot.\r\n");
                     while (true)
                     {
-                        Thread.Sleep(int.MaxValue);
-                    }
-                }
-                if (formatkey.GetValue("algl") != null)
-                {
-                    if ((string)formatkey.GetValue("algl") == "waluigi")
-                    {
-                        Console.Clear();
-                        Console.WriteLine("\r\nNo boot device found.");
-                        while (true)
+                        ConsoleKey ck = Console.ReadKey().Key;
+                        if (ck == ConsoleKey.F1)
                         {
-                            Thread.Sleep(int.MaxValue);
+                            publicMain(args);
                         }
                     }
                 }
+                AnsiConsole.Markup("[green]ok![/]\r\n");
+
                 Console.WriteLine("\r\nStarting NT-DOS...\r\n");
-                Thread.Sleep(4500);
+                sleep(4500);
                 Console.WriteLine("NTXMEM is checking extended memory...\r\n");
                 if (compi.AvailablePhysicalMemory < 16777216 || !OperatingSystem.IsWindows())
                 {
                     Console.WriteLine("NT-DOS requires at least 16MB of extended memory.");
                     while (true)
                     {
-                        Thread.Sleep(int.MaxValue);
+                        sleep(int.MaxValue);
                     }
                 }
-                Thread.Sleep(1250);
-                if (gordonSummoned || (!__5a85 && rand.Next(1, 5) == 0))
+                sleep(1250);
+                if (gordonSummoned || (!s5a85 && rand.Next(1, 5) == 0))
                 {
                     Console.WriteLine("[WARN] 128 byte memory hole detected at 0x8086!");
-                    Thread.Sleep(500);
+                    sleep(500);
                     keBugCheck(0xBD31052, new(1995, 12, 31, 12, 59, 59, 999, 999));
                 }
-                Thread.Sleep(1250);
-                if (cfg[3] == 1)
-                {
-                    Console.WriteLine("CRITICAL: Cannot find NTGINA.DLL. System halted");
-                    while (true)
-                    {
-                        Thread.Sleep(int.MaxValue);
-                    }
-                }
+                sleep(1250);
                 string[] loadMsgs = [
                     "Processing...",
                     "Doing big math...",
@@ -528,85 +532,93 @@ namespace borktorial
                     "Stabilizing Higgs Field...",
                     "Running away from true vacuum...",
                     "Adding more hydrogen...",
-                    "Tuning matter-antimatter ratio..."
+                    "Tuning matter-antimatter ratio...",
+                    "Adding moar boosters..."
                     ];
-                if(File.Exists(Path.Combine("mods", "cldmsg.txt")))
+                if (File.Exists(Path.Combine("mods", "cldmsg.txt")))
                 {
-                    List<string> moreLines = File.ReadAllLines(Path.Combine("mods", "cldmsg.txt")).ToList();
-                    List<string> fullLines = loadMsgs.ToList();
-                    if (moreLines[0] == "[NOSTOCKLDMSG]")
+                    List<string> moreLines = [.. File.ReadAllLines(Path.Combine("mods", "cldmsg.txt"))];
+                    List<string> fullLines = [.. loadMsgs];
+                    if (moreLines.Count > 0 && moreLines[0] == "[NOSTOCKLDMSG]")
                     {
                         fullLines = [];
                     }
-                    foreach(var item in moreLines)
+                    foreach (string item in moreLines)
                     {
+                        if (item.StartsWith("[REMOVE] "))
+                        {
+                            fullLines.Remove(item[9..]);
+                            fullLines.Remove(item); // just to be surely sure
+                            continue; // skip it
+                        }
+                        if (item.StartsWith("//"))
+                        {
+                            continue; // skip this too
+                        }
                         fullLines.Add(item);
                     }
-                    loadMsgs = fullLines.ToArray();
+                    loadMsgs = [.. fullLines];
                 }
-                if (cfg[5] == 0)
+                for (int i = 0; i < rand.Next(5, 16); i++)
                 {
-                    for (int i = 0; i < rand.Next(5, 16); i++)
-                    {
-                        Console.Clear();
-                        Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
-                        Thread.Sleep(rand.Next(500, 801));
-                    }
+                    Console.Clear();
+                    Console.WriteLine(loadMsgs[rand.Next(0, loadMsgs.Length)]);
+                    sleep(rand.Next(500, 801));
                 }
-                Console.Clear();
-                if (cfg[6] == 0)
+            }
+            Console.Clear();
+            while (string.IsNullOrWhiteSpace(username))
+            {
+                Console.Write("Username (\"<default>\" to generate one): ");
+                username = Console.ReadLine()?.Trim() ?? "";
+                if (username == "<default>")
                 {
-                    while (string.IsNullOrWhiteSpace(username))
-                    {
-                        Console.Write("Username: ");
-                        username = Console.ReadLine()?.Trim() ?? "";
-                    }
+                    username = aprtMain.mkShitUsername(rand);
+                }
+            }
 
-                    while (string.IsNullOrWhiteSpace(password))
-                    {
-                        Console.Write("Password: ");
-                        password = Console.ReadLine() ?? "";
-                    }
-
-                    //if (username == "root" && password == "Bacon532!") // this makes no sense on NT
-                    //{
-                    //    root = true;
-                    //}
-                    if (username == "SYSTEM" && rand.Next(0, 37) == 0)
-                    {
-                        root = true;
-                    }
-                }
-                Thread timeThread = new(() =>
-                {
-                    timeLoop(cfg[0], cfg[1]);
-                });
-                timeThread.Start();
-                if (!__5a85 || specialDays.aprilfool)
-                {
-                    Thread __58858g = new(__49291);
-                    __58858g.Start();
-                }
-                Thread msVarier = new(interspeed);
-                msVarier.Start();
-                Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
-                Thread.Sleep(rand.Next(750, 1500));
-                Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
-                if (specialDays.bktDay)
-                {
-                    Console.Write(" Happy Borktorial Day!\r\n");
-                }
+            while (string.IsNullOrWhiteSpace(password))
+            {
+                Console.Write("Password: ");
+                password = Console.ReadLine() ?? "";
+            }
+            if (username == "SYSTEM" && rand.Next(0, 37) == 0)
+            {
+                root = true;
+            }
+            rSeed = (int)(DateTime.UtcNow.Date.Ticks + strSum(aprtMain.nookEnc(username, password) + $"POWERPC_AEROHYDRODYNAMICS_X86_CSHARPISBTR"));
+            rand = new(rSeed);
+            shitLog.createEntry("BOOT", $"New rSeed is {rSeed}", logType.Info);
+            Thread timeThread = new(() =>
+            {
+                timeLoop(bktCfg.getEntByName(cfg, "tickL").value, bktCfg.getEntByName(cfg, "mcl").value);
+            });
+            timeThread.Start();
+            if (!s5a85 || specialDays.aprilfool)
+            {
+                Thread s58858g = new(s49291);
+                s58858g.Start();
+            }
+            Thread msVarier = new(interspeed);
+            msVarier.Start();
+            Console.WriteLine("NT-DOS is loading shell \"TW8000.EXE\"...");
+            sleep(rand.Next(750, 1500));
+            Console.WriteLine("\r\nWelcome to the Time-Waster 8000!");
+            if (specialDays.bktDay)
+            {
+                Console.WriteLine("Happy Borktorial Day!");
             }
             // initialize news feed
             try
             {
                 for (int i = 0; i < 15; i++)
                 {
-                    addNews(newsGen.Generate());
+                    addNews(newsGen.generateNws());
                 }
             }
             catch (IndexOutOfRangeException) { currNews.Clear(); }
             impulse(5002);
+            rand = new(rSeed);
 
             // note: Ctrl+C being input somehow makes this break. i dunno how.
             // i don't wanna KNOW how
@@ -615,19 +627,80 @@ namespace borktorial
             {
                 Console.Write($"C:{fs.workingPath}>");
                 string rawCommin = Console.ReadLine() ?? "";
+                try
+                {
+                    rawCommin = parseBorkTag(rawCommin);
+                }
+                catch (Exception ex)
+                {
+                    shitLog.createEntry("cmdhndlr", ex.ToString(), logType.Warn);
+                    Console.WriteLine("Command Parser Error 49 (pbt fail)");
+                    continue;
+                }
                 string[] commin = rawCommin.ToLower().Split(' ');
+                if (commin.Length > 0)
+                {
+                    for (int i = 0; i < aliases.Count; i++)
+                    {
+                        (string cmd1, string[] cmd2) = aliases[i];
+                        if (commin[0] == cmd1)
+                        {
+                            commin = cmd2;
+                            rawCommin = string.Join(' ', cmd2);
+                        }
+                    }
+                }
+                if (strSum(rawCommin) % 8 == 0 && strSum(rawCommin) > 0)
+                {
+                    if (rand.Next(0, 12 + cmdFErrCount) == 0)
+                    {
+                        Console.WriteLine("Error: failed to execute command");
+                        commin = ["\xDE\xAD\xBA\xBE_bktignorecmd::0", "cmdFErr"];
+                        cmdFErrCount += 3; // gets rarer every time
+                        if (cmdFErrCount > 12)
+                        {
+                            cmdFErrCount += (byte)(cmdFErrCount * 0.05);
+                        }
+                    }
+                }
+                // bad QoL hack to handle dos-like cd.. properly
+                if (commin.Length >= 1)
+                {
+                    if (commin[0] == "cd..")
+                    {
+                        rawCommin = "cd ..";
+                        commin = "cd ..".Split(' ');
+                    }
+                }
                 try
                 {
                     switch (commin[0])
                     {
+                        case "\xDE\xAD\xBA\xBE_bktignorecmd::0":
+                            try
+                            {
+                                if (commin.Length > 1)
+                                {
+                                    sleep(int.Parse(commin[1]));
+                                }
+                            }
+                            catch
+                            {
+                                break;
+                            }
+                            break;
                         case "echo":
                             if (commin.Length > 1)
+                            {
                                 Console.WriteLine(string.Join(" ", rawCommin.Split(' ').Skip(1)));
+                            }
+
                             break;
                         case "quoteoftheday":
-                            string quote = lines[rand.Next(0, lines.Length)];
-                            string attr = linesAttr[rand.Next(0, linesAttr.Length)];
-                            string qsrc = linesBooks[rand.Next(0, linesBooks.Length)];
+                            Random dailyRand = new((int)DateTime.UtcNow.Date.Ticks);
+                            string quote = lines[dailyRand.Next(0, lines.Length)];
+                            string attr = linesAttr[dailyRand.Next(0, linesAttr.Length)];
+                            string qsrc = linesBooks[dailyRand.Next(0, linesBooks.Length)];
                             Console.WriteLine(quote);
                             Console.WriteLine($"\r\n{attr}, {qsrc}");
                             if (quote == lines[8])
@@ -638,43 +711,64 @@ namespace borktorial
                                 }
                             }
                             break;
+                        case "hl2ep3":
                         case "hl3":
                             Console.WriteLine("HALF-LIFE 3 CONFIRMED");
                             break;
-                        //case "dir":
-                        //    Console.WriteLine("Volume Serial Number is 4655-434B");
-                        //    Console.WriteLine("Directory listing of C:");
-                        //    for (int i = 0; i < rand.Next(4, 21); i++)
-                        //    {
-                        //        Console.WriteLine($"    {generateFile()} - {rand.Next(512, 65536)}");
-                        //    }
-                        //    Console.WriteLine();
-                        //    break;
+                        case "type":
+                            if (commin.Length >= 2)
+                            {
+                                (List<vFile> files, List<vDir> dirs)? wpCons = fs.getDirContents(fs.workingPath);
+                                if (wpCons == null)
+                                {
+                                    Console.WriteLine("Invalid path");
+                                    break;
+                                }
+                                foreach (vFile f in wpCons.Value.files)
+                                {
+                                    if (f.name == rawCommin.Split(' ')[1])
+                                    {
+                                        Console.WriteLine(aprtMain.ba2Str(f.contents));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Parameter error");
+                            }
+                            break;
                         case "dir":
-                            Console.WriteLine("Volume Serial Number is 4655-434B");
-                            Console.WriteLine($"Directory listing of {fs.workingPath}");
+                            Console.WriteLine($"Volume Serial Number is {fs.serNum}");
+                            Console.WriteLine($"Directory listing of C:{fs.workingPath}");
                             Console.WriteLine();
 
-                            var dirContents = fs.GetDirContents(fs.workingPath);
+                            (List<vFile> files, List<vDir> dirs)? dirContents = fs.getDirContents(fs.workingPath);
                             if (dirContents == null)
                             {
                                 Console.WriteLine("Invalid path");
                                 break;
                             }
 
-                            foreach (var dir in dirContents.Value.dirs)
+                            foreach (vDir dir in dirContents.Value.dirs)
                             {
-                                Console.WriteLine($"    <DIR>  {dir.name}");
+                                bool isntHidden = dir.attribs.Contains(fileAttrib.System) || dir.attribs.Contains(fileAttrib.Hidden);
+                                if (!isntHidden)
+                                {
+                                    Console.WriteLine($"    <DIR>  {dir.name}");
+                                }
                             }
 
-                            foreach (var file in dirContents.Value.files)
+                            foreach (vFile file in dirContents.Value.files)
                             {
-                                Console.WriteLine($"    {file.name} - {file.contents.Length} bytes");
+                                bool isntHidden = file.attribs.Contains(fileAttrib.System) || file.attribs.Contains(fileAttrib.Hidden);
+                                if (!isntHidden)
+                                {
+                                    Console.WriteLine($"    {file.name} - {file.contents.Length} bytes");
+                                }
                             }
 
                             Console.WriteLine();
                             break;
-
                         case "cd":
                             if (rawCommin.Split(' ').Length < 2)
                             {
@@ -692,34 +786,6 @@ namespace borktorial
                                 }
                             }
                             break;
-
-                        case "dbg::fs_save":
-                            string savePath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.bin";
-                            try
-                            {
-                                File.WriteAllBytes(savePath, fs.ToBinary());
-                                Console.WriteLine($"Filesystem saved to {savePath}");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Failed to save: {ex.Message}");
-                            }
-                            break;
-
-                        case "dbg::fs_load":
-                            string loadPath = rawCommin.Split(' ').Length > 1 ? rawCommin.Split(' ')[1] : "filesystem.bin";
-                            try
-                            {
-                                byte[] data = File.ReadAllBytes(loadPath);
-                                fs = fileSys.FromBinary(data);
-                                Console.WriteLine($"Filesystem loaded from {loadPath}");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Failed to load: {ex.Message}");
-                            }
-                            break;
-
                         case "create":
                             if (rawCommin.Split(' ').Length < 2)
                             {
@@ -737,7 +803,6 @@ namespace borktorial
                                 }
                             }
                             break;
-
                         case "del":
                             if (rawCommin.Split(' ').Length < 2)
                             {
@@ -773,6 +838,78 @@ namespace borktorial
                                 }
                             }
                             break;
+                        case "cpp":
+                            Console.WriteLine("Welcome to the Cookies++ interpreter!");
+                            Console.WriteLine("+ to increment cookies\r\n" +
+                                "- to decrement cookies\r\n" +
+                                "g to print cookies val\r\n" +
+                                "x to exit\r\n" +
+                                "s to save\r\n" +
+                                "l to load\r\n");
+                            double cookies = 0;
+                            bool stop = false;
+                            while (!stop)
+                            {
+                                Console.Write("> ");
+                                string cppI = Console.ReadLine() ?? ""
+                                    .ToLowerInvariant()
+                                    .Trim();
+                                switch (cppI)
+                                {
+                                    case "+":
+                                        cookies++;
+                                        break;
+                                    case "-":
+                                        if (cookies < 0)
+                                        {
+                                            AnsiConsole.MarkupLine("[red]Error[/]: CKI001: Cookies cannot be negative");
+                                            break;
+                                        }
+                                        cookies--;
+                                        break;
+                                    case "g":
+                                        Console.WriteLine(cookies);
+                                        break;
+                                    case "x":
+                                        stop = true;
+                                        break;
+                                    case "s":
+                                        fs.mkFileChr("\\ck.dat", cookies.ToString().ToCharArray(), [fileAttrib.Hidden]);
+                                        break;
+                                    case "l":
+                                        foreach (vFile item in fs.rootFiles)
+                                        {
+                                            if (item.name == "ck.dat")
+                                            {
+                                                cookies = double.Parse(item.contents);
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        AnsiConsole.MarkupLine("[red]Error[/]: CKI002: Invalid statement");
+                                        break;
+                                }
+                            }
+                            break;
+                        case "alias":
+                            Console.WriteLine();
+                            Console.Write("Enter alias name: ");
+                            string aliasName = Console.ReadLine() ?? "";
+                            if (aliasName.Contains(' '))
+                            {
+                                Console.WriteLine("Invalid alias name");
+                                break;
+                            }
+                            Console.Write("Enter command for alias to refer to: ");
+                            string tempCommand = Console.ReadLine() ?? "__bktignorenull";
+                            string[] command = tempCommand.Split(' ');
+                            if (command.Contains("__bktignorenull"))
+                            {
+                                Console.WriteLine("Null error.");
+                                break;
+                            }
+                            aliases.Add((aliasName, command));
+                            break;
                         case "pkgmngr":
                             if (commin.Length >= 3)
                             {
@@ -798,20 +935,20 @@ namespace borktorial
                                                     break;
                                                 case "totally_not_a_virus_trust_me_im_a_dolphin":
                                                     Console.WriteLine("Installing 253291B package...");
-                                                    Thread.Sleep(Math.Clamp((2532291 / mSpeed) * 1000, 1, int.MaxValue));
+                                                    sleep(Math.Clamp((2532291 / mSpeed) * 1000, 1, int.MaxValue));
                                                     virused = true;
                                                     Console.WriteLine("Installed!");
                                                     break;
                                                 case "tokimla82":
                                                     Console.WriteLine("Installing 645592B package...");
-                                                    Thread.Sleep(Math.Clamp((645592 / mSpeed) * 1000, 1, int.MaxValue));
+                                                    sleep(Math.Clamp((645592 / mSpeed) * 1000, 1, int.MaxValue));
                                                     Console.WriteLine("Installed!");
                                                     break;
                                                 default:
                                                     int pkgSize = rand.Next(16384, 1048576);
                                                     Console.WriteLine($"Installing {pkgSize}B package...");
-                                                    Thread.Sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
-                                                    if (rand.Next(1, 256) == 255 && (!specialDays.marsDay))
+                                                    sleep(Math.Clamp((pkgSize / mSpeed) * 1000, 1, int.MaxValue));
+                                                    if (rand.Next(1, 256) == 255 && (!specialDays.spaceDay))
                                                     {
                                                         virused = true;
                                                     }
@@ -838,30 +975,52 @@ namespace borktorial
                             }
                             break;
                         case "reboot":
-                            if (virused == false)
+                            rbt0 = true;
+                            Console.Clear();
+                            publicMain(["vs", "49"]);
+                            break;
+                        case "editor":
+                            if (commin.Length < 2)
                             {
-                                rbt0 = true;
-                                publicMain(["vs", "49"]);
+                                Console.WriteLine("invalid params. usage editor [filename]. note: cannot edit existing files");
+                                break;
                             }
-                            if (virused == true)
+                            Console.WriteLine("Welcome to editor.\r\n" +
+                                "Type a line to add it in, or @exit to exit");
+                            Console.WriteLine();
+                            bool stopE = false;
+                            string fullText = "";
+                            while (!stopE)
                             {
-                                while (true)
+                                Console.Write("> ");
+                                string inp = Console.ReadLine() ?? "";
+                                if (inp == "@exit")
                                 {
-                                    Console.Clear();
-                                    Console.WriteLine("Non-system disk or disk error.");
-                                    Console.WriteLine("Press any key to reboot.");
-                                    Console.ReadKey(true);
+                                    stopE = true;
                                 }
+                                else
+                                {
+                                    fullText += inp + "\r\n";
+                                }
+                            }
+                            fs.mkFile(commin[1].Replace("C:\\", "\\"), aprtMain.str2Ba(fullText), [fileAttrib.bktRs5]);
+                            Console.WriteLine("Saved.");
+                            break;
+                        case "dbg::bktcfg":
+                            List<cfgEnt> testCfg = bktCfg.parseFile("test.bkc");
+                            foreach (cfgEnt entry in testCfg)
+                            {
+                                Console.WriteLine(entry);
                             }
                             break;
                         case "drdickhd":
                             Console.WriteLine("Dr. Dickhead is scanning for viruses...");
                             Console.WriteLine();
-                            Thread.Sleep(rand.Next(15000, 30000));
+                            sleep(rand.Next(15000, 30000));
                             if (virused == true)
                             {
                                 Console.WriteLine("Dolphin Virus detected on computer. Removing...");
-                                Thread.Sleep(rand.Next(5000, 10000));
+                                sleep(rand.Next(5000, 10000));
                                 virused = false;
                                 Console.WriteLine("Dolphin Virus removed.");
                                 break;
@@ -884,125 +1043,20 @@ namespace borktorial
                                 break;
                             }
                             break;
-                        case "win":
-                            Console.WriteLine("Failed to load VMM32.VXD. You must reinstall Windows");
-                            break;
-                        case "dbg::spectre::console":
-                            AnsiConsole.MarkupLine("[blue][bold]Test![/][/]");
-                            AnsiConsole.Progress()
-                                .Start(ctx =>
-                                {
-                                    var task = ctx.AddTask("[rgb(63,127,255)]Doing the thing...[/]");
-
-                                    while (!task.IsFinished)
-                                    {
-                                        task.Increment(5);
-                                        Thread.Sleep(100);
-                                    }
-                                });
-                            AnsiConsole.MarkupLine("[rgb(255,255,255) on rgb(0,0,255)]Dingus[/]");
-                            AnsiConsole.Live(new Panel("Starting..."))
-                                .Start(ctx =>
-                                {
-                                    for (int i = 0; i < 10; i++)
-                                    {
-                                        ctx.UpdateTarget(new Panel($"[cyan]Tick: {i}[/]\n\nRandom: {rand.Next()}"));
-                                        Thread.Sleep(500);
-                                    }
-
-                                    ctx.UpdateTarget(new Panel("[green]Done![/]"));
-                                    Thread.Sleep(1000);
-                                });
-                            break;
-                        case "dbg::perftest::errgen_sf15":
-                            Stopwatch sow = new();
-                            sow.Start();
-                            for (int i = 0; i < 1024; i++)
-                            {
-                                string bigLoadOfString = errGen.sf15(1048576, 16, '-');
-                            }
-                            sow.Stop();
-                            Console.WriteLine($"Operation took {sow.ElapsedMilliseconds}ms!");
-                            break;
                         case "flush":
                             crshChance = 5000;
                             munCycle = 0;
                             tick = 0;
                             Console.WriteLine("System flush successful.");
                             break;
-                        case "ninov":
-                            Console.WriteLine("Ninovium is a resource used for system stabilization and minor performance gains\r\n" +
-                                "Help:\r\n\r\n" +
-                                "mine: Mine ninovium and add to bank\r\n" +
-                                "dispose: Dispose all ninovium (WARNING: MAY LEAD TO SYSTEM INSTABILITY)\r\n" +
-                                "reinsert: Remove and re-add ninovium\r\n" +
-                                $"\r\n{ninovium} ninovium cubes in bank resulting in a stability factor of {sysstab:F2}!" +
-                                "\r\nWARNING: Dingus Solutions. Inc is not responsible for any spontoneus human combustion from ninovium usage");
-                            if (commin.Length >= 2)
-                            {
-                                switch (commin[1])
-                                {
-                                    case "mine":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            var task1 = ctx.AddTask("[green]Mining...[/]");
-                                            var task2 = ctx.AddTask("[green]Inserting...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(5, 15));
-                                                task1.Increment(rand.Next(1, 3));
-                                                Thread.Sleep(rand.Next(5, 15));
-                                                task2.Increment(rand.Next(1, 3));
-                                            }
-                                        });
-                                        ninovium += 1;
-                                        break;
-                                    case "dispose":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            var task1 = ctx.AddTask("[green]Disposing...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(3, 5));
-                                                task1.Increment(rand.Next(3, 5));
-                                            }
-                                        });
-                                        ninovium = 0;
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            var task1 = ctx.AddTask("[green]Resting to recover stability...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(3, 5));
-                                                task1.Increment(rand.Next(3, 5));
-                                            }
-                                        });
-                                        break;
-                                    case "reinsert":
-                                        AnsiConsole.Progress()
-                                        .Start(ctx =>
-                                        {
-                                            // Define tasks
-                                            var task1 = ctx.AddTask("[green]Reinserting...[/]");
-
-                                            while (!ctx.IsFinished)
-                                            {
-                                                Thread.Sleep(rand.Next(5, 15));
-                                                task1.Increment(rand.Next(3, 5));
-                                            }
-                                        });
-                                        break;
-                                }
-                            }
+                        case "win":
+                        case "ntdetect":
+                            Console.WriteLine("NTVDM not found. Cannot run 16-bit app");
+                            break;
+                        case "ntoskrnl":
+                        case "smss":
+                        case "csrss":
+                            Console.WriteLine("Cannot run native binaries in NT-DOS subsystem");
                             break;
                         case "drdhtsr":
                             if (drdhtsr == null || !drdhtsr.IsAlive)
@@ -1019,17 +1073,26 @@ namespace borktorial
                             break;
                         case "lotto":
                             Console.Write("Enter lotto numbers: ");
-                            string userNums = Console.ReadLine().Replace("-", "").ToUpper() ?? "";
+                            string userNums = Console.ReadLine() ?? ""
+                                                     .Replace("-", "")
+                                                     .ToUpper();
                             string actual;
                             do
                             {
-                                actual = errGen.sf15(16, 4).Replace("-", "").ToUpper();
+                                actual = aprtMain.genHexStr(16, 4).Replace("-", "").ToUpper();
                             } while (userNums == actual);
                             Console.WriteLine($"Actual numbers were {actual}");
                             break;
                         case "shutdown":
-                            Environment.Exit(0);
-                            break; // this is unreachable code but the CSC needs it to compile
+                            Console.WriteLine("Shutting down...");
+                            impulse(5001);
+                            rbt0 = true;
+                            sleep(500); // make sure everything's functional
+                            Console.WriteLine("It is now safe to close down Borktorial");
+                            while (true)
+                            {
+                                sleep(int.MaxValue);
+                            }
                         case "dbg::virusedToggle":
                             virused = !virused;
                             break;
@@ -1075,7 +1138,7 @@ namespace borktorial
                             }
                             if (jebcounter == 16)
                             {
-                                Console.WriteLine(JEBMSG);
+                                Console.WriteLine(jebMsg);
                                 jebcounter = 0;
                                 jmtrigger = true;
                                 break;
@@ -1086,8 +1149,7 @@ namespace borktorial
                             {
                                 switch (commin[1])
                                 {
-                                    case "p32krnl":
-                                    case "wininit":
+                                    case "ntuinit":
                                     case "winlogon":
                                     case "csrss":
                                     case "smss":
@@ -1097,7 +1159,7 @@ namespace borktorial
                                     case "cmdshell":
                                         while (true)
                                         {
-                                            Thread.Sleep(int.MaxValue);
+                                            sleep(int.MaxValue);
                                         }
                                     case "drdhtsr":
                                         if (drdhtsr != null && drdhtsr.IsAlive)
@@ -1120,7 +1182,7 @@ namespace borktorial
                                         {
                                             while (true)
                                             {
-                                                Thread.Sleep(int.MaxValue);
+                                                sleep(int.MaxValue);
                                             }
                                         }
                                         else
@@ -1135,7 +1197,7 @@ namespace borktorial
                         case "modernai":
                             while (true)
                             {
-                                throw new Exception("fuck image gen ai and all the ones intended to replace writers or programmers or some shit", new Exception($"{errGen.Generate()[0]} -- {errGen.Generate()[1]}"));
+                                throw new Exception("fuck image gen ai and all the ones intended to replace writers or programmers or some shit", new Exception($"{errGen.generateErr()[0]} -- {errGen.generateErr()[1]}"));
                             }
                         case "baconflavoredshapez":
                             Console.Clear();
@@ -1147,7 +1209,7 @@ namespace borktorial
                                 for (ulong i = 0; i < ulong.MaxValue; i++)
                                 {
                                     // Thou thread shalt not sleep
-                                    // Thread.Sleep(1);
+                                    // sleep(1);
                                     if (rand.Next(0, 5) == 0)
                                     {
                                         Console.Write("A");
@@ -1174,7 +1236,7 @@ namespace borktorial
                                     }
                                 }
                             }
-                            if (commin[1] == "--nonormalcyallowed" || specialDays.aprilfool)
+                            if (commin[1] == "/nonormalcyallowed" || specialDays.aprilfool)
                             {
                                 for (ulong i = 0; i < ulong.MaxValue; i++)
                                 {
@@ -1187,10 +1249,19 @@ namespace borktorial
                                 break;
                             }
                             break;
+                        case "dbg::namegen":
+                            Console.WriteLine(aprtMain.mkShitUsername(rand));
+                            break;
                         case "help":
                             Console.WriteLine("Available commands:");
                             Console.WriteLine("  echo <text>               - Print text to the screen.");
                             Console.WriteLine("  dir                       - List files in the current directory.");
+                            Console.WriteLine("  cd <dirname>              - Change current directory");
+                            Console.WriteLine("  create <filename>         - Make file");
+                            Console.WriteLine("  del <filename>            - Delete file");
+                            Console.WriteLine("  deltree <dirname>         - Delete folder");
+                            Console.WriteLine("  type <filename>           - Type file contents");
+                            Console.WriteLine("  editor <filename>         - Text editor. Does not support editing existing files");
                             Console.WriteLine("  pkgmngr install <package> - Install a package (try 'hl3', 'totally_not_a_virus_trust_me_im_a_dolphin', or 'tokimla82').");
                             Console.WriteLine("  drdickhd                  - Scan for and remove viruses.");
                             Console.WriteLine("  drdhtsr                   - Start the Dr. Dickhead TSR (background virus monitor).");
@@ -1203,15 +1274,13 @@ namespace borktorial
                             Console.WriteLine("  specs                     - Show system hardware");
                             Console.WriteLine("  atdt <number>             - Dialer");
                             Console.WriteLine("  drinkfood                 - The command line version of psychadelics");
-                            Console.WriteLine("  dohashidoshai             - Print THE CODE");
                             Console.WriteLine("  satconnect                - Connect to satellite internet");
                             Console.WriteLine("  format                    - Format drive");
+                            Console.WriteLine("  cmdmail                   - Make CommandMail(TM) codes to share with others");
+                            Console.WriteLine("  cpp                       - Start the Cookies++ interpreter");
                             Console.WriteLine();
                             Console.WriteLine("For extra fun, try exploring on your own. Some secrets are hidden! e.g a very certain pilot kerbal. \r\n" +
                                 "\r\nNote: Call 1-800-intnet for free internet");
-                            break;
-                        case "dohashidoshai!":
-                            Console.WriteLine("HU6UIRSPOU2UQQ2FJBDFMQKJIRLDIUSF");
                             break;
                         case "sudo":
                             if (root == true)
@@ -1223,6 +1292,9 @@ namespace borktorial
                                 Console.WriteLine("You're not in sudoers. This incident will be reported to the FBI");
                             }
                             break;
+                        case "recursion":
+                            Console.WriteLine("Did you mean: recursion");
+                            break;
                         case "format":
                             if (commin.Length >= 2)
                             {
@@ -1231,37 +1303,38 @@ namespace borktorial
                                     case "a:":
                                         Console.WriteLine("Insert diskette into drive A: to format");
                                         Console.WriteLine("Waiting for diskette...");
-                                        Thread.Sleep(rand.Next(2500, 3000));
+                                        sleep(rand.Next(2500, 3000));
                                         Console.Write("Found diskette! Format: 720KB\r\n");
                                         Console.WriteLine("Press any key to continue...");
                                         Console.ReadKey(false);
                                         Console.WriteLine();
                                         for (int i = 0; i < 1440; i++)
                                         {
-                                            Console.Write($"Sector {i.ToString("D4")}/1440...");
-                                            Thread.Sleep(rand.Next(500, 1000));
+                                            Console.Write($"Sector {i:D4}/1440...");
+                                            sleep(rand.Next(500, 1000));
                                             Console.Write("Done\r\n");
-                                            Thread.Sleep(rand.Next(15, 50));
+                                            sleep(rand.Next(15, 50));
                                         }
                                         Console.WriteLine("Format successful. Returning to DOS");
                                         break;
                                     case "b:":
                                         Console.WriteLine("Insert diskette into drive B: to format");
                                         Console.WriteLine("Waiting for diskette...");
-                                        Thread.Sleep(rand.Next(2500, 3000));
+                                        sleep(rand.Next(2500, 3000));
                                         Console.Write("Found diskette! Format: 720KB\r\n");
                                         Console.WriteLine("Press any key to continue...");
                                         Console.ReadKey(false);
                                         Console.WriteLine();
                                         for (int i = 0; i < 1440; i++)
                                         {
-                                            Console.Write($"Sector {i.ToString("D4")}/1440...");
-                                            Thread.Sleep(rand.Next(500, 1000));
+                                            Console.Write($"Sector {i:D4}/1440...");
+                                            sleep(rand.Next(500, 1000));
                                             Console.Write("Done\r\n");
-                                            Thread.Sleep(rand.Next(15, 50));
+                                            sleep(rand.Next(15, 50));
                                         }
                                         Console.WriteLine("Format successful. Returning to DOS");
                                         break;
+                                    // this comment is on line 1337 of bktMain.cs
                                     case "c:":
                                         Console.WriteLine("WARNING! All data on non-removable disk C: will be erased!");
                                         Console.WriteLine("Are you sure you wanna continue (Y/N)? ");
@@ -1272,14 +1345,16 @@ namespace borktorial
                                                 Console.WriteLine();
                                                 for (int i = 0; i < 1228800; i++)
                                                 {
-                                                    Console.Write($"Sector {i.ToString("D7")}/1228800...");
-                                                    Thread.Sleep(rand.Next(10, 50));
+                                                    Console.Write($"Sector {i:D7}/1228800...");
+                                                    sleep(rand.Next(10, 20));
                                                     Console.Write("Done\r\n");
-                                                    Thread.Sleep(rand.Next(5, 15));
-                                                    if (i > 485824)
+                                                    sleep(rand.Next(5, 15));
+                                                    if (i > 2880)
                                                     {
-                                                        File.AppendAllText($"temp_fcBA39-FA31.bin", errGen.sf15(8192, 0));
-                                                        publicMain(["BABOON", "LAGOON"]);
+                                                        fs = new fileSys();
+                                                        Console.WriteLine("[NTDOS] System error (NT_SUBSYS_EXITED)");
+                                                        Console.WriteLine("Warning: OS is pretty much on life support");
+                                                        sleep(5000);
                                                     }
                                                 }
                                                 break;
@@ -1304,9 +1379,22 @@ namespace borktorial
                         case "fastcat":
                             catGoBrr(50);
                             break;
+                        case "halton":
+                            rbt0 = true; // kill everything
+                            ulong count = 0;
+                            while (count < ulong.MaxValue)
+                            {
+                                sleep(int.MaxValue);
+                                count++;
+                            }
+                            rbt0 = false;
+                            break;
                         case "check_unknown_ints":
                             Console.WriteLine("[INT 5Fh] Link to Kerbal Space Center success!");
                             jebconnect = true;
+                            break;
+                        case "whoami":
+                            Console.WriteLine($"NTUSERS\\{username}");
                             break;
                         case "jebmail":
                             Console.WriteLine("Jebmail e-mail client connecting...");
@@ -1328,11 +1416,11 @@ namespace borktorial
                                 {
                                     case "1-800-intnet":
                                         Console.WriteLine("Dialing...");
-                                        PlayModemSound();
+                                        playModemSound();
                                         Console.WriteLine("Connected to Fuckston Communications Services!");
                                         mSpeed = 1800;
                                         mConnected = true;
-                                        if (specialDays.marsDay)
+                                        if (specialDays.spaceDay)
                                         {
                                             mSpeed += (mSpeed / 4);
                                         }
@@ -1340,11 +1428,11 @@ namespace borktorial
                                         break;
                                     case "1-800-fastnet":
                                         Console.WriteLine("Dialing...");
-                                        PlayModemSound();
+                                        playModemSound();
                                         Console.WriteLine("Connected to Aperture V.32bis-compressed");
                                         mSpeed = 2000; // 16000bps
                                         mConnected = true;
-                                        if (specialDays.marsDay)
+                                        if (specialDays.spaceDay)
                                         {
                                             mSpeed += (mSpeed / 4);
                                         }
@@ -1352,7 +1440,7 @@ namespace borktorial
                                         break;
                                     default:
                                         Console.WriteLine("Dialing...");
-                                        Thread.Sleep(rand.Next(38400, 76800));
+                                        sleep(rand.Next(38400, 76800));
                                         Console.WriteLine("Disconncted.");
                                         break;
                                 }
@@ -1360,10 +1448,10 @@ namespace borktorial
                             break;
                         case "etherconnect":
                             Console.WriteLine("Connecting to ethernet...");
-                            Thread.Sleep(rand.Next(2000, 3000));
+                            sleep(rand.Next(2000, 3000));
                             mSpeed = 524288;
                             mConnected = true;
-                            if (specialDays.marsDay)
+                            if (specialDays.spaceDay)
                             {
                                 mSpeed += (mSpeed / 4);
                             }
@@ -1373,12 +1461,12 @@ namespace borktorial
                         case "satconnect":
                             Console.Write("\r\n");
                             Console.Write("Finding optimal satellite cluster...");
-                            Thread.Sleep(rand.Next(5300, 8800));
-                            Console.Write($"Found sat group: {errGen.sf15(8, 4)}\r\n");
-                            Thread.Sleep(rand.Next(1000, 2001));
+                            sleep(rand.Next(5300, 8800));
+                            Console.Write($"Found sat group: {aprtMain.genHexStr(8, 4)}\r\n");
+                            sleep(rand.Next(1000, 2001));
                             mSpeed = rand.Next(51200, 153601);
                             mConnected = true;
-                            if (specialDays.marsDay)
+                            if (specialDays.spaceDay)
                             {
                                 mSpeed += (mSpeed / 4);
                             }
@@ -1387,31 +1475,18 @@ namespace borktorial
                             break;
                         case "This_command_is_not_actually_accessible_under_NORMAL_Cir**CUM**stances_**LOL**":
                             File.Create("GORDON").Dispose();
-                            keBugCheck(0xCAFEBAB, new(2022, 2, 22));
+                            keBugCheck(0xCAFEBABE, new(2022, 2, 22));
                             break;
                         case "drinkfood":
                             Console.TreatControlCAsInput = true;
+                            File.WriteAllText("GORDON", "a");
                             // just like real psychadelics, it's fun for a bit
                             // and then it fucking obiliterates everything
-                            cfg[4] = 1;
-                            saveCfg();
                             while (true)
                             {
                                 Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
                                 AnsiConsole.Markup($"[rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)}) on rgb({rand.Next(0, 256)},{rand.Next(0, 256)},{rand.Next(0, 256)})][blink][bold]?[/][/][/]");
-                                //Console.Title += (char)rand.Next(32, 256);
-                                //if(Console.Title.Length > 32)
-                                //{
-                                //    Console.Title = "";
-                                //}
-                                //if (rand.Next(0, 65536) == 0)
-                                //{
-                                //    Console.Clear();
-                                //}
                             }
-                        case "logtesto":
-                            Exception iex = new("DOHASHIDOSHAI");
-                            throw new Exception("BORKYBORK", iex);
                         case "lambda":
                             DateTime rightFuckingNow = DateTime.UtcNow;
                             bool hlDay = false;
@@ -1422,19 +1497,24 @@ namespace borktorial
                                     hlDay = true;
                                 }
                             }
+                            List<string> hlSongs = (List<string>)Directory.EnumerateFiles(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\");
+                            string song = hlSongs[rand.Next(hlSongs.Count)];
                             if (hlDay == true)
                             {
                                 Console.Clear();
-                                if (File.Exists(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3"))
+                                if (File.Exists(song))
                                 {
-                                    new Thread(() => mp3PlayLoop(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3"))
+                                    new Thread(() => mp3PlayLoop(song))
                                     {
                                         IsBackground = true
                                     }.Start();
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"cannot find: {commin[0]}");
+                                    while (true)
+                                    {
+                                        throw new Exception("The HL soundtrack is FREE!!! and you don't have it?");
+                                    }
                                 }
                                 while (true)
                                 {
@@ -1446,15 +1526,13 @@ namespace borktorial
                                 Console.WriteLine($"cannot find: {commin[0]}");
                             }
                             break;
-                        case "lplay_dbg":
-                            mp3PlayLoop(@"C:\Program Files (x86)\Steam\steamapps\music\Half-Life Soundtrack\01 Adrenaline Horror.mp3");
-                            break;
-                        case "dbg::exhndlr":
-                            for (int i = 10 - 1; i >= 0; i--)
+                        case "rolld20x20":
+                            Console.WriteLine();
+                            for (int i = 0; i < 20; i++)
                             {
-                                Console.WriteLine(69 / i);
+                                Console.Write(rand.Next(1, 21)); // 1 to 20 because upper bound is exclusive
                             }
-                            Console.WriteLine(cfg[593]);
+                            Console.WriteLine();
                             break;
                         case "lgr":
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -1469,7 +1547,7 @@ namespace borktorial
                             Console.WriteLine("did you mean: vi");
                             break;
                         case "nano":
-                            Console.WriteLine("nano-penis");
+                            Console.WriteLine("NOPE NOPE NOPE NOPE NOPE");
                             break;
                         case "atat":
                             Console.WriteLine("CAAAASHIES!!!");
@@ -1493,24 +1571,32 @@ namespace borktorial
                             try
                             {
                                 int newsSizeSum = 1;
-                                foreach (var item in currNews)
+                                foreach (string item in currNews)
                                 {
                                     newsSizeSum += item.Length;
                                 }
-                                Console.WriteLine($"Fetching news (size: {bktStf.byteFormat((ulong)newsSizeSum)})...");
+                                sleep(rand.Next(350, 500));
+                                if (mConnected)
+                                {
+                                    Console.WriteLine($"Fetching news (size: {aprtMain.byteFormat((ulong)newsSizeSum)})...");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Fetching news (size: unknown)...");
+                                }
                                 if (!mConnected)
                                 {
                                     Console.WriteLine("Please connect to the Internet.");
                                     break;
                                 }
-                                Thread.Sleep(newsSizeSum / mSpeed);
-                                foreach (var item in currNews)
+                                sleep(newsSizeSum / mSpeed);
+                                foreach (string item in currNews)
                                 {
                                     if (!item.StartsWith("::p_"))
                                     {
                                         Console.WriteLine($"NEWS: {item}");
                                     }
-                                    Thread.Sleep(150);
+                                    sleep(150);
                                 }
                                 break;
                             }
@@ -1521,7 +1607,7 @@ namespace borktorial
                                 break;
                             }
                         case "radio":
-                            if (!specialDays.marsDay)
+                            if (!specialDays.spaceDay)
                             {
                                 Console.WriteLine("Now listening: 89.25MHz. The Human Music");
                             }
@@ -1529,35 +1615,19 @@ namespace borktorial
                             {
                                 Console.WriteLine("Now listening: 195.25MHz. Duna Radio Broadcasting");
                             }
-                            sf59("msc_canyon");
-                            Thread rLoop = new(() =>
+                            audosey.loadAud("assets\\rd_canyon.wav", 1);
+                            if (Directory.Exists("assets\\customRadioSongs"))
                             {
-                                radioLoop("rd0.wav");
-                            });
-                            rLoop.Start();
-                            radioStopped = !radioStopped;
-                            break;
-                        case "the_most_useless_command_ever":
-                            using (WebClient client = new())
-                            {
-                                // i just host win95 RTM on floppy on my github pages, let's hope it doesn't instantly crash
-                                string win95Link = "https://osintdoesstuff.github.io/webodingus/win95.7z";
-                                Console.WriteLine("Downloading Windows 95...");
-                                client.DownloadFile(win95Link, "win95.7z");
-                                Console.WriteLine("Successfully downloaded.");
-                                Process.Start(new ProcessStartInfo
+                                string[] songs = Directory.GetFiles("assets\\customRadioSongs");
+                                if (rand.Next(0, 2) == 0)
                                 {
-                                    FileName = "win95.7z",
-                                    UseShellExecute = true
-                                });
+                                    audosey.loadAud(songs[rand.Next(songs.Length)], 1);
+                                }
                             }
+                            audosey.play(1);
                             break;
-                        case "msgbox":
-                            MessageBox.Show("THE MAGIC OF WINDOWS FORMS!", "bkt",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information,
-                                MessageBoxDefaultButton.Button1,
-                                MessageBoxOptions.DefaultDesktopOnly,
-                                false);
+                        case "dumpsysstate":
+                            aprtMain.dumpState<bktMain>();
                             break;
                         case "netinfo":
                             Console.WriteLine("nUtils Utility Pack 1.4 - NETINFO");
@@ -1588,7 +1658,7 @@ namespace borktorial
                             {
                                 mCtStr = "unknown";
                             }
-                            Thread.Sleep(rand.Next(1250, 5000));
+                            sleep(rand.Next(1250, 5000));
                             if (!mConnected)
                             {
                                 Console.WriteLine("connection type: none\r\n" +
@@ -1599,9 +1669,9 @@ namespace borktorial
                             else
                             {
                                 Console.WriteLine($"connection type: {mCtStr}\r\n" +
-                                    $"speed: {bktStf.byteFormat((UInt128)iMspeed)}/s\r\n" +
+                                    $"speed: {aprtMain.byteFormat((UInt128)iMspeed)}/s\r\n" +
                                     $"connected: yes\r\n" +
-                                    $"variance range: -{bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s to {bktStf.byteFormat((UInt128)(iMspeed / 4.5))}/s"
+                                    $"variance range: -{aprtMain.byteFormat((UInt128)(iMspeed / 4.5))}/s to {aprtMain.byteFormat((UInt128)(iMspeed / 4.5))}/s"
                                     );
                             }
                             break;
@@ -1618,7 +1688,7 @@ namespace borktorial
                                 if (ex.Message == "NO HOPIUM LEFT!!!")
                                 {
                                     infLoop();
-                                    void infLoop()
+                                    static void infLoop()
                                     {
                                         infLoop(); // try to nuke the stack
                                     }
@@ -1626,56 +1696,199 @@ namespace borktorial
                                 continue; // do nothing
                             }
                             break;
+                        case "book":
+                            string book = """
+                                Now it's time for a cool subject called MATH!
+
+                                2+2 = 4
+                                9+10 = 21
+                                1+9 = 10
+                                4+4 = 8
+                                22+22 = 44
+
+                                Wow, that's so cool! I want to know more!
+
+                                Now solve this: -3*log(4)/32+3
+                                """;
+                            Console.WriteLine(aprtMain.typoinator(book, 3, rand));
+                            break;
                         case "clock":
                             // NOTE: This uses the Borktorial Internal Clock.
                             // The BIC is synced with **UTC TIME**
                             // This will not be correct for a lot of people
                             // And i don't fucking care.
-                            Console.WriteLine($"{DateTime.UtcNow.ToString("R")} BT:{tick}-BMC:{munCycle}");
+                            Console.WriteLine($"{DateTime.UtcNow:R} BT:{tick}-BMC:{munCycle}");
+                            break;
+                        case "cmdmail":
+                            try
+                            {
+                                Console.WriteLine($"Current amount of paper: {giftCount}");
+                                if (giftCount == 0)
+                                {
+                                    Console.WriteLine("You're all out of paper!");
+                                    Console.WriteLine("To get more paper, you must use mail codes");
+                                    break;
+                                }
+                                Console.Write("Command to send: ");
+                                string cmd = Console.ReadLine() ?? "";
+                                Console.Write("Message to bundle in (keep it nice!): ");
+                                string msg = Console.ReadLine() ?? "";
+                                Console.Write("Days until expiry: ");
+                                int due = 0;
+                                try
+                                {
+                                    due = int.Parse(Console.ReadLine() ?? "");
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("Invalid, defaulting to 3 days!");
+                                    due = 3;
+                                }
+                                if (cmd.Contains('\0'))
+                                {
+                                    Console.WriteLine("Error: invalid command");
+                                    break;
+                                }
+                                if (cmd == "\x01")
+                                {
+                                    Console.WriteLine("Error: invalid command");
+                                    break;
+                                }
+                                if (msg.Contains('\0'))
+                                {
+                                    Console.WriteLine("Error: invalid message");
+                                    break;
+                                }
+                                if (username.Contains('\0'))
+                                {
+                                    Console.WriteLine("Error: invalid username");
+                                    break;
+                                }
+                                if (due > 14)
+                                {
+                                    Console.WriteLine("Error: cannot last more than 14 days!");
+                                    break;
+                                }
+                                if (due < 1) 
+                                {
+                                    Console.WriteLine("Error: cannot last less than 1 day");
+                                }
+                                Console.WriteLine($"Your CommandMail(TM) code: {cmdMailEnc(cmd, msg, due)}");
+                                Console.WriteLine($"This code will expire after {due} days");
+                                Console.WriteLine("To use, simply type in the code directly into the command prompt");
+                                Console.WriteLine("Copy it so you can share it with your friends!");
+                                giftCount--;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error.");
+                                shitLog.createEntry("CMDMAIL", ex.ToString(), logType.Err);
+                                break;
+                            }
                             break;
                         default:
                             if (string.IsNullOrWhiteSpace(string.Join(" ", commin)))
                             {
                                 break; // do nothing.
                             }
+                            try
+                            {
+                                if (rawCommin.StartsWith("mail."))
+                                {
+                                    if (usedGifts.Count > 5)
+                                    {
+                                        usedGifts.RemoveAt(0);
+                                    }
+                                    (string username, string command, string message, string sid) mail = cmdMailDec(rawCommin);
+                                    if (mail == ("\x00", "\x01", "\x02", "0"))
+                                    {
+                                        Console.WriteLine("This mail code has expired.");
+                                        break;
+                                    }
+                                    if (mail == ("\x02", "\x01", "\x00", "0"))
+                                    {
+                                        Console.WriteLine("This mail code is from the future.");
+                                        break;
+                                    }
+                                    if (mail == ("\x06", "\x06", "\x06", "0"))
+                                    {
+                                        Console.WriteLine("Mail integrity error.");
+                                        break;
+                                    }
+                                    if (mail == ("\x07", "\x07", "\x07", "0"))
+                                    {
+                                        Console.WriteLine("Format error.");
+                                        break;
+                                    }
+                                    if (usedGifts.Contains(mail))
+                                    {
+                                        Console.WriteLine("You already used this code.");
+                                        break;
+                                    }
+                                    usedGifts.Add(mail);
+                                    if (giftCount < 5)
+                                    {
+                                        giftCount++;
+                                    }
+                                    Console.WriteLine("=== You've got mail! ===");
+                                    AnsiConsole.MarkupLine($"From: {mail.username} (sid: {mail.sid})");
+                                    Console.WriteLine("To: you");
+                                    if (mail.command != "")
+                                    {
+                                        AnsiConsole.MarkupLine($"Command to try out: {mail.command}");
+                                    }
+                                    if (mail.message != "")
+                                    {
+                                        AnsiConsole.MarkupLine($"Message: {parseBorkTag(mail.message)}");
+                                    }
+                                    break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Hmmm, something seems wrong with your CommandMail(TM) code");
+                                shitLog.createEntry("CMDMAIL", ex.ToString(), logType.Err);
+                                break;
+                            }
                             string scriptName = Path.Combine("mods", commin[0] + ".lua");
+                            if (commin[0].StartsWith("dbg::"))
+                            {
+                                scriptName = Path.Combine("mods", "debug", commin[0] + ".lua");
+                            }
                             if (File.Exists(scriptName))
                             {
-                                using (var lua = new NLua.Lua())
+                                using Lua lua = new();
+                                lua.LoadCLRPackage();
+
+                                try
                                 {
-                                    lua.LoadCLRPackage();
+                                    string? luAsm = Assembly.GetExecutingAssembly().GetName().Name;
+                                    string? lut = typeof(bktMain).FullName;
 
-                                    try
-                                    {
-                                        var luAsm = Assembly.GetExecutingAssembly().GetName().Name;
-
-                                        var lut = typeof(Program).FullName;
-
-                                        lua.DoString($@"
+                                    lua.DoString($@"
                                             luanet.load_assembly('{luAsm}')
                                             Sys = luanet.import_type('{lut}')
                                         ");
 
-                                        if (lua["Sys"] == null)
-                                        {
-                                            shitLog.createEntry("LUALDR", "Failed to load ASM. Sys was null.", logType.Err);
-                                            Console.WriteLine("Error: Sys was equal to null");
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            lua["Args"] = string.Join(" ", commin.Skip(1));
-                                            lua["ArgsRaw"] = string.Join(" ", rawCommin.Split(" ").Skip(1)); // listen man if it works.
-                                            lua["ArgsNoSkip"] = string.Join(" ", commin);
-                                            lua["ArgsRawNoSkip"] = rawCommin;
-                                            lua.DoFile(scriptName);
-                                        }
-                                    }
-                                    catch (Exception ex)
+                                    if (lua["Sys"] == null)
                                     {
-                                        shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
-                                        throw;
+                                        shitLog.createEntry("LUALDR", "Failed to load ASM. Sys was null.", logType.Err);
+                                        Console.WriteLine("Error: Sys was equal to null");
+                                        break;
                                     }
+                                    else
+                                    {
+                                        lua["Args"] = string.Join(" ", commin.Skip(1));
+                                        lua["ArgsRaw"] = string.Join(" ", rawCommin.Split(" ").Skip(1)); // listen man if it works.
+                                        lua["ArgsNoSkip"] = string.Join(" ", commin);
+                                        lua["ArgsRawNoSkip"] = rawCommin;
+                                        lua.DoFile(scriptName);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    shitLog.createEntry("LUALDR", ex.ToString(), logType.Err);
+                                    throw;
                                 }
                                 break;
                             }
@@ -1691,6 +1904,7 @@ namespace borktorial
                                         "Are you proud of yourself?");
                                 }
                             }
+                            shitLog.createEntry("CMDHNDLR", $"cannot find: {commin[0]}", logType.Err);
                             Console.WriteLine($"cannot find: {commin[0]}");
                             break;
                     }
@@ -1735,7 +1949,7 @@ namespace borktorial
 
                 if (rand.Next(0, crshChance) == 0)
                 {
-                    string[] errG = errGen.Generate();
+                    string[] errG = errGen.generateErr();
                     int errCode = rand.Next(); // DONTFIXME: The values this shit returns are probably gonna be pretty fuckin' funny
                     keBugCheck((uint)errCode);
                 }
@@ -1747,7 +1961,7 @@ namespace borktorial
         {
             while (!stopTsr)
             {
-                Thread.Sleep(30000);
+                sleep(30000);
                 if (virused)
                 {
                     Console.WriteLine("ALERT! Potential virus detected. Run drdickhd now!");
@@ -1768,7 +1982,7 @@ namespace borktorial
         public static void keBugCheck(uint errCode, DateTime dt = new())
         {
             // this funkiness is because you can't have DateTime as default param so we have to do this
-            if(dt == new DateTime())
+            if (dt == new DateTime())
             {
                 dt = DateTime.UtcNow;
             }
@@ -1784,7 +1998,7 @@ namespace borktorial
                 errGen.templates[
                     new Random((int)errCode + strSum(dt.ToString("R"))).Next(
                         errGen.templates.Length)])[1];
-            if(rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
+            if (rand.Next(0, int.MaxValue) == 0 && iRnd == 0)
             {
                 Debug.WriteLine("immortal tiger");
             }
@@ -1805,7 +2019,19 @@ namespace borktorial
             writeEmptyLine();
             writeFullLine($"*** STOP: 0x{errCode:X8} (0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8}, 0x{rand.Next(int.MaxValue):X8})");
             writeEmptyLine();
-            writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+            for (int i = 0; i < rand.Next(8, 12); i++)
+            {
+                string pName2 = errGen.genCustomTemplate(
+                errGen.templates[
+                    new Random((int)errCode + strSum(dt.ToString("R"))).Next(
+                        errGen.templates.Length)])[1];
+                if (i == 0)
+                {
+                    writeFullLine($"***       {pName}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+                }
+                sleep(250);
+                writeFullLine($"***       {pName2}  -  Address 0x{rand.Next(int.MaxValue):X8} base at 0x{rand.Next(int.MaxValue):X8}, DateStamp 0x{rand.Next(int.MaxValue):X8}");
+            }
             writeEmptyLine();
             writeFullLine($"Beginning dump of physical memory...");
             writeFullLine($"Physical memory dump initializing: {pName} at fault");
@@ -1813,7 +2039,7 @@ namespace borktorial
 
             for (int i = 0; i < 6; i++)
             {
-                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')} {errGen.sf15(8, 0, ' ')}");
+                writeFullLine($"  0x{rand.Next(int.MaxValue):X8}  {aprtMain.genHexStr(8, 0, ' ')} {aprtMain.genHexStr(8, 0, ' ')} {aprtMain.genHexStr(8, 0, ' ')} {aprtMain.genHexStr(8, 0, ' ')}");
             }
 
             writeEmptyLine();
@@ -1822,8 +2048,16 @@ namespace borktorial
             for (int pct = 0; pct <= 100;)
             {
                 Console.Write($"\rPhysical memory dump: {Math.Min(pct, 100)}% complete    ");
-                Thread.Sleep(rand.Next(50, 300));
+                if (pct > 90)
+                {
+                    sleep(rand.Next(150, 200));
+                }
+                sleep(rand.Next(50, 300));
                 pct += rand.Next(1, 8);
+                if (pct > 95 && pct < 100)
+                {
+                    pct = 100;
+                }
             }
 
             writeEmptyLine();
@@ -1831,9 +2065,12 @@ namespace borktorial
             writeEmptyLine();
             writeFullLine($"Contact your system administrator or technical support group for further assistance.");
             writeEmptyLine();
-            writeFullLine($"Memory dumped: {rand.Next(128, 524288)} KB");
-            writeFullLine($"Dump file: \\ntdos\\MEMORY.DMP");
-            writeFullLine($"Report ID: {errGen.sf15(8, 4)}-{errGen.sf15(12, 4)}-{errGen.sf15(8, 4)}");
+            int rdSize = rand.Next(128, 524288);
+            writeFullLine($"Memory dumped: {rdSize} KB");
+            writeFullLine($"Dump file: C:\\WINNT\\MEMORY.DMP");
+            fs.mkFile("\\WINNT\\MEMORY.DMP", aprtMain.mkRndByteArray(rdSize / (int)(1+(rand.NextDouble()*3))));
+            impulse(5001); // save fs
+            writeFullLine($"Report ID: {aprtMain.genHexStr(8, 4)}-{aprtMain.genHexStr(12, 4)}-{aprtMain.genHexStr(8, 4)}");
             writeEmptyLine();
             writeFullLine($"*** Fatal System Error: 0x{errCode:X8} ({errName})");
             writeFullLine($"*** Process: {pName} (PID: {rand.Next(1, 65536)})");
@@ -1842,7 +2079,7 @@ namespace borktorial
             rbt0 = true;
             while (true)
             {
-                Thread.Sleep(int.MaxValue);
+                sleep(int.MaxValue);
             }
         }
         /// <summary>
@@ -1864,7 +2101,7 @@ namespace borktorial
         {
             char[] inp2 = inp.ToCharArray();
             int accu = 0;
-            foreach (var item in inp2)
+            foreach (char item in inp2)
             {
                 accu += item;
             }
@@ -1872,21 +2109,20 @@ namespace borktorial
         }
         public static void sf59(string code)
         {
-            var secrets = new Dictionary<string, (string resource, string filename)>
+            Dictionary<string, (string resource, string filename)> secrets = new()
             {
                 ["waluigi"] = ("borktorial.rsrc.screenshot16.png", "the mun awaits.png"),
-                ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt"),
-                ["luigi"] = ("borktorial.rsrc.thisisabucket.7z",
-                             "THIS 7ZIP FILE MAY CAUSE CANCER OR REPRODUCTIVE HARM IN THE STATE OF CALIFORNIA.7z"),
-                ["msc_canyon"] = ("borktorial.rsrc.rd_canyon.wav", "rd0.wav")
+                ["igiulaw"] = ("borktorial.rsrc.eula.txt", "eula.txt")
             };
 
-            if (!secrets.TryGetValue(code, out var secret))
+            if (!secrets.TryGetValue(code, out (string resource, string filename) secret))
+            {
                 return;
+            }
 
-            using var stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream(secret.resource);
-            using var ms = new MemoryStream();
+            using Stream? stream = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream(secret.resource) ?? throw new Exception("Err in sf15: Stream was null");
+            using MemoryStream ms = new();
             stream.CopyTo(ms);
             File.WriteAllBytes(secret.filename, ms.ToArray());
             if (!code.StartsWith("msc_"))
@@ -1927,7 +2163,7 @@ namespace borktorial
                         {
                             hopium -= 0.005;
                             Console.Write(fjbjB[j]);
-                            Thread.Sleep(20);
+                            sleep(20);
                             if (hopium <= 0)
                             {
                                 throw new Exception("NO HOPIUM LEFT!!!");
@@ -1938,7 +2174,7 @@ namespace borktorial
                                 {
                                     hopium -= 0.1;
                                     Console.Write(fjbjB3[k]);
-                                    Thread.Sleep(20);
+                                    sleep(20);
                                 }
                             }
                             if ((rand.Next(0, 7) == 0) && (j == fjbjB.Length - 1))
@@ -1947,7 +2183,7 @@ namespace borktorial
                                 {
                                     hopium -= 0.05;
                                     Console.Write(fjbjB2[k]);
-                                    Thread.Sleep(20);
+                                    sleep(20);
                                 }
                             }
                         }
@@ -1981,7 +2217,7 @@ namespace borktorial
                         for (int k = 0; k < f22Raptor.Length; k++)
                         {
                             Console.Write(f22Raptor[k]);
-                            Thread.Sleep(20 + (int)(Math.Log10(f22Raptor.Length)));
+                            sleep(20 + (int)(Math.Log10(f22Raptor.Length)));
 
                         }
                         new Thread(annoy1).Start();
@@ -2010,7 +2246,7 @@ namespace borktorial
                     char[] bootiniContents = """
                         [bootldr]
                         ; ntdos bootloader 1.3
-                        default IDE0:\part0\NTLDR /SRLOUTONLY
+                        default IDE0:\part0\WINNT\NTOSKRNL.EXE /SRLOUTONLY
                         """.ToCharArray();
                     // Root directories
                     fs.mkDir("WINNT");
@@ -2038,39 +2274,39 @@ namespace borktorial
                     fs.mkDir("WINNT\\Profiles\\Default User\\Start Menu");
 
                     // System files
-                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe", bktStf.mkRndByteArray(32753));
-                    fs.mkFile("WINNT\\System32\\hal.dll", bktStf.mkRndByteArray(19285));
-                    fs.mkFile("WINNT\\System32\\ntdll.dll", bktStf.mkRndByteArray(25932));
-                    fs.mkFile("WINNT\\System32\\kernel32.dll", bktStf.mkRndByteArray(49521));
-                    fs.mkFile("WINNT\\System32\\user32.dll", bktStf.mkRndByteArray(19564));
-                    fs.mkFile("WINNT\\System32\\gdi32.dll", bktStf.mkRndByteArray(45943));
-                    fs.mkFile("WINNT\\System32\\smss.exe", bktStf.mkRndByteArray(19532));
-                    fs.mkFile("WINNT\\System32\\csrss.exe", bktStf.mkRndByteArray(25316));
+                    fs.mkFile("WINNT\\System32\\ntoskrnl.exe", aprtMain.mkRndByteArray(32753));
+                    fs.mkFile("WINNT\\System32\\hal.dll", aprtMain.mkRndByteArray(19285));
+                    fs.mkFile("WINNT\\System32\\ntdll.dll", aprtMain.mkRndByteArray(25932));
+                    fs.mkFile("WINNT\\System32\\kernel32.dll", aprtMain.mkRndByteArray(49521));
+                    fs.mkFile("WINNT\\System32\\user32.dll", aprtMain.mkRndByteArray(19564));
+                    fs.mkFile("WINNT\\System32\\gdi32.dll", aprtMain.mkRndByteArray(45943));
+                    fs.mkFile("WINNT\\System32\\smss.exe", aprtMain.mkRndByteArray(19532));
+                    fs.mkFile("WINNT\\System32\\csrss.exe", aprtMain.mkRndByteArray(25316));
 
 
                     // Registry hives
-                    fs.mkFile("WINNT\\System32\\config\\SAM", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\SECURITY", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\SYSTEM", bktStf.mkRndByteArray(32768));
-                    fs.mkFile("WINNT\\System32\\config\\DEFAULT", bktStf.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SAM", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SECURITY", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SOFTWARE", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\SYSTEM", aprtMain.mkRndByteArray(32768));
+                    fs.mkFile("WINNT\\System32\\config\\DEFAULT", aprtMain.mkRndByteArray(32768));
 
                     // Boot files
                     fs.mkFileChr("boot.ini", bootiniContents);
-                    fs.mkFile("ntldr", bktStf.mkRndByteArray(5942));
-                    fs.mkFile("ntdetect.com", bktStf.mkRndByteArray(2585));
+                    fs.mkFile("ntldr", aprtMain.mkRndByteArray(5942));
+                    fs.mkFile("ntdetect.com", aprtMain.mkRndByteArray(2585));
 
                     // EGG
-                    fs.mkFile("WINNT\\System32\\drivers\\README.TXT", [121, 111, 117, 106, 117, 115, 116, 108, 111, 115, 116, 116, 104, 101, 103, 97, 109, 101]);
+                    fs.mkFileChr("WINNT\\System32\\drivers\\README.TXT", "You just lost the game.".ToCharArray());
                     break;
                 case 5001:
-                    File.WriteAllBytes("bktfs", fs.ToBinary());
+                    File.WriteAllBytes("bktfs", fs.toBinary());
                     break;
                 case 5002:
                     if (File.Exists("bktfs"))
                     {
                         // load
-                        fs = fileSys.FromBinary(File.ReadAllBytes("bktfs"));
+                        fs = fileSys.fromBinary(File.ReadAllBytes("bktfs"));
                     }
                     else
                     {
@@ -2080,7 +2316,8 @@ namespace borktorial
                     break;
                 default:
                     // note: iRnd is a value decided at start-time
-                    // that equals to a random value from 0 to 11
+                    // that equals to a random value from 0 to 12
+                    // or something i forgor
                     if (iRnd == 4)
                     {
                         char[] ns = num.ToString().ToCharArray();
@@ -2089,13 +2326,23 @@ namespace borktorial
                             return;
                         }
                         int sum = 1;
-                        foreach (var item in ns)
+                        foreach (char item in ns)
                         {
                             sum += item;
                         }
                         if (sum % 7 == 0)
                         {
-                            // i dunno what should happen when this condition is met yet.
+                            Console.WriteLine("CONGO RATS!!! You found The Secret!");
+                            Console.WriteLine("Now processing the reward...");
+                            sleep(500);
+                            Console.WriteLine("Contacting bkt://do_not_look_very_hidden/secret...");
+                            sleep(1500);
+                            Console.WriteLine("Success. Your reward is...");
+                            File.Create("GORDON").Dispose();
+                            Console.Write("ERRORS!\r\n");
+                            Console.WriteLine("Get pranked dingus.");
+                            sleep(1500);
+                            publicMain(["baboons!"]);
                         }
                     }
                     int d4 = rand.Next(0, 3);
@@ -2111,12 +2358,11 @@ namespace borktorial
                     {
                         Console.Clear();
                         Console.WriteLine("CPU triple fault detected!");
-                        Console.WriteLine($"Dump made at C:\\NTDOS\\CRSHHND\\DUMP3955.BIN");
-                        Thread.Sleep(5000);
+                        sleep(5000);
                     }
                     else
                     {
-                        return;
+                        keBugCheck(0xF0, new(4, 1, 2005));
                     }
                     break;
             }
@@ -2130,43 +2376,21 @@ namespace borktorial
                 {
                     return;
                 }
-                using (var mp3Reader = new Mp3FileReader(path))
-                using (var waveOut = new WaveOutEvent())
+                using Mp3FileReader mp3Reader = new(path);
+                using WaveOutEvent waveOut = new();
+                waveOut.Init(mp3Reader);
+                waveOut.Play();
+                while (waveOut.PlaybackState == PlaybackState.Playing)
                 {
-                    waveOut.Init(mp3Reader);
-                    waveOut.Play();
-                    while (waveOut.PlaybackState == PlaybackState.Playing)
-                    {
-                        Thread.Sleep(100);
-                    }
+                    sleep(100);
                 }
             }
         }
-        public static void radioLoop(string fn)
-        {
-            SoundPlayer radio1 = new SoundPlayer(fn);
-            while (!radioStopped)
-            {
-                if (rbt0)
-                {
-                    return;
-                }
-                radio1.PlaySync();
-            }
-        }
-        /// <summary>
-        /// The Borktorial Server Thread.
-        /// This along with a whole bunch of other shit constitues the Borktorial Server (or "master")
-        /// The "client" or "slave" uses all this shit to do stuff
-        /// </summary>
-        /// <param name="tl">Tick Length</param>
-        /// <param name="mcl">Mun Cycle Length</param>
-        /// <exception cref="Exception">General shit went wrong</exception>
         public static void timeLoop(int tl, int mcl)
         {
             DateTime lastSdDlt = DateTime.UtcNow;
             int entropyAcc = 0;
-            double sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
+            double sC;
             double ht0 = 0.01;
             double[] ht0Grph = [0.01, 0.1, 0.2, 0.3, 0.4,
             0.5, 0.6, 0.7, 0.8, 0.9,
@@ -2181,101 +2405,181 @@ namespace borktorial
             int ht0Idx = 0;
             int lastNewsSecond = -1;
             int lastFsSaveSecond = -1;
-
+            double spCnChnMl = 1;
+            double lastPtLog = -1;
+            int lastSwUpSec = -1;
+            Stopwatch ptTrck = new();
+            ptTrck.Start();
             while (true)
             {
-                Thread.Sleep(tl);
+                try
+                {
+                    sleep(tl); // ticks are kinda-inconsistent like this and i like it!
 
-                if (rbt0)
-                {
-                    return;
-                }
-
-                sC = Math.Log10((ninovium * 0.65) + (schonite * 0.35));
-                sysstab = Math.Clamp(sC, 0.01, 50);
-                if (tick % mcl == 0)
-                {
-                    munCycle += ht0;
-                }
-                if (tick % 10000 == 0 && !specialDays.bktDay)
-                {
-                    entropyAcc++;
-                }
-                if (tick % 25000 == 0 && specialDays.bktDay)
-                {
-                    entropyAcc++;
-                }
-                if (entropyAcc % 10 == 0 && rand.Next(0, 10) == 0)
-                {
-                    entropyAcc -= rand.Next(0, 10);
-                }
-                if (lastSdDlt.Date != DateTime.UtcNow.Date)
-                {
-                    specialDays.update();
-                    lastSdDlt = DateTime.UtcNow;
-                }
-                if (tick % (tl * 60000) == 0)
-                {
-                    specialDays.update();
-                    lastSdDlt = DateTime.UtcNow;
-                }
-                if (tick == int.MaxValue - 1)
-                {
-                    throw new Exception("[TIMETHRD] Stop bro go touch some fuckin' grass");
-                }
-                if (DateTime.UtcNow.Second % 10 == 0 &&
-                    DateTime.UtcNow.Second != lastFsSaveSecond)
-                {
-                    impulse(5001);
-                    lastFsSaveSecond = DateTime.UtcNow.Second;
-                }
-                if (DateTime.UtcNow.Second % 10 == 0 &&
-                   DateTime.UtcNow.Second != lastNewsSecond &&
-                   rand.Next(0, 5) == 0)
-                {
-                    addNews(newsGen.Generate());
-                    if (rand.Next(0, 98) == 0) // 1 in 99
+                    if (rbt0)
                     {
-                        // Schonite dust collector
-                        schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
-                        if (!specialDays.marsDay)
+                        return;
+                    }
+
+                    sC = Math.Log10(schonite * 0.35);
+                    sysstab = Math.Clamp(sC, 0.01, 50);
+                    if (tick % mcl == 0)
+                    {
+                        munCycle += ht0;
+                    }
+                    if (tick % 10000 == 0 && !specialDays.bktDay)
+                    {
+                        entropyAcc++;
+                    }
+                    if (tick % 25000 == 0 && specialDays.bktDay)
+                    {
+                        entropyAcc++;
+                    }
+                    if (entropyAcc % 10 == 0 && rand.Next(0, 10) == 0)
+                    {
+                        entropyAcc -= rand.Next(0, 10);
+                    }
+                    if (lastSdDlt.Date != DateTime.UtcNow.Date)
+                    {
+                        specialDays.update();
+                        lastSdDlt = DateTime.UtcNow;
+                    }
+                    if (tick % (tl * 60000) == 0)
+                    {
+                        specialDays.update();
+                        lastSdDlt = DateTime.UtcNow;
+                    }
+                    if (tick > 6746518849) // note: each tick is usually 15ms
+                    {
+                        // meaning this would take roughly
+                        // 3 years to reach.
+                        // that's a long fucking time.
+                        if (rand.Next(0, 8) == 0) // 1 in 8 chance 
                         {
-                            schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                            Console.WriteLine("Howdy! Just checking in to see if you're mentally sane " +
+                                "Judging by the fact that you've played a dumbass DOS sim for " +
+                                $"roughly {(tick * tl) / 1000 / 60 / 60 / 24 / 7} weeks!");
+                            addNews("Local person types commands in a terminal over and over for 3 years in a futile attempt to escape boredom!");
+                            Console.WriteLine("Look, you're even on the news!. Check the news command.");
+                            Console.WriteLine("P.S. I feel like the sim should've crashed before this message ever pops up due to a bunch of thread safety bugs");
+                            sleep(5000);
+                        }
+                    }
+                    if (tick % 0xBAD1 == 0)
+                    {
+                        if (rand.Next(0, 1000) == 0)
+                        {
+                            Console.WriteLine("Oh noes! A terrible error has occurred!");
+                            Console.WriteLine("Report this code to a support person: 0x2F282E2F");
+                            AnsiConsole.MarkupLine("Occurred at: [green]BBCR[/]_403.DLL:9532");
+                            Console.WriteLine("(technical: BADSUM.CHK. Oh wait did i swap the last 2 bits? I meant BADCHK.SUM. Shit)");
+                            rbt0 = true;
+                            while (true)
+                            {
+                                Console.TreatControlCAsInput = true;
+                                Console.SetOut(TextWriter.Null);
+                                Console.SetError(TextWriter.Null);
+                                sleep(20100401);
+                            }
+                        }
+                    }
+                    if ((int)ptTrck.Elapsed.TotalSeconds % 120 == 0 && (int)ptTrck.Elapsed.TotalSeconds != lastPtLog)
+                    {
+                        shitLog.createEntry("TICKER", $"Playtime is {(double)ptTrck.ElapsedMilliseconds / 1000:F3}s (i: {tick * tl / 1000}). Tick is {tick}. munCycle is {munCycle:F2}. ht0 is {ht0:F2}, swf is {slwFact:F2}.", logType.Info);
+                        lastPtLog = (int)ptTrck.Elapsed.TotalSeconds;
+                    }
+                    if (DateTime.UtcNow.Second % bktCfg.getEntByName(cfg, "fsAsInt").value == 0 &&
+                        DateTime.UtcNow.Second != lastFsSaveSecond)
+                    {
+                        impulse(5001);
+                        lastFsSaveSecond = DateTime.UtcNow.Second;
+                    }
+                    if (DateTime.UtcNow.Second % 10 == 0 &&
+                        DateTime.UtcNow.Second != lastNewsSecond &&
+                        rand.Next(0, 5) == 0)
+                    {
+                        addNews(newsGen.generateNws());
+                        if (rand.Next(0, 98) == 0) // 1 in 99
+                        {
+                            // Schonite dust collector
+                            schonite += Math.Clamp(rand.NextSingle(), 0.001, 500);
+                            if (!specialDays.spaceDay)
+                            {
+                                schonite -= Math.Clamp(rand.NextSingle(), 0.001, 500);
+                            }
+                            else
+                            {
+                                schonite -= Math.Clamp(rand.NextSingle() * 0.1, 0.001, 100);
+                            }
+                        }
+                        if (rand.Next(0, (int)Math.Clamp(10 * spCnChnMl, 10, 30)) == 0)
+                        {
+                            Console.Title = $"borktorial: {splashPick()}";
+                            if (rand.Next(0, 69) == 0) // 1 in 69
+                            {
+                                Console.Title = $"broktorial: {splashPick()}";
+                            }
+                            if (spoopMode)
+                            {
+                                if (rand.Next(0, (int)Math.Ceiling(File.ReadAllLines("assets\\splashes.txt").Length * 2.5)) == 0)
+                                {
+                                    Console.Title = $"{username.ToUpper()} IS YOU!";
+                                }
+                            }
+                            spCnChnMl += Math.Clamp(rand.NextDouble(), 0, 0.5);
+                        }
+                        if (tick % 2 == 0)
+                        {
+                            if (ht0Idx >= ht0Grph.Length - 1)
+                            {
+                                ht0Idx = 0;
+                            }
+                            ht0Idx++;
+                            ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble() * 0.01);
+                        }
+                        lastNewsSecond = DateTime.UtcNow.Second;
+                    }
+                    int baseValue = 5000;      // Starting risk
+                    double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
+                    if (specialDays.spaceDay)
+                    {
+                        scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
+                    }
+                    double effectiveTick = tick * munCycle;
+
+                    // note: the higher crshChance is the LOWER the chance of it crashing is
+                    // due to me being horrible at coding
+                    crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
+                    if (rand.Next(0, 6) == 0 && DateTime.UtcNow.Second % 5 == 0 && DateTime.UtcNow.Second != lastSwUpSec)
+                    {
+                        double delta;
+
+                        if (ht0 > 1.5)
+                        {
+                            delta = -0.012 - (rand.NextDouble() * 0.018);  
                         }
                         else
                         {
-                            schonite -= Math.Clamp(rand.NextSingle() * 0.1, 0.001, 100);
+                            delta = 0.0035 + (rand.NextDouble() * 0.007);
                         }
-                    }
-                    if (rand.Next(0, 99) == 0)
-                    {
-                        Console.Title = $"borktorial: {splashPick()}";
-                        if (rand.Next(0, 69) == 0) // 1 in 69
-                        {
-                            Console.Title = $"broktorial: {splashPick()}";
-                        }
-                    }
-                    if (tick % 4 == 0)
-                    {
-                        if (ht0Idx >= ht0Grph.Length - 1)
-                        {
-                            ht0Idx = 0;
-                        }
-                        ht0Idx++;
-                        ht0 = (ht0Grph[ht0Idx] * 0.95) + (Math.Sin(ht0Idx) * 0.04) + (rand.NextDouble() * 0.01);
-                    }
-                    lastNewsSecond = DateTime.UtcNow.Second;
-                }
-                int baseValue = 5000;      // Starting risk
-                double scaleFactor = 50 + ((munCycle + 1) * 2) + entropyAcc;
-                if (specialDays.marsDay)
-                {
-                    scaleFactor = 35 + ((munCycle + 1) * 2) + (entropyAcc / 4);
-                }
-                double effectiveTick = tick * munCycle;
 
-                crshChance = Math.Max(10, baseValue - (int)(Math.Log10(effectiveTick + 1) * scaleFactor)) * (int)Math.Ceiling(sysstab);
-                tick++; // equivelant to i0
+                        double timeDamp = 1.0 / (1.0 + ptTrck.Elapsed.TotalMinutes * 0.15);
+                        delta *= timeDamp;
+                        slwFact = Math.Clamp(slwFact + delta, 0.1, 15);
+
+                        lastSwUpSec = DateTime.UtcNow.Second;
+                    }
+                    tick++; // equivelant to i0
+                }
+                catch (Exception ex)
+                {
+                    shitLog.createEntry("TICKER", ex.ToString(), logType.Err);
+                    // do a nice message that hides the exception just a lil' bit! make it seem in-universe!!!
+                    Console.WriteLine($"SERVICES: Service \"bktTs.dll\" crashed. Message: {ex.Message}");
+                    sleep(250);
+                    Console.WriteLine("SERVICES: Restarted Borktorial Ticker Service");
+                    timeLoop(tl, mcl);
+                }
             }
         }
         public static void interspeed()
@@ -2288,17 +2592,17 @@ namespace borktorial
                 }
                 if (mConnected == true)
                 {
-                    if (!specialDays.marsDay)
+                    if (!specialDays.spaceDay)
                     {
-                        mSpeed += rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
-                        mSpeed -= rand.Next(-((int)mSpeed / 4), ((int)mSpeed / 4));
+                        mSpeed += rand.Next(-mSpeed / 4, mSpeed / 4);
+                        mSpeed -= rand.Next(-mSpeed / 4, mSpeed / 4);
                     }
                     else
                     {
-                        mSpeed += rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
-                        mSpeed -= rand.Next(-((int)mSpeed / 5), ((int)mSpeed / 5));
+                        mSpeed += rand.Next(-(mSpeed / 5), mSpeed / 5);
+                        mSpeed -= rand.Next(-(mSpeed / 5), mSpeed / 5);
                     }
-                    Thread.Sleep(rand.Next(650, 6000));
+                    sleep(rand.Next(650, 6000));
                     if (mSpeed <= 0)
                     {
                         mSpeed = 1;
@@ -2306,11 +2610,11 @@ namespace borktorial
                 }
                 else
                 {
-                    Thread.Sleep(8192);
+                    sleep(8192);
                 }
             }
         }
-        public static void __49291()
+        public static void s49291()
         {
             while (true)
             {
@@ -2318,10 +2622,10 @@ namespace borktorial
                 {
                     return;
                 }
-                Thread.Sleep(rand.Next(5000, 30000));
+                sleep(rand.Next(5000, 30000));
                 for (int i = 0; i < rand.Next(5, 50); i++)
                 {
-                    Thread.Sleep(50);
+                    sleep(50);
                     Console.SetCursorPosition(rand.Next(0, Console.BufferWidth), rand.Next(0, Console.BufferHeight));
                     Console.ForegroundColor = (ConsoleColor)rand.Next(0, 16);  // Random color each time
                     Console.BackgroundColor = (ConsoleColor)rand.Next(0, 16);  // Random color each time
@@ -2336,39 +2640,82 @@ namespace borktorial
 
             if (currNews.Count > 5)
             {
-                currNews.RemoveAt(0); // Remove first/oldest
+                currNews.RemoveAt(0);
             }
         }
-        public static void saveCfg()
+        public static string cmdMailEnc(string command, string message, int expDays)
         {
-            string cfgS = "";
-            foreach (var item in cfg)
-            {
-                cfgS += (";" + item.ToString("D10"));
-            }
-            cfgS = cfgS.Remove(0, 1);
-            try
-            {
-                File.Delete(cfgFn);
-            }
-            catch (Exception ex)
-            {
-                shitLog.createEntry("SAVECFG", $"Error: {ex.Message} {ex.StackTrace}", logType.Err);
-            }
-            File.AppendAllText(cfgFn, cfgS);
+            string cmdMail = "d\x00"; // header (version D)
+            cmdMail += $"{parseBorkTag(command)}\x00"; // command
+            cmdMail += $"{username}\x00"; // username
+            cmdMail += $"{DateTime.UtcNow.Date.Year:D4}";
+            cmdMail += $"{DateTime.UtcNow.Date.Month:D2}";
+            cmdMail += $"{DateTime.UtcNow.Date.Day:D2}\x00"; // datestamp
+            cmdMail += $"{message}\x00"; // message
+            cmdMail += $"{(ushort)(rSeed ^ DateTime.UtcNow.Day + DateTime.UtcNow.Month + (DateTime.UtcNow.Year / 100) + strSum(username + password + aprtMain.mkShitUsername(new Random(strSum("ACGCN.TOMNOOK_REDD_SAHARAH_JOAN_RESETTI")))))}";
+            cmdMail += $"{(byte)rSeed & (9 + rSeed * 2) ^ 13}\x00"; // sid
+            cmdMail += $"{expDays}\x00"; // expiry days
+            cmdMail += $"{aprtMain.md5(aprtMain.str2Ba(cmdMail))}";
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
+            cmdMail = aprtMain.toB64(cmdMail);
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
+            return $"mail.{cmdMail}";
         }
-        public static void PlayModemSound()
+        public static DateTime ymd2Dt(string s)
         {
-            using var stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("borktorial.rsrc.modem.wav");
-            new System.Media.SoundPlayer(stream).PlaySync();
+            int y = int.Parse(string.Join(string.Empty, s[0], s[1], s[2], s[3])); // beware of the year 10,000!
+            int m = int.Parse(string.Join(string.Empty, s[4], s[5]));
+            int d = int.Parse(string.Join(string.Empty, s[6], s[7]));
+            return new DateTime(y, m, d);
+        }
+        public static (string username, string command, string message, string sid) cmdMailDec(string cmdMail)
+        {
+            cmdMail = cmdMail[5..];
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
+            cmdMail = aprtMain.fromB64(cmdMail);
+            cmdMail = aprtMain.ca2Str([.. cmdMail.Reverse()]);
+            string[] cmdMI = cmdMail.Split("\x00");
+            if (cmdMI.Length < 7)
+            {
+                return ("\x07", "\x07", "\x07", "0");
+            }
+            if (cmdMI[0] != "d")
+            {
+                return ("\x07", "\x07", "\x07", "0");
+            }
+            DateTime dt = ymd2Dt(cmdMI[3]);
+            if (dt < DateTime.UtcNow.Subtract(new TimeSpan(int.Parse(cmdMI[6]), 0, 0, 0)))
+            {
+                return ("\x00", "\x01", "\x02", "0");
+            }
+            if (dt > DateTime.UtcNow)
+            {
+                return ("\x02", "\x01", "\x00", "0");
+            }
+            string crcCm = $"{cmdMI[0]}\0{cmdMI[1]}\0{cmdMI[2]}\0{cmdMI[3]}\0{cmdMI[4]}\0{cmdMI[5]}\0{cmdMI[6]}\x0";
+            if (cmdMI[7] != aprtMain.md5(aprtMain.str2Ba(crcCm)))
+            {
+                return ("\x06", "\x06", "\x06", "0");
+            }
+            return (cmdMI[2], cmdMI[1], cmdMI[4], cmdMI[5]);
+        }
+        public static void playModemSound()
+        {
+            audosey.loadAud("assets\\modem.wav", 0);
+            audosey.play(0, true);
+            return;
         }
         public static string splashPick()
         {
             int mdWeight = 0;
-            if (specialDays.marsDay)
+            int snapWeight = 0;
+            if (specialDays.spaceDay)
             {
                 mdWeight = 4;
+            }
+            if (specialDays.snapshotDay)
+            {
+                snapWeight = 4;
             }
             if (specialDays.crimbus)
             {
@@ -2382,18 +2729,39 @@ namespace borktorial
             {
                 return "Your car is on fire.";
             }
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.splashes.txt");
-
-            if (stream is null)
-                return "missingno";
-
-            using var reader = new StreamReader(stream);
-            var lines = reader.ReadToEnd()
+            string[] lines = File.ReadAllText("assets\\splashes.txt")
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
+            List<string> lList = [.. lines];
+            lList.Remove("(c) This splash won't ever appear despite being marked as common. Isn't that weird?");
+            if (File.Exists(Path.Combine("mods", "csplash.txt")))
+            {
+                string[] extraLines = File.ReadAllLines(Path.Combine("mods", "csplash.txt"));
+                if (extraLines.Length > 0 && extraLines[0] == "[NOSTOCKSPLASH]")
+                {
+                    lList = [];
+                }
+                foreach (string item in extraLines)
+                {
+                    if (item == "[NOSTOCKSPLASH]")
+                    {
+                        continue;
+                    }
+                    if (item.StartsWith("[REMOVE] "))
+                    {
+                        lList.Remove(item[9..]);
+                        lList.Remove(item); // just to be surely sure
+                        continue; // skip it
+                    }
+                    if (item.StartsWith("//"))
+                    {
+                        continue; // skip this too
+                    }
+                    lList.Add(item);
+                }
+            }
+            lines = [.. lList];
             // Parse lines with rarity weights
-            var splashes = lines
+            List<(string Text, int Weight)> splashes = [.. lines
                 .Select(line => line switch
                 {
                     _ when line.StartsWith("(c) ") => (Text: line[4..], Weight: 4),
@@ -2401,70 +2769,50 @@ namespace borktorial
                     _ when line.StartsWith("(r) ") => (Text: line[4..], Weight: 1),
                     _ when line.StartsWith("(e) ") => (Text: line[4..], Weight: 0),
                     _ when line.StartsWith("(m) ") => (Text: line[4..], Weight: mdWeight),
+                    _ when line.StartsWith("(s) ") => (Text: line[4..], Weight: snapWeight),
                     _ => (Text: line, Weight: 0)
-                })
-                .ToList();
+                })];
 
             if (splashes.Count == 0)
-                return "Beta than ever!";
+            {
+                return "404 splash not found";
+            }
 
             // Weighted random selection
             int totalWeight = splashes.Sum(s => s.Weight);
             int roll = rand.Next(totalWeight);
 
             int cumulative = 0;
-            foreach (var splash in splashes)
+            foreach ((string Text, int Weight) splash in splashes)
             {
                 cumulative += splash.Weight;
                 if (roll < cumulative)
+                {
                     return parseBorkTag(splash.Text);
+                }
             }
 
             return parseBorkTag(splashes[^1].Text);
         }
+        public static int getBuildNum()
+        {
+            return bktver + aprtMain.aprtVer;
+        }
         public static void sttw()
         {
             Console.WriteLine("Now loading STTW...");
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt");
-
-            if (stream is null)
-                throw new Exception("Error: Could not start STTW");
-
-            using var reader = new StreamReader(stream);
-            var lines = reader.ReadToEnd()
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using Stream? stream = assembly.GetManifestResourceStream("borktorial.rsrc.sttw.txt") ?? throw new Exception("Error: Could not start STTW");
+            using StreamReader reader = new(stream);
+            string[] lines = reader.ReadToEnd()
                 .Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             Console.Clear();
-            foreach (var ln in lines)
+            foreach (string ln in lines)
             {
                 Console.WriteLine(ln);
-                Thread.Sleep(150);
+                sleep(150);
             }
 
-        }
-        public static int getBuildNum()
-        {
-            float accu = 0;
-            accu += (bktver.maj + pubver.maj) * 8;
-            accu += bktLV.aprtVer.maj * 7;
-            accu += (bktver.min + pubver.min) * 4;
-            accu += bktLV.aprtVer.min * 5;
-            accu += (bktver.pch + pubver.pch) * 2;
-            accu += bktLV.aprtVer.pch * 3;
-            accu += (bktver.rv + pubver.rv);
-            accu += bktLV.aprtVer.rv;
-            accu += bktLV.puD[7] / bktLV.puC[7];
-            accu /= 4;
-            // what the fuck?
-            //if (specialDays.seecretFriday)
-            //{
-            //    accu += 1;
-            //}
-            //if (specialDays.marsDay)
-            //{
-            //    accu -= 1;
-            //}
-            return (int)accu;
         }
         static void catGoBrr(int delay = 100)
         {
@@ -2472,9 +2820,13 @@ namespace borktorial
             string[] catLines = cat.Split("\r\n");
 
             int catWidth = 0;
-            foreach (var line in catLines)
+            foreach (string line in catLines)
+            {
                 if (line.Length > catWidth)
+                {
                     catWidth = line.Length;
+                }
+            }
 
             int startPos = consoleWidth - catWidth;
             int endPos = 0;
@@ -2488,12 +2840,12 @@ namespace borktorial
 
                     if (pos < 0)
                     {
-                        lineToPrint = lineToPrint.Substring(-pos);
+                        lineToPrint = lineToPrint[-pos..];
                     }
 
                     Console.Write(lineToPrint);
                 }
-                Thread.Sleep(delay);
+                sleep(delay);
 
                 for (int y = 0; y < catLines.Length; y++)
                 {
@@ -2501,7 +2853,7 @@ namespace borktorial
                     Console.Write(new string(' ', consoleWidth));
                 }
             }
-            Thread.Sleep(3500);
+            sleep(3500);
             Console.Clear();
             return;
         }
@@ -2513,7 +2865,6 @@ namespace borktorial
             jebconnect = false;
             mConnected = false;
             forceNoBoot = false;
-            failIntaAlways = false;
             mSpeed = 1800;
             crshChance = 10000;
             currNews.Clear();
@@ -2523,22 +2874,29 @@ namespace borktorial
             jebcounter = 0;
             munCycle = 0;
             tick = 0;
-            ninovium = 1;
             schonite = 1;
             sysstab = 1;
             username = "";
             password = "";
             root = false;
             jmtrigger = false;
+            spoopMode = false;
+            slwFact = 1 + rand.NextDouble();
             specialDays.update();
         }
         /// <summary>
-        /// Wrapper for byteFormat
+        /// Sleeps. Time in milliseconds
         /// </summary>
-        /// <param name="bytes">Bytes</param>
-        public static string bfWrap(UInt128 bytes)
+        /// <param name="time">How long to sleep for in milliseconds</param>
+        public static void sleep(int time)
         {
-            return bktStf.byteFormat(bytes);
+            double actTime = time * slwFact;
+            if (actTime < 1)
+            {
+                shitLog.createEntry("SLPFUNC", $"Time to sleep ended up as {actTime}. Falling back to 1ms!", logType.Warn);
+                actTime = 1;
+            }
+            Thread.Sleep((int)actTime);
         }
         public static void playAnim(string[] frames, int delay, bool clrCns = true, int bg = 0, int fg = 15)
         {
@@ -2549,38 +2907,29 @@ namespace borktorial
             {
                 Console.Clear();
             }
-            foreach (var item in frames)
+            foreach (string item in frames)
             {
                 Console.WriteLine(item.Replace("\0", "\r\n"));
-                Thread.Sleep(delay);
+                sleep(delay);
                 Console.Clear();
             }
             return;
         }
         public static string parseBorkTag(string exp)
         {
-            exp = bktStf.pNrH(exp, rand);
+            exp = aprtMain.pNrH(exp, rand);
             exp = errGen.genCustomTemplate(exp)[0];
             exp = newsGen.genCustomTemplate(exp);
+            exp = exp.Replace("<newline>", "\r\n");
+            exp = exp.Replace("<empty>", "");
             return exp;
-        }
-        public static void forceDefaultCfg()
-        {
-            cfg = new int[256];
-            cfg[0] = 15; // Tick length in ms
-            cfg[1] = 10000; // Mun cycle length in ticks
-            cfg[2] = 15; // Unused (this used to be autosave interval but we don't have saves anymore)
-            cfg[3] = getBuildNum(); // Version
-            cfg[4] = 0; // Fail NTGINA find
-            cfg[5] = 0; // No fun pre-logon boot text
-            cfg[6] = 0; // No asking for username and password
-            saveCfg();
         }
         public static class specialDays
         {
+            // i'm sure there's some far cleaner way to do this but ehh
             public static bool aprilfool = DateTime.UtcNow.Month == 4 && DateTime.UtcNow.Day == 1;
             public static bool crimbus = DateTime.UtcNow.Month == 12 && DateTime.UtcNow.Day >= 25;
-            public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 1;
+            public static bool spooky = DateTime.UtcNow.Month == 10 && DateTime.UtcNow.Day >= 24;
             public static bool seecretFriday = DateTime.UtcNow.DayOfWeek == DayOfWeek.Friday && DateTime.UtcNow.Day == 9;
             public static bool bktDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday &&
                 DateTime.UtcNow.Day == 27 &&
@@ -2591,6 +2940,12 @@ namespace borktorial
                 DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+            public static bool snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday && (DateTime.UtcNow.Year + DateTime.UtcNow.Month - 2009) % 5 == 0;
+            public static bool sputnikDay = DateTime.UtcNow.Day == 4
+                && DateTime.UtcNow.Month == 10
+                && (DateTime.UtcNow.Year - 1957) % 10 == 0;
+            public static bool spaceDay = marsDay || sputnikDay;
+
 
             public static void update()
             {
@@ -2606,6 +2961,10 @@ namespace borktorial
                 DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday &&
                 (DateTime.UtcNow.Hour > 5 ||
                  (DateTime.UtcNow.Hour == 5 && DateTime.UtcNow.Minute >= 17));
+                snapshotDay = DateTime.UtcNow.DayOfWeek == DayOfWeek.Wednesday;
+                sputnikDay = DateTime.UtcNow.Day == 4
+                && DateTime.UtcNow.Month == 10
+                && (DateTime.UtcNow.Year - 1957) % 5 == 0;
             }
         }
         public enum mConnectTypes

@@ -3,7 +3,7 @@ using aperture;
 
 namespace borktorial
 {
-    internal class errGen
+    public class errGen
     {
         public static readonly Random rand = new();
         public static readonly string[] templates = [
@@ -31,13 +31,11 @@ namespace borktorial
             "<subject>_<verb>_<animal><notem>",
             "<kerbal>_KERMAN_<verb>_<object><notem>",
             "<kerbal>_KERMAN_<verb>_<subject><notem>",
-            "<subject>_<verb>_<subject><notem>",
             "<object>_<verb>_<subject><notem>",
-            "<object>_<verb>_<object><notem>"
             ];
         public static readonly string[] subjects =
         [
-            "GLaDOS",
+            "GLADOS",
             "JEBEDIAH_KERMAN",
             "VAL_KERMAN",
             "DRDICKHD",
@@ -324,7 +322,7 @@ namespace borktorial
         public static readonly char[] hexLetters = "ABCDEF".ToCharArray();
         public static readonly char[] hexDigits = "1234567890ABCDEF".ToCharArray();
         // we codenamed this one the Aperture Science Templated System Potential Failure Detection and Generation System(TM)
-        public static string[] Generate()
+        public static string[] generateErr()
         {
             // Choose random template
             string gErrI = templates[rand.Next(templates.Length)];
@@ -334,7 +332,6 @@ namespace borktorial
         {
             string gErrI = template;
             string processName = processNames[rand.Next(processNames.Length)];
-            // Replace tags step-by-step
             gErrI = gErrI.Replace("<animal>", animals[rand.Next(animals.Length)]);
             gErrI = gErrI.Replace("<kerbal>", kerbals[rand.Next(kerbals.Length)]);
             gErrI = gErrI.Replace("<num>", rand.Next(0, 256).ToString());
@@ -353,29 +350,9 @@ namespace borktorial
             gErrI = gErrI.Replace("<reg386>", rand.Next(0, int.MaxValue).ToString());
             gErrI = gErrI.Replace("<register>", registers[rand.Next(registers.Length)]);
             gErrI = gErrI.Replace("<verb>", verbs[rand.Next(verbs.Length)]);
-            gErrI = bktStf.pNrH(gErrI, rand);
+            gErrI = gErrI.Replace("<pname>", processNames[rand.Next(processNames.Length)]);
+            gErrI = aprtMain.pNrH(gErrI, rand);
             return [gErrI, processName];
-        }
-        /// <summary>
-        /// Generate random hex strings
-        /// </summary>
-        /// <param name="length">Length</param>
-        /// <param name="gs">Group size</param>
-        /// <param name="sep">Separator character</param>
-        /// <returns>A random hex string with the params</returns>
-        public static string sf15(int length, int gs, char sep = '-')
-        {
-            var sb = new StringBuilder(length + (gs > 0 ? length / gs : 0));
-
-            for (int i = 0; i < length; i++)
-            {
-                if (gs > 0 && i > 0 && i % gs == 0)
-                    sb.Append(sep);
-
-                sb.Append(hexDigits[rand.Next(hexDigits.Length)]);
-            }
-
-            return sb.ToString();
         }
     }
 }

@@ -1,29 +1,58 @@
-﻿namespace aperture
+﻿using System.IO.Compression;
+
+namespace aperture
 {
     /// <summary>
     /// Shitlog: A shitty log
     /// </summary>
     public static class shitLog
     {
-        private static readonly object _lock = new();
+        private static readonly Lock logLock = new();
 
-        public static void createEntry(string proc, 
-            string descr, 
-            logType lt, 
-            string dateFormat = "R", 
-            string filename = "bktLog.txt")
+        /// <summary>
+        /// Creates a log entry. Thread-safe-ish-probably
+        /// To specifiy parameters that you keep reusing, just make a wrapper around this
+        /// </summary>
+        /// <param name="proc">Process</param>
+        /// <param name="descr">Description</param>
+        /// <param name="lt">Log type</param>
+        /// <param name="dateFormat">Date format</param>
+        /// <param name="filename">Filename</param>
+        /// <param name="maxSize">Max size before rotation</param>
+        /// <param name="doRotate">If it should rotate at all</param>
+        /// <param name="csLogType">Custom log type</param>
+        /// <param name="rotateDateFormat">The date format that gets used for the filename of a archive log</param>
+        /// <param name="logLogStart">If it should log the log starting</param>
+        public static void createEntry(string proc,
+            string descr,
+            logType lt,
+            string dateFormat = "yyyy/MM/dd HH:mm:ss.fff",
+            string filename = "bktLog.txt",
+            long maxSize = 1048576,
+            bool doRotate = true,
+            string csLogType = "",
+            string rotateDateFormat = "yyyy.MM.dd.HH.mm.ss",
+            bool logLogStart = true)
         {
-            lock (_lock)
+            lock (logLock)
             {
-                const long maxSize = 1024 * 1024; // 1 whole meggi-byte(TM)
-                FileInfo logFile = new(filename);
-
-                if (logFile.Exists && logFile.Length > maxSize)
+                if (!File.Exists(filename))
                 {
-                    string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
-                    string archive = $"{filename}-{timestamp}.txt";
+                    File.Create(filename).Dispose();
+                }
+                FileInfo logFile = new(filename);
+                if (logFile.Length == 0 && logLogStart)
+                {
+                    File.AppendAllText(filename, $"=== START OF LOG {filename} AT {DateTime.UtcNow.ToString(dateFormat)} ===\r\n");
+                }
+                if (logFile.Exists && logFile.Length > maxSize && doRotate == true)
+                {
+                    string timestamp = DateTime.UtcNow.ToString(rotateDateFormat);
+                    string archive = $"{timestamp}-{filename}";
                     File.Move(filename, archive);
-                    createEntry("SHITLOG", $"Get rotated idiot (Into {archive})", logType.Info);
+                    File.AppendAllText(filename, $"=== START OF LOG {filename} AT {DateTime.UtcNow.ToString(dateFormat)} ===\r\n");
+                    File.AppendAllText(filename,
+                        $"[{DateTime.UtcNow.ToString(dateFormat)}] info: [SHITLOG]: Get rotated idiot (into {archive}).\r\n");
                 }
                 string typeStr = lt switch
                 {
@@ -33,6 +62,10 @@
                     logType.Err => "err",
                     _ => "unk"
                 };
+                if (csLogType != "")
+                {
+                    typeStr = csLogType;
+                }
                 File.AppendAllText(filename,
                     $"[{DateTime.UtcNow.ToString(dateFormat)}] {typeStr}: [{proc}]: {descr}\r\n");
             }

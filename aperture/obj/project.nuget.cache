@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "p+JnYiRuXQc=",
+  "dgSpecHash": "c2h0EM+xB/4=",
   "success": true,
   "projectFilePath": "C:\\Users\\osint2\\bktDevGit2\\aperture\\aperture.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.13\\microsoft.net.illink.tasks.9.0.13.nupkg.sha512"
+    "C:\\Users\\osint2\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.14\\microsoft.net.illink.tasks.9.0.14.nupkg.sha512"
   ],
   "logs": []
 }
